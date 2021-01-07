@@ -2,11 +2,13 @@ import os
 from flask import Flask
 from models import setup_db
 from flask_cors import CORS
+#from flask_migrate import Migrate
 
 def create_app(test_config=None):
 
     app = Flask(__name__)
     setup_db(app)
+    #migrate = Migrate(app, db) #udacity help
     CORS(app)
 
     @app.route('/')
