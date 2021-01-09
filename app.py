@@ -1,22 +1,25 @@
 import os
 from flask import Flask, abort, json, jsonify
-from models import setup_db, Actor, Movie
+from models import setup_db, Teacher, Course
 from flask_cors import CORS
-#from flask_migrate import Migrate
+import dateutil.parser
+import babel
+
 
 def create_app(test_config=None):
 
     app = Flask(__name__)
     setup_db(app)
-    #migrate = Migrate(app, db) #udacity help
     CORS(app)
     return app
+
+
 app = create_app()
 
 
-#----------------------------------------------------------------------------#
+# ----------------------------------------------------------------------------#
 # Filters.
-#----------------------------------------------------------------------------#
+# ----------------------------------------------------------------------------#
 
 
 def format_datetime(value, format='medium'):
@@ -30,36 +33,66 @@ def format_datetime(value, format='medium'):
 
 app.jinja_env.filters['datetime'] = format_datetime
 
-#----------------------------------------------------------------------------#
+# ----------------------------------------------------------------------------#
 #  Controllers.
-#----------------------------------------------------------------------------#
+# ----------------------------------------------------------------------------#
 
-    
+
 @app.route('/')
 def get_greeting():
     excited = os.environ['EXCITED']
-    greeting = "Bongo" 
-    if excited == 'true': greeting = greeting + "!!!!!"
+    greeting = "Squirrel Yoga"
+    if excited == 'true':
+        greeting += "!!!!!"
     return greeting
-@app.route('/coolkids')
-def be_cool():
-    return "Be cool, man, be coooool! You're almost a FSND grad!"
 
-@app.route('/actors', methods=['GET'])
-def get_actors():
+
+@app.route('/coolsquirrel')
+def be_cool():
+    return "Be cool, man, go gather more nuts!"
+
+
+@app.route('/teachers', methods=['GET'])
+def get_teachers():
     try:
-        actors = Actor.query.order_by(Actor.id).all()
+        print("I'm in get teachers")
+        teachers = Teacher.query.order_by(Teacher.id).all()
+        print(len(teachers))
         data = []
-        for actor in actors:
+        for teacher in teachers:
             data.append({
-                "id": actor.id,
-                "age": actor.age,
-                "name": actor.name
+                "id": teacher.id,
+                "age": teacher.age,
+                "name": teacher.name,
+                "temperament": teacher.temperament,
+                "moves": teacher.moves
             })
         print(data)
         return jsonify({
             'success': True,
-            'count': len(actors),
+            'count': len(teachers),
+            'data': data
+        })
+    except Exception:
+        abort(422)
+
+
+@app.route('/courses', methods=['GET'])
+def get_courses():
+    try:
+        courses = Course.query.order_by(Course.id).all()
+        data = []
+        for course in courses:
+            data.append({
+                "id": course.id,
+                "name": course.name,
+                "course_date": course.course_date,
+                "course_level": course.course_level
+            })
+        print(data)
+        return jsonify({
+            'success': True,
+            'count': len(courses),
             'data': data
         })
     except Exception:
