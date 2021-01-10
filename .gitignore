@@ -6,6 +6,7 @@ node_modules/
 Coffee_Shop.code-workspace
 RandomNotes.sql
 setup.sh
+config.py
 
 # OS generated files #
 ######################

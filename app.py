@@ -1,6 +1,7 @@
 import os
-from flask import Flask, abort, json, jsonify
-from models import setup_db, Teacher, Course
+from flask import Flask, request, abort, flash, json, jsonify
+from models import setup_db, db, Teacher, Course
+import config
 from flask_cors import CORS
 import dateutil.parser
 import babel
@@ -9,6 +10,7 @@ import babel
 def create_app(test_config=None):
 
     app = Flask(__name__)
+    app.secret_key = os.urandom(24)
     setup_db(app)
     CORS(app)
     return app
@@ -75,6 +77,53 @@ def get_teachers():
         })
     except Exception:
         abort(422)
+
+
+'''
+Endpoint : POST a new teacher,
+Requires: teacher name text, age number, temperament, and moves.
+TEST:
+
+curl http://127.0.0.1:5000/teachers/add
+-X POST
+-H "Content-Type: application/json"
+-d '{"name":"Reuil1","age":5, "temperament":"frisky",
+    "moves":"my fav move"}'
+
+'''
+
+
+@app.route('/teachers/add',
+           methods=['POST'])  # plural collection endpoint
+def create_teacher():
+    try:
+        body = request.get_json()
+        new_teacher = body.get('name', None)
+        new_age = body.get('age', None)
+        new_temperament = body.get('temperament', None)
+        new_moves = body.get('moves', None)
+        teacher = (
+            Teacher(
+                name=new_teacher,
+                age=new_age,
+                temperament=new_temperament,
+                moves=new_moves)
+            )
+        db.session.add(teacher)  # teacher.insert()
+        db.session.commit()
+        teacher_id = teacher.id
+        flash('Teacher ' + new_teacher + ' was just added!')
+        return jsonify({
+            "success": True,
+            "created": teacher.id
+        })
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred. Teacher' + new_teacher + ' could not be listed.')
+        print(e)
+        abort(422)
+    finally:
+        db.session.close()
 
 
 @app.route('/courses', methods=['GET'])
