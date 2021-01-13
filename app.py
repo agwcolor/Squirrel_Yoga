@@ -1,10 +1,11 @@
-import os
+import sys, os
 from flask import Flask, request, abort, flash, json, jsonify
-from models import setup_db, db, Teacher, Course
+from models import setup_db, db, Teacher, Course, Event
 import config
 from flask_cors import CORS
 import dateutil.parser
 import babel
+from datetime import datetime
 
 
 def create_app(test_config=None):
@@ -24,7 +25,7 @@ app = create_app()
 # ----------------------------------------------------------------------------#
 
 
-def format_datetime(value, format='medium'):
+'''def format_datetime(value, format='medium'):
     date = dateutil.parser.parse(value)
     if format == 'full':
         format = "EEEE MMMM, d, y 'at' h:mma"
@@ -33,7 +34,7 @@ def format_datetime(value, format='medium'):
     return babel.dates.format_datetime(date, format)
 
 
-app.jinja_env.filters['datetime'] = format_datetime
+app.jinja_env.filters['datetime'] = format_datetime'''
 
 # ----------------------------------------------------------------------------#
 #  Controllers.
@@ -78,6 +79,69 @@ def get_teachers():
     except Exception:
         abort(422)
 
+
+@app.route('/teachers/<int:id>', methods=['GET'])
+def show_teacher(id):
+    try:
+        teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
+        data = []
+        u_events = db.session.query(Event).filter(Event.teacher_id == teacher.id).filter(
+            Event.course_date > datetime.now()).all()
+        p_events = db.session.query(Event).filter(Event.teacher_id == teacher.id).filter(
+            Event.course_date < datetime.now()).all()
+        upcoming_events = []
+        for event in u_events:
+            course = db.session.query(Course).filter(Course.id==event.id).all()
+            if len(course) > 0:
+                upcoming_events.append({
+                    "course_id": course[0].id,
+                    "course_name": course[0].name,
+                    "course_date": event.course_date
+                })
+
+        past_events = []
+        for event in p_events:
+            course = db.session.query(Course).filter(
+                event.id == Course.id).all()
+            if len(course) > 0:
+                past_events.append({
+                    "course_id": course[0].id,
+                    "course_name": course[0].name,
+                    "course_date": event.course_date
+                })
+        print("upcoming events, past events", upcoming_events, past_events)
+        data.append({
+            "id": teacher.id,
+            "age": teacher.age,
+            "name": teacher.name,
+            "temperament": teacher.temperament,
+            "moves": teacher.moves,
+            "upcoming_events": upcoming_events,
+            "past_events": past_events,
+            "past_events_count": len(db.session.query(Event).filter(Event.teacher_id == teacher.id).filter(Event.course_date < datetime.now()).all()),
+            "upcoming_Events_count": len(db.session.query(Event).filter(Event.teacher_id == teacher.id).filter(Event.course_date > datetime.now()).all())
+        })
+        print(data, "is the data")
+        return jsonify({
+           'success': True,
+           'upcoming_events': len(upcoming_events),
+           'past_events': len(past_events),
+           'data': data
+        })
+    except Exception as e:
+        exception_type, exception_object, exception_traceback = sys.exc_info()
+
+        filename = exception_traceback.tb_frame.f_code.co_filename
+
+        line_number = exception_traceback.tb_lineno
+
+        print("Exception type: ", exception_type)
+        print("File name: ", filename)
+        print("Line number: ", line_number)
+        print(e, " is the error")
+        abort(422)
+
+    #return render_template('pages/show_teacher.html', teacher=data[0])
 
 '''
 Endpoint : POST a new teacher,
@@ -125,7 +189,60 @@ def create_teacher():
     finally:
         db.session.close()
 
+@app.route('/teachers/<int:id>',
+           methods=['PATCH'])  # plural collection endpoint
+def edit_teacher(id):
+    teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
 
+    if teacher:
+        try:
+            body = request.get_json()
+            name = body.get('name', None)
+            age = body.get('age', None)
+            temperament = body.get('temperament', None)
+            moves = body.get('moves', None)
+            # update values
+            teacher.name = name
+            teacher.age = age
+            teacher.temperament = temperament
+            teacher.moves = moves
+            db.session.commit()
+            teacher_id = teacher.id
+            flash('Teacher ' + name + ' was just updated!')
+            return jsonify({
+                "success": True,
+                "created": teacher.id
+            })
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred. Teacher' + name + ' could not be listed.')
+            print(e)
+            abort(422)
+        finally:
+            db.session.close()
+    else:
+        abort(404)
+
+@app.route('/teachers/<int:id>', methods=['DELETE'])
+#@requires_auth('delete:drinks')
+def delete_teacher(id):
+    teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
+
+    if teacher:
+        try:
+            teacher_id = teacher.id
+            teacher.delete()
+            return jsonify({
+                "success": True,
+                "delete": teacher_id
+            })
+        except Exception as e:
+            print(e)
+            abort(422)
+    else:
+        abort(404)
+        
+        
 @app.route('/courses', methods=['GET'])
 def get_courses():
     try:
@@ -135,7 +252,6 @@ def get_courses():
             data.append({
                 "id": course.id,
                 "name": course.name,
-                "course_date": course.course_date,
                 "course_level": course.course_level
             })
         print(data)

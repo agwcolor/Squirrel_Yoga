@@ -62,7 +62,8 @@ class Teacher(db.Model):
     age = Column(Integer)
     temperament = Column(String)
     moves = Column(ARRAY(String))
-    courses = db.relationship('Course', backref='Teacher', lazy=True)
+    events = db.relationship("Event", backref="Teacher")
+
 
     def insert(self):
         db.session.add(self)
@@ -93,9 +94,8 @@ class Course(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    course_date = Column(DateTime)
     course_level = Column(Integer)
-    teacher_id = Column(Integer, db.ForeignKey('Teacher.id'))
+    events = db.relationship("Event", backref="Course")
 
     def format(self):
         return {
@@ -106,3 +106,23 @@ class Course(db.Model):
     def __repr__(self):
         return f'<Course ID: {self.id}, title: {self.name}, course_date: \
       {self.course_date}, course_level: {self.course_level}>'
+
+
+class Event(db.Model):
+    __tablename__ = 'Event'
+
+    id = Column(Integer, primary_key=True)
+    tree = Column(String)
+    course_date = Column(DateTime)
+    teacher_id = Column(Integer, db.ForeignKey('Teacher.id'), nullable=False)
+    course_id = Column(Integer, db.ForeignKey('Course.id'), nullable=False)
+
+    def format(self):
+        return {
+            'id': self.id,
+            'tree': self.tree,
+            'course_date': self.course_date}
+
+    def __repr__(self):
+        return f'<Course ID: {self.id}, tree: {self.tree}, course_date: \
+      {self.course_date}>'
