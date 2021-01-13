@@ -245,14 +245,18 @@ def delete_teacher(id):
     if teacher:
         try:
             teacher_id = teacher.id
-            teacher.delete()
+            db.session.delete(teacher)
+            db.session.commit()
             return jsonify({
                 "success": True,
                 "delete": teacher_id
             })
         except Exception as e:
+            db.session.rollback()
             print(e)
             abort(422)
+        finally:
+            db.session.close()
     else:
         abort(404)
         
@@ -276,6 +280,103 @@ def get_courses():
         })
     except Exception:
         abort(422)
+
+'''
+Endpoint : POST a new yoga course,
+Requires: Course name text, level number.
+TEST:
+
+curl http://127.0.0.1:5000/courses/add
+-X POST
+-H "Content-Type: application/json"
+-d '{"name":"Dangle","course_level":5}'
+
+'''
+
+
+@app.route('/courses/add',
+           methods=['POST'])  # plural collection endpoint
+def create_course():
+    try:
+        body = request.get_json()
+        new_course = body.get('name', None)
+        new_level = body.get('course_level', None)
+        course = (
+            Course(
+                name=new_course,
+                course_level=new_level,
+                )
+            )
+        db.session.add(course)  # course.insert()
+        db.session.commit()
+        course_id = course.id
+        flash('Course ' + new_course + ' was just added!')
+        return jsonify({
+            "success": True,
+            "created": course_id
+        })
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred. Course could not be listed.')
+        print(e)
+        abort(422)
+    finally:
+        db.session.close()
+
+@app.route('/courses/<int:id>',
+           methods=['PATCH'])  # plural collection endpoint
+def edit_course(id):
+    course = Course.query.filter(Course.id == id).one_or_none()
+
+    if course:
+        try:
+            body = request.get_json()
+            name = body.get('name', None)
+            level = body.get('course_level', None)
+            # update values
+            course.name = name
+            course.course_level = level
+            db.session.commit()
+            course_id = course.id
+            flash('Course ' + name + ' was just updated!')
+            return jsonify({
+                "success": True,
+                "modidifed": course_id,
+                "name": course.name,
+                "level": course.course_level
+            })
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred. Course could not be listed.')
+            print(e)
+            abort(422)
+        finally:
+            db.session.close()
+    else:
+        abort(404)
+
+@app.route('/courses/<int:id>', methods=['DELETE'])
+#@requires_auth('delete:drinks')
+def delete_course(id):
+    course = Course.query.filter(Course.id == id).one_or_none()
+    print(course, " is the course")
+    if course:
+        try:
+            course_id = course.id
+            db.session.delete(course)
+            db.session.commit()
+            return jsonify({
+                "success": True,
+                "delete": course_id
+            })
+        except Exception as e:
+            db.session.rollback()
+            print(e)
+            abort(422)
+        finally:
+            db.session.close()
+    else:
+        abort(404)
 
 
 if __name__ == '__main__':
