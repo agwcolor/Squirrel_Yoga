@@ -82,64 +82,75 @@ def get_teachers():
 
 @app.route('/teachers/<int:id>', methods=['GET'])
 def show_teacher(id):
-    try:
-        teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
-        data = []
-        u_events = db.session.query(Event).filter(Event.teacher_id == teacher.id).filter(
-            Event.course_date > datetime.now()).all()
-        p_events = db.session.query(Event).filter(Event.teacher_id == teacher.id).filter(
-            Event.course_date < datetime.now()).all()
-        upcoming_events = []
-        for event in u_events:
-            course = db.session.query(Course).filter(Course.id==event.id).all()
-            if len(course) > 0:
-                upcoming_events.append({
-                    "course_id": course[0].id,
-                    "course_name": course[0].name,
-                    "course_date": event.course_date
-                })
+    
+    teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
+    if teacher:
+        try:
+            data = []
+            u_events = db.session.query(Event).filter(Event.teacher_id == id).filter(
+                Event.course_date > datetime.now()).all()
+            print("  my ", len(u_events), " upcoming events", u_events)
+            
+            p_events = db.session.query(Event).filter(Event.teacher_id == id).filter(
+                Event.course_date < datetime.now()).all()
+            print("  my ", len(p_events), " past events", p_events)
 
-        past_events = []
-        for event in p_events:
-            course = db.session.query(Course).filter(
-                event.id == Course.id).all()
-            if len(course) > 0:
-                past_events.append({
-                    "course_id": course[0].id,
-                    "course_name": course[0].name,
-                    "course_date": event.course_date
-                })
-        print("upcoming events, past events", upcoming_events, past_events)
-        data.append({
-            "id": teacher.id,
-            "age": teacher.age,
-            "name": teacher.name,
-            "temperament": teacher.temperament,
-            "moves": teacher.moves,
-            "upcoming_events": upcoming_events,
-            "past_events": past_events,
-            "past_events_count": len(db.session.query(Event).filter(Event.teacher_id == teacher.id).filter(Event.course_date < datetime.now()).all()),
-            "upcoming_Events_count": len(db.session.query(Event).filter(Event.teacher_id == teacher.id).filter(Event.course_date > datetime.now()).all())
-        })
-        print(data, "is the data")
-        return jsonify({
-           'success': True,
-           'upcoming_events': len(upcoming_events),
-           'past_events': len(past_events),
-           'data': data
-        })
-    except Exception as e:
-        exception_type, exception_object, exception_traceback = sys.exc_info()
+            upcoming_events = []
+            for event in u_events:
+                print(event, " is the event")
+                course = db.session.query(Course).filter(Course.id==event.course_id).all()
+                if len(course) > 0:
+                    upcoming_events.append({
+                        "course_id": course[0].id,
+                        "course_name": course[0].name,
+                        "course_date": event.course_date
+                    })
 
-        filename = exception_traceback.tb_frame.f_code.co_filename
+            past_events = []
+            for event in p_events:
+                print(event, " is the event")
 
-        line_number = exception_traceback.tb_lineno
+                course = db.session.query(Course).filter(
+                    event.course_id == Course.id).all()
+                if len(course) > 0:
+                    past_events.append({
+                        "course_id": course[0].id,
+                        "course_name": course[0].name,
+                        "course_date": event.course_date
+                    })
+            #print("upcoming events, past events", upcoming_events, past_events)
+            data.append({
+                "id": teacher.id,
+                "age": teacher.age,
+                "name": teacher.name,
+                "temperament": teacher.temperament,
+                "moves": teacher.moves,
+                "upcoming_events": upcoming_events,
+                "past_events": past_events,
+                "past_events_count": len(db.session.query(Event).filter(Event.teacher_id == teacher.id).filter(Event.course_date < datetime.now()).all()),
+                "upcoming_Events_count": len(db.session.query(Event).filter(Event.teacher_id == teacher.id).filter(Event.course_date > datetime.now()).all())
+            })
+            #print(data, "is the data")
+            return jsonify({
+            'success': True,
+            'upcoming_events': len(upcoming_events),
+            'past_events': len(past_events),
+            'data': data
+            })
+        except Exception as e:
+            exception_type, exception_object, exception_traceback = sys.exc_info()
 
-        print("Exception type: ", exception_type)
-        print("File name: ", filename)
-        print("Line number: ", line_number)
-        print(e, " is the error")
-        abort(422)
+            filename = exception_traceback.tb_frame.f_code.co_filename
+
+            line_number = exception_traceback.tb_lineno
+
+            print("Exception type: ", exception_type)
+            print("File name: ", filename)
+            print("Line number: ", line_number)
+            print(e, " is the error")
+            abort(422)
+    else:
+        abort(404)
 
     #return render_template('pages/show_teacher.html', teacher=data[0])
 
@@ -201,6 +212,7 @@ def edit_teacher(id):
             age = body.get('age', None)
             temperament = body.get('temperament', None)
             moves = body.get('moves', None)
+            print(type(moves), " is tyep moves")
             # update values
             teacher.name = name
             teacher.age = age
@@ -211,11 +223,13 @@ def edit_teacher(id):
             flash('Teacher ' + name + ' was just updated!')
             return jsonify({
                 "success": True,
-                "created": teacher.id
+                "modidifed": teacher_id,
+                "name": teacher.name,
+                "moves": teacher.moves
             })
         except Exception as e:
             db.session.rollback()
-            flash('An error occurred. Teacher' + name + ' could not be listed.')
+            flash('An error occurred. Teacher could not be listed.')
             print(e)
             abort(422)
         finally:

@@ -62,7 +62,7 @@ class Teacher(db.Model):
     age = Column(Integer)
     temperament = Column(String)
     moves = Column(ARRAY(String))
-    events = db.relationship("Event", backref="Teacher")
+    events = db.relationship("Event", cascade="all, delete", backref="Teacher", lazy=True)
 
 
     def insert(self):
@@ -95,17 +95,16 @@ class Course(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     course_level = Column(Integer)
-    events = db.relationship("Event", backref="Course")
+    events = db.relationship("Event", backref="Course", lazy=True)
 
     def format(self):
         return {
             'id': self.id,
             'title': self.name,
-            'release_date': self.release_date}
+            }
 
     def __repr__(self):
-        return f'<Course ID: {self.id}, title: {self.name}, course_date: \
-      {self.course_date}, course_level: {self.course_level}>'
+        return f'<Course ID: {self.id}, title: {self.name}, course_level: {self.course_level}>'
 
 
 class Event(db.Model):
