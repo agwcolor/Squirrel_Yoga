@@ -1,7 +1,7 @@
 import sys
 import os
 from flask import Flask, request, abort, flash, json, jsonify
-from models import setup_db, db, Person, Teacher, Course, Event
+from models import setup_db, db, Person, Teacher, Course, Tree, Event
 #import config
 from flask_cors import CORS
 import dateutil.parser
@@ -383,3 +383,25 @@ def delete_course(id):
 
 if __name__ == '__main__':
     app.run()
+
+
+@app.route('/trees', methods=['GET'])
+def get_trees():
+    try:
+        trees = Tree.query.order_by(Tree.id).all()
+        data = []
+        for tree in trees:
+            data.append({
+                "id": tree.id,
+                "name": tree.name,
+                "tree_type": tree.type,
+                "tree_location": tree.location
+            })
+        print(data)
+        return jsonify({
+            'success': True,
+            'count': len(trees),
+            'data': data
+        })
+    except Exception:
+        abort(422)

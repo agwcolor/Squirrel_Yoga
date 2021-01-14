@@ -115,7 +115,7 @@ class Event(db.Model):
     course_date = Column(DateTime)
     teacher_id = Column(Integer, db.ForeignKey('Teacher.id'), nullable=False)
     course_id = Column(Integer, db.ForeignKey('Course.id'), nullable=False)
-    # tree_id = Column(Integer, db.ForeignKey('Tree.id'), nullable=True)
+    tree_id = Column(Integer, db.ForeignKey('Tree.id'), nullable=True)
     # tree = Column(String)
 
     def format(self):
@@ -125,7 +125,8 @@ class Event(db.Model):
 
     def __repr__(self):
         return f'<Course ID: {self.id}, course_date:{self.course_date}>'
-'''
+
+
 class Tree(db.Model):
     __tablename__ = 'Tree'
 
@@ -145,4 +146,3 @@ class Tree(db.Model):
 
     def __repr__(self):
         return f'<Tree ID: {self.id}, name: {self.name}, type: {self.type}, location: {self.location}>'
-'''
