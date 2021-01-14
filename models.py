@@ -63,6 +63,7 @@ class Teacher(db.Model):
     age = Column(Integer)
     temperament = Column(String)
     moves = Column(ARRAY(String))
+    img_url = Column(String)
     events = db.relationship("Event", cascade="all, delete", backref="Teacher", lazy=True)
 
 
@@ -134,8 +135,9 @@ class Tree(db.Model):
     name = Column(String)
     type = Column(String)
     location = Column(String)
+    img_url = Column(String)
     events = db.relationship("Event", backref="Tree", lazy=True)
-
+    
     def format(self):
         return {
             'id': self.id,

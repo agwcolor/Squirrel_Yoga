@@ -70,7 +70,8 @@ def get_teachers():
                 "age": teacher.age,
                 "name": teacher.name,
                 "temperament": teacher.temperament,
-                "moves": teacher.moves
+                "moves": teacher.moves,
+                "img_url": teacher.img_url
             })
         print(data)
         return jsonify({
@@ -127,6 +128,7 @@ def show_teacher(id):
                 "name": teacher.name,
                 "temperament": teacher.temperament,
                 "moves": teacher.moves,
+                "img_url": teacher.img_url,
                 "upcoming_events": upcoming_events,
                 "past_events": past_events,
                 "past_events_count": len(db.session.query(Event).filter(Event.teacher_id == teacher.id).filter(Event.course_date < datetime.now()).all()),
@@ -179,6 +181,7 @@ def create_teacher():
         new_age = body.get('age', None)
         new_temperament = body.get('temperament', None)
         new_moves = body.get('moves', None)
+        new_img = body.get('image_url', None)
         teacher = (
             Teacher(
                 name=new_teacher,
@@ -214,12 +217,14 @@ def edit_teacher(id):
             age = body.get('age', None)
             temperament = body.get('temperament', None)
             moves = body.get('moves', None)
+            img = body.get('img_url', None)
             print(type(moves), " is tyep moves")
             # update values
             teacher.name = name
             teacher.age = age
             teacher.temperament = temperament
             teacher.moves = moves
+            teacher.img_url = img
             db.session.commit()
             teacher_id = teacher.id
             flash('Teacher ' + name + ' was just updated!')
@@ -395,7 +400,8 @@ def get_trees():
                 "id": tree.id,
                 "name": tree.name,
                 "tree_type": tree.type,
-                "tree_location": tree.location
+                "tree_location": tree.location,
+                "img_url": tree.img_url
             })
         print(data)
         return jsonify({
