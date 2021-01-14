@@ -16,15 +16,16 @@ db = SQLAlchemy()
 setup_db(app)
     binds a flask application and a SQLAlchemy service
 '''
-
+print("what's going on?")
 
 def setup_db(app, database_path=database_path):
+  
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    #db.create_all()
-    print("Did this do anything?")
+    db.create_all()
+    print(database_path, " is the database path")
 
 
 # ----------------------------------------------------------------------------#
@@ -111,17 +112,37 @@ class Event(db.Model):
     __tablename__ = 'Event'
 
     id = Column(Integer, primary_key=True)
-    tree = Column(String)
     course_date = Column(DateTime)
     teacher_id = Column(Integer, db.ForeignKey('Teacher.id'), nullable=False)
     course_id = Column(Integer, db.ForeignKey('Course.id'), nullable=False)
+    # tree_id = Column(Integer, db.ForeignKey('Tree.id'), nullable=True)
+    # tree = Column(String)
 
     def format(self):
         return {
             'id': self.id,
-            'tree': self.tree,
             'course_date': self.course_date}
 
     def __repr__(self):
-        return f'<Course ID: {self.id}, tree: {self.tree}, course_date: \
-      {self.course_date}>'
+        return f'<Course ID: {self.id}, course_date:{self.course_date}>'
+'''
+class Tree(db.Model):
+    __tablename__ = 'Tree'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    type = Column(String)
+    location = Column(String)
+    events = db.relationship("Event", backref="Tree", lazy=True)
+
+    def format(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'type': self.type,
+            'location': self.location
+            }
+
+    def __repr__(self):
+        return f'<Tree ID: {self.id}, name: {self.name}, type: {self.type}, location: {self.location}>'
+'''

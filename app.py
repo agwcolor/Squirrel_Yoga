@@ -1,7 +1,8 @@
-import sys, os
+import sys
+import os
 from flask import Flask, request, abort, flash, json, jsonify
-from models import setup_db, db, Teacher, Course, Event
-import config
+from models import setup_db, db, Person, Teacher, Course, Event
+#import config
 from flask_cors import CORS
 import dateutil.parser
 import babel
@@ -13,6 +14,7 @@ def create_app(test_config=None):
     app = Flask(__name__)
     app.secret_key = os.urandom(24)
     setup_db(app)
+    print("nothings working")
     CORS(app)
     return app
 
@@ -82,7 +84,7 @@ def get_teachers():
 
 @app.route('/teachers/<int:id>', methods=['GET'])
 def show_teacher(id):
-    
+
     teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
     if teacher:
         try:
@@ -90,7 +92,7 @@ def show_teacher(id):
             u_events = db.session.query(Event).filter(Event.teacher_id == id).filter(
                 Event.course_date > datetime.now()).all()
             print("  my ", len(u_events), " upcoming events", u_events)
-            
+
             p_events = db.session.query(Event).filter(Event.teacher_id == id).filter(
                 Event.course_date < datetime.now()).all()
             print("  my ", len(p_events), " past events", p_events)
@@ -259,8 +261,8 @@ def delete_teacher(id):
             db.session.close()
     else:
         abort(404)
-        
-        
+
+
 @app.route('/courses', methods=['GET'])
 def get_courses():
     try:
