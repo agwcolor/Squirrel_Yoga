@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Squirrel Yoga | ['GET'] Teachers{% endblock %}
+
+{% block main %}
+<h2>{{data}}</h2>
+  {% for teacher in teachers %}
+    <div class="card">
+      <div class="card-body">
+        <h3>{{ teacher.name }}</h3>
+        <p> Temperament - {{teacher.temperament}}</p>
+        <p> Age - {{ teacher.age }}</p>
+        <p> Moves - 
+        {% for move in teacher.moves %}
+            {{ move }}, 
+        {% endfor %}
+        </p>
+        </div>
+    </div>
+  {% endfor %}
+{% endblock %}

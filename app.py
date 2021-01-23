@@ -1,6 +1,6 @@
 import sys
 import os
-from flask import Flask, request, abort, flash, json, jsonify
+from flask import Flask, request, abort, flash, json, jsonify, render_template, redirect, url_for
 from models import setup_db, db, Person, Teacher, Course, Tree, Event
 #import config
 from flask_cors import CORS
@@ -44,17 +44,20 @@ app.jinja_env.filters['datetime'] = format_datetime'''
 
 
 @app.route('/')
+@app.route('/index')
 def get_greeting():
     excited = os.environ['EXCITED']
     greeting = "Squirrel Yoga"
     if excited == 'true':
         greeting += "!!!!!"
-    return greeting
+    #return greeting
+    return render_template('index.html', greeting=greeting, excited=excited)
 
 
 @app.route('/coolsquirrel')
 def be_cool():
-    return "Be cool, man, go gather more nuts!"
+    return render_template('index.html', greeting="Be cool man", excited="I'd rather be surfing")
+    #return "Be cool, man, go gather more nuts!"
 
 
 @app.route('/teachers', methods=['GET'])
@@ -74,11 +77,14 @@ def get_teachers():
                 "img_url": teacher.img_url
             })
         print(data)
+        '''
         return jsonify({
             'success': True,
             'count': len(teachers),
             'data': data
         })
+        '''
+        return render_template('teachers.html', teachers=data)
     except Exception:
         abort(422)
 
