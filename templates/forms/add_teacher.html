@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Add Teacher{% endblock %}
+{% block main %}
+<div class="container-fluid">
+  <form action="{{ url_for('/teachers/add') }}" method="post">
+    {{ form.csrf_token }}
+      <h3>New Teacher</h3>
+
+      <div class="row">
+        {{ form.name(class_ = 'form-control', placeholder='Name', autofocus = true) }}
+      </div>
+      <div class="row">
+        {{ form.age(class_ = 'form-control', placeholder='Age', autofocus = true) }}
+      </div>
+      <div class="row">
+        {{ form.temperament(class_ = 'form-control', placeholder='Name', autofocus = true) }}
+      </div>
+      <div class="row">
+        {{ form.moves(class_ = 'form-control', placeholder='Moves, separated by commas', autofocus = true) }}
+      </div>
+      <div class="row">
+        {{ form.image_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
+      </div>
+      <div class="col">
+        {{ form.submit(class="btn btn-primary", value="Create Teacher") }}
+      </div>
+
+    </div>
+  </form>
+</div>
+{% endblock %}
