@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Squirrel Yoga | ['GET'] Events{% endblock %}
+
+{% block main %}
+<h2>Squirrel Yoga Events</h2>
+  {% for event in events %}
+    <div class="card">
+      <div class="card-body">
+        <h3>{{ event.course_date.strftime('%A %B %d, %Y') }}</h3>
+        <!-- <img src="{{ event.teacher_image_link }}" alt="Teacher Image" /> -->
+            <h5>Teacher: <a href="/teachers/{{ event.teacher_id }}">{{ event.teacher_name }}</a></h5>
+            <h5>Course: <a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h5>
+            
+            <h5>Course Location (Tree): <a href="/trees/{{ event.tree_id }}">{{ event.tree_name }}</a></h5>
+
+        </div>
+    </div>
+  {% endfor %}
+{% endblock %}

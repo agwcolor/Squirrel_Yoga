@@ -280,17 +280,32 @@ def get_courses():
         courses = Course.query.order_by(Course.id).all()
         data = []
         for course in courses:
+            event_courses = db.session.query(Event).filter(Event.course_id == course.id).all()
+            course_teachers = []
+            for e in event_courses:
+                print(e.teacher_id, "is the teacher id")
+            #print(event_courses, "are the courses")
+                teacher = db.session.query(Teacher).filter(Teacher.id == e.teacher_id).all()[0]
+                print(teacher.name, "whaddaya")
+                course_teachers.append(teacher.name)
+
             data.append({
                 "id": course.id,
                 "name": course.name,
+                "course_teachers": course_teachers,
                 "course_level": course.course_level
+                
             })
-        print(data)
+        print(data, " is the data")
+        '''
         return jsonify({
             'success': True,
             'count': len(courses),
+            
             'data': data
         })
+        '''
+        return render_template('courses.html', courses=data)
     except Exception:
         abort(422)
 
@@ -417,3 +432,28 @@ def get_trees():
         })
     except Exception:
         abort(422)
+
+@app.route('/events')
+def get_events():
+    events = db.session.query(Event).all()
+    data = []
+    for event in events:
+        teacher_name = db.session.query(Teacher).filter(
+            event.teacher_id == Teacher.id).all()[0].name
+        course_name = db.session.query(Course).filter(
+            event.course_id == Course.id).all()[0].name
+        tree_name = db.session.query(Tree).filter(
+            event.tree_id == Tree.id).all()[0].name
+        '''teacher_image_link = db.session.query(Teacher).filter(
+            event.teacher_id == Teacher.id).all()[0].image_link'''
+        data.append({
+            "course_id": event.course_id,
+            "teacher_id": event.teacher_id,
+            "course_date": event.course_date,
+            "teacher_name": teacher_name,
+            "tree_name": tree_name,
+            "course_name": course_name,
+            #"teacher_image_link": teacher_image_link
+        })
+
+    return render_template('events.html', events=data)

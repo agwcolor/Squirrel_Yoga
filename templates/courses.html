@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Squirrel Yoga | ['GET'] Courses{% endblock %}
+
+{% block main %}
+<h2>Squirrel Yoga Courses </h2>
+  {% for course in courses %}
+    <div class="card">
+      <div class="card-body">
+        <h3>{{ course.name }}</h3>
+        <p> Level - {{ course.course_level}}</p>
+        <p> Teachers - 
+        {% for teacher in course.course_teachers %}
+            {{ teacher }}, 
+        {% endfor %}
+        </p>
+        </div>
+    </div>
+  {% endfor %}
+{% endblock %}
