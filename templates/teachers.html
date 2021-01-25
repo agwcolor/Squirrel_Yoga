@@ -6,7 +6,9 @@
   {% for teacher in teachers %}
     <div class="card">
       <div class="card-body">
+        <a href="/teachers/{{ teacher.id }}">
         <h3>{{ teacher.name }}</h3>
+      </a>
         <img src="{{ teacher.img_url }}" alt="Teacher Image" />
         <p> Temperament - {{teacher.temperament}}</p>
         <p> Age - {{ teacher.age }}</p>

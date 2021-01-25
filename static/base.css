@@ -1,0 +1,10 @@
+.events .tile-event {
+    height: 350px;
+  }
+.tile {
+    text-align: center;
+    padding: 15px 25px;
+    border: solid 1px #ebebeb;
+    height: 325px;
+    margin-bottom: 15px;
+    }

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Squirrel Yoga | ['GET'] Teacher Profile{% endblock %}
+
+{% block main %}
+<h2>Squirrel Yoga Teacher Profile</h2>
+    <div class="card">
+      <div class="card-body">
+        <h3>{{ teacher.name }}</h3>
+        <img src="{{ teacher.img_url }}" alt="Teacher Image" />
+        <p> Temperament - {{teacher.temperament}}</p>
+        <p> Age - {{ teacher.age }}</p>
+        <p> Moves - 
+        {% for move in teacher.moves %}
+            {{ move }}, 
+        {% endfor %}
+        </p>
+        <p>
+			<form action="{{url_for('retrieve_teacher_info', id=teacher.id) }}" method="GET">
+				<input type="submit" value="Edit" class="btn btn-primary"></form>
+		   </p>
+        </div>
+    </div>
+
+
+  <section>
+	<h2 class="monospace">{{ teacher.upcoming_events_count }} Upcoming {% if teacher.upcoming_events_count == 1 %}Event{% else %}Events{% endif %}</h2>
+	<div class="row">
+		{%for event in teacher.upcoming_events %}
+		<div class="col-sm-4">
+			<div class="tile tile-event">
+				<img src="{{ event.tree_img_url }}" alt="Event Location Image" />
+				<h5><a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h5>
+
+                <h6>{{ event.course_date.strftime('%A %B %d, %Y') }}</h6>
+                <h6>Tree: {{ event.tree_type }} | Location: {{ event.tree_location }} </h6>
+
+			</div>
+		</div>
+		{% endfor %}
+
+	</div>
+</section>
+<section>
+	<h2 class="monospace">{{ teacher.past_events_count }} Past {% if teacher.past_events_count == 1 %}Event{% else %}Events{% endif %}</h2>
+	<div class="row">
+		{%for event in teacher.past_events %}
+		<div class="col-sm-4">
+			<div class="tile tile-event">
+				<img src="{{ event.tree_img_url }}" alt="Event Location Image" />
+				<h5><a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h5>
+                <h6>{{ event.course_date.strftime('%A %B %d, %Y') }}</h6>
+                <h6>Tree: {{ event.tree_type }} | Location: {{ event.tree_location }} </h6>
+
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</section>
+
+
+
+
+{% endblock %}

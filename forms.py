@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, SelectField, SelectMultipleField, DateTimeField, SubmitField
+from wtforms import StringField, BooleanField, IntegerField, SelectField, SelectMultipleField, DateTimeField, SubmitField
 from wtforms.validators import DataRequired, AnyOf, URL
 
 
@@ -23,7 +23,7 @@ tree_location = [
     ('scary cave', 'scary cave')
 ]
 
-move_choices = [
+moves_choices = [
             ('slowly', 'slowly'),
             ('dangle', 'dangle'),
             ('hang', 'hang'),
@@ -33,7 +33,7 @@ move_choices = [
             ('sleepy', 'sleepy'),
         ]
 
-class EventForm(FlaskForm):
+'''class EventForm(FlaskForm):
     teacher_id = StringField(
         'teacher_id'
     )
@@ -46,46 +46,37 @@ class EventForm(FlaskForm):
     course_date = DateTimeField(
         'course_date',
         validators=[DataRequired()],
-        default= datetime.today()
+        default=datetime.today()
     )
 
 class CourseForm(FlaskForm):
     name = StringField(
         'name', validators=[DataRequired()]
     )
-    tree = SelectField(
-        'tree', validators=[DataRequired()],
-        choices=tree_type
-    )
-    location = StringField(
-        'location', validators=[DataRequired()],
-        choices=tree_location
+    course_level = IntegerField(
+        'course_level', validators=[DataRequired()]
     )
     image_link = StringField(
-        'image_link'
+        'img_url', validators=[URL()]
     )
-    website = StringField(
-        'website'
-    )
-
+'''
 
 class TeacherForm(FlaskForm):
+    submit = SubmitField('Submit')
+
     name = StringField(
         'name', validators=[DataRequired()]
     )
-    age = StringField(
+    age = IntegerField(
         'age', validators=[DataRequired()]
     )
-    temperament = SelectField(
+    temperament = StringField(
         'temperament', validators=[DataRequired()],
     )
-    moves = StringField(
+    moves = SelectMultipleField(
         'moves', validators=[DataRequired()],
         choices=moves_choices
     )
-    image_link = StringField(
-        'image_link'
+    image_url = StringField(
+        'img_url', validators=[URL()]
     )
-    '''website = StringField(
-        'website'
-    )'''

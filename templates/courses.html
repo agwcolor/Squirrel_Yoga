@@ -6,13 +6,16 @@
   {% for course in courses %}
     <div class="card">
       <div class="card-body">
-        <h3>{{ course.name }}</h3>
-        <p> Level - {{ course.course_level}}</p>
-        <p> Teachers - 
+        <h3>{{ course.name }} </h3>
+        <h5>Teachers</h5>
         {% for teacher in course.course_teachers %}
-            {{ teacher }}, 
+        <a href="/teachers/{{ teacher.teacher_id }}">
+            <h6>{{ teacher.teacher_name }}</h6>
+          </a>
         {% endfor %}
-        </p>
+        <p>Experience Level - {{ course.course_level}}</p>
+
+        
         </div>
     </div>
   {% endfor %}

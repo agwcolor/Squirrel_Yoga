@@ -6,6 +6,8 @@ from models import setup_db, db, Person, Teacher, Course, Tree, Event
 from flask_cors import CORS
 import dateutil.parser
 import babel
+from flask_wtf import FlaskForm
+from forms import *
 from datetime import datetime
 
 
@@ -103,16 +105,22 @@ def show_teacher(id):
             p_events = db.session.query(Event).filter(Event.teacher_id == id).filter(
                 Event.course_date < datetime.now()).all()
             print("  my ", len(p_events), " past events", p_events)
+            
 
             upcoming_events = []
             for event in u_events:
                 print(event, " is the event")
                 course = db.session.query(Course).filter(Course.id==event.course_id).all()
+                tree = db.session.query(Tree).filter(Tree.id==event.tree_id).all()
                 if len(course) > 0:
                     upcoming_events.append({
                         "course_id": course[0].id,
                         "course_name": course[0].name,
-                        "course_date": event.course_date
+                        "course_date": event.course_date,
+                        "tree_name": tree[0].name,
+                        "tree_type": tree[0].type,
+                        "tree_location": tree[0].location,
+                        "tree_img_url": tree[0].img_url
                     })
 
             past_events = []
@@ -121,11 +129,17 @@ def show_teacher(id):
 
                 course = db.session.query(Course).filter(
                     event.course_id == Course.id).all()
+                tree = db.session.query(Tree).filter(Tree.id==event.tree_id).all()
+
                 if len(course) > 0:
                     past_events.append({
                         "course_id": course[0].id,
                         "course_name": course[0].name,
-                        "course_date": event.course_date
+                        "course_date": event.course_date,
+                        "tree_name": tree[0].name,
+                        "tree_type": tree[0].type,
+                        "tree_location": tree[0].location,
+                        "tree_img_url": tree[0].img_url
                     })
             #print("upcoming events, past events", upcoming_events, past_events)
             data.append({
@@ -138,15 +152,16 @@ def show_teacher(id):
                 "upcoming_events": upcoming_events,
                 "past_events": past_events,
                 "past_events_count": len(db.session.query(Event).filter(Event.teacher_id == teacher.id).filter(Event.course_date < datetime.now()).all()),
-                "upcoming_Events_count": len(db.session.query(Event).filter(Event.teacher_id == teacher.id).filter(Event.course_date > datetime.now()).all())
+                "upcoming_events_count": len(db.session.query(Event).filter(Event.teacher_id == teacher.id).filter(Event.course_date > datetime.now()).all())
             })
-            #print(data, "is the data")
-            return jsonify({
-            'success': True,
-            'upcoming_events': len(upcoming_events),
-            'past_events': len(past_events),
-            'data': data
-            })
+
+
+            print(data, "is the data")
+            print(type(data[0]))
+            return render_template('show_teacher.html', teacher=data[0])
+
+            #print(data[0].temperament, " is the temperament")
+
         except Exception as e:
             exception_type, exception_object, exception_traceback = sys.exc_info()
 
@@ -162,7 +177,6 @@ def show_teacher(id):
     else:
         abort(404)
 
-    #return render_template('pages/show_teacher.html', teacher=data[0])
 
 '''
 Endpoint : POST a new teacher,
@@ -211,7 +225,13 @@ def create_teacher():
     finally:
         db.session.close()
 
-@app.route('/teachers/<int:id>',
+@app.route('/teachers/<int:id>/edit', methods=['GET'])
+def retrieve_teacher_info(id):
+    teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
+    form = TeacherForm(obj=teacher)  # Populate form with artist
+    return render_template('forms/edit_teacher.html', form=form, teacher=teacher)
+
+@app.route('/teachers/<int:id>/edit',
            methods=['PATCH'])  # plural collection endpoint
 def edit_teacher(id):
     teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
@@ -287,7 +307,10 @@ def get_courses():
             #print(event_courses, "are the courses")
                 teacher = db.session.query(Teacher).filter(Teacher.id == e.teacher_id).all()[0]
                 print(teacher.name, "whaddaya")
-                course_teachers.append(teacher.name)
+                course_teachers.append({
+                        "teacher_name": teacher.name,
+                        "teacher_id": teacher.id
+                })
 
             data.append({
                 "id": course.id,
