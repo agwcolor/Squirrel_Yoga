@@ -33,7 +33,7 @@ moves_choices = [
             ('sleepy', 'sleepy'),
         ]
 
-'''class EventForm(FlaskForm):
+class EventForm(FlaskForm):
     teacher_id = StringField(
         'teacher_id'
     )
@@ -50,16 +50,17 @@ moves_choices = [
     )
 
 class CourseForm(FlaskForm):
+    submit = SubmitField('Submit')
+
     name = StringField(
         'name', validators=[DataRequired()]
     )
     course_level = IntegerField(
         'course_level', validators=[DataRequired()]
     )
-    image_link = StringField(
+    img_url = StringField(
         'img_url', validators=[URL()]
     )
-'''
 
 class TeacherForm(FlaskForm):
     submit = SubmitField('Submit')
@@ -77,6 +78,6 @@ class TeacherForm(FlaskForm):
         'moves', validators=[DataRequired()],
         choices=moves_choices
     )
-    image_url = StringField(
+    img_url = StringField(
         'img_url', validators=[URL()]
     )

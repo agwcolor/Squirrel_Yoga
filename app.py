@@ -47,6 +47,8 @@ app.jinja_env.filters['datetime'] = format_datetime'''
 
 @app.route('/')
 @app.route('/index')
+@app.route('/index.html')
+
 def get_greeting():
     excited = os.environ['EXCITED']
     greeting = "Squirrel Yoga"
@@ -228,38 +230,33 @@ def create_teacher():
 @app.route('/teachers/<int:id>/edit', methods=['GET'])
 def retrieve_teacher_info(id):
     teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
-    form = TeacherForm(obj=teacher)  # Populate form with artist
+    form = TeacherForm(obj=teacher)  # Populate form with teacher
     return render_template('forms/edit_teacher.html', form=form, teacher=teacher)
 
+
 @app.route('/teachers/<int:id>/edit',
-           methods=['PATCH'])  # plural collection endpoint
+           methods=['POST'])  # plural collection endpoint
 def edit_teacher(id):
     teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
-
+    form = TeacherForm(request.form)
     if teacher:
         try:
-            body = request.get_json()
-            name = body.get('name', None)
-            age = body.get('age', None)
-            temperament = body.get('temperament', None)
-            moves = body.get('moves', None)
-            img = body.get('img_url', None)
-            print(type(moves), " is tyep moves")
-            # update values
-            teacher.name = name
-            teacher.age = age
-            teacher.temperament = temperament
-            teacher.moves = moves
-            teacher.img_url = img
+            teacher.name = form.name.data
+            teacher.age = form.age.data
+            teacher.temperament = form.temperament.data
+            teacher.moves = form.moves.data
+            teacher.img_url = form.img_url.data
             db.session.commit()
             teacher_id = teacher.id
-            flash('Teacher ' + name + ' was just updated!')
-            return jsonify({
+            
+            flash('Teacher ' + teacher.name + ' was just updated!')
+            '''return jsonify({
                 "success": True,
                 "modidifed": teacher_id,
                 "name": teacher.name,
                 "moves": teacher.moves
-            })
+            })'''
+            return redirect(url_for('show_teacher', id=teacher_id))
         except Exception as e:
             db.session.rollback()
             flash('An error occurred. Teacher could not be listed.')
@@ -332,6 +329,92 @@ def get_courses():
     except Exception:
         abort(422)
 
+
+@app.route('/courses/<int:id>', methods=['GET'])
+def show_course(id):
+
+    course = Course.query.filter(Course.id == id).one_or_none()
+    if course:
+        try:
+            data = []
+            u_events = db.session.query(Event).filter(Event.course_id == id).filter(
+                Event.course_date > datetime.now()).all()
+            print("  my ", len(u_events), " upcoming events", u_events)
+
+            p_events = db.session.query(Event).filter(Event.course_id == id).filter(
+                Event.course_date < datetime.now()).all()
+            print("  my ", len(p_events), " past events", p_events)
+            
+
+            upcoming_events = []
+            for event in u_events:
+                print(event, " is the event")
+                teacher = db.session.query(Teacher).filter(Teacher.id==event.teacher_id).all()
+                tree = db.session.query(Tree).filter(Tree.id==event.tree_id).all()
+                if len(teacher) > 0:
+                    upcoming_events.append({
+                        "teacher_id": teacher[0].id,
+                        "teacher_name": teacher[0].name,
+                        "course_date": event.course_date,
+                        "tree_name": tree[0].name,
+                        "tree_type": tree[0].type,
+                        "tree_location": tree[0].location,
+                        "tree_img_url": tree[0].img_url
+                    })
+
+            past_events = []
+            for event in p_events:
+                print(event, " is the event")
+                teacher = db.session.query(Teacher).filter(Teacher.id==event.teacher_id).all()
+                tree = db.session.query(Tree).filter(Tree.id==event.tree_id).all()
+                if len(teacher) > 0:
+                    past_events.append({
+                        "teacher_id": teacher[0].id,
+                        "teacher_name": teacher[0].name,
+                        "course_date": event.course_date,
+                        "tree_name": tree[0].name,
+                        "tree_type": tree[0].type,
+                        "tree_location": tree[0].location,
+                        "tree_img_url": tree[0].img_url
+                    })
+            #print("upcoming events, past events", upcoming_events, past_events)
+            data.append({
+                "id": course.id,
+                "name": course.name,
+                "course_level": course.course_level,
+                "upcoming_events": upcoming_events,
+                "past_events": past_events,
+                "past_events_count": len(db.session.query(Event).filter(Event.course_id == course.id).filter(Event.course_date < datetime.now()).all()),
+                "upcoming_events_count": len(db.session.query(Event).filter(Event.course_id == course.id).filter(Event.course_date > datetime.now()).all())
+            })
+
+
+            print(data, "is the data")
+            print(type(data[0]))
+            return render_template('show_course.html', course=data[0])
+
+            #print(data[0].temperament, " is the temperament")
+
+        except Exception as e:
+            exception_type, exception_object, exception_traceback = sys.exc_info()
+
+            filename = exception_traceback.tb_frame.f_code.co_filename
+
+            line_number = exception_traceback.tb_lineno
+
+            print("Exception type: ", exception_type)
+            print("File name: ", filename)
+            print("Line number: ", line_number)
+            print(e, " is the error")
+            abort(422)
+    else:
+        abort(404)
+
+
+
+
+
+
 '''
 Endpoint : POST a new yoga course,
 Requires: Course name text, level number.
@@ -374,28 +457,35 @@ def create_course():
     finally:
         db.session.close()
 
-@app.route('/courses/<int:id>',
-           methods=['PATCH'])  # plural collection endpoint
+@app.route('/courses/<int:id>/edit',
+           methods=['GET'])  # plural collection endpoint
+def retrieve_course_info(id):
+    course = Course.query.filter(Course.id == id).one_or_none()
+    form = CourseForm(obj=course)  # Populate form with course
+    return render_template('forms/edit_course.html', form=form, course=course)
+
+
+@app.route('/courses/<int:id>/edit',
+           methods=['POST'])  # plural collection endpoint
 def edit_course(id):
     course = Course.query.filter(Course.id == id).one_or_none()
+    form = CourseForm(obj=course)  # Populate form with course
 
     if course:
         try:
-            body = request.get_json()
-            name = body.get('name', None)
-            level = body.get('course_level', None)
-            # update values
-            course.name = name
-            course.course_level = level
+            course.name = form.name.data
+            course.course_level = form.course_level.data
             db.session.commit()
             course_id = course.id
-            flash('Course ' + name + ' was just updated!')
-            return jsonify({
+            flash('Course ' + course.name + ' was just updated!')
+            '''return jsonify({
                 "success": True,
                 "modidifed": course_id,
                 "name": course.name,
                 "level": course.course_level
-            })
+            })'''
+            return redirect(url_for('show_course', id=course_id))
+
         except Exception as e:
             db.session.rollback()
             flash('An error occurred. Course could not be listed.')

@@ -6,7 +6,10 @@
   {% for course in courses %}
     <div class="card">
       <div class="card-body">
+        <a href="/courses/{{ course.id }}">
+
         <h3>{{ course.name }} </h3>
+        </a>
         <h5>Teachers</h5>
         {% for teacher in course.course_teachers %}
         <a href="/teachers/{{ teacher.teacher_id }}">

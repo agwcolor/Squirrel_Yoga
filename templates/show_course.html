@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Squirrel Yoga | ['GET'] Course Details{% endblock %}
+
+{% block main %}
+<h2>Squirrel Yoga Course Details</h2>
+    <div class="card">
+      <div class="card-body">
+        <h3>{{ course.name }}</h3>
+        <p> Course Level - {{course.course_level}}</p>
+
+        </p>
+        <p>
+			<form action="{{url_for('retrieve_course_info', id=course.id) }}" method="GET">
+				<input type="submit" value="Edit" class="btn btn-primary"></form>
+		   </p>
+        </div>
+    </div>
+
+
+  <section>
+	<h2 class="monospace">{{ course.upcoming_events_count }} Upcoming {% if course.upcoming_events_count == 1 %}Event{% else %}Events{% endif %}</h2>
+	<div class="row">
+		{%for event in course.upcoming_events %}
+		<div class="col-sm-4">
+			<div class="tile tile-event">
+				<img src="{{ event.tree_img_url }}" alt="Event Location Image" />
+				<h5><a href="/teachers/{{ event.teacher_id }}">{{ event.teacher_name }}</a></h5>
+
+                <h6>{{ event.course_date.strftime('%A %B %d, %Y') }}</h6>
+                <h6>Tree: {{ event.tree_type }} | Location: {{ event.tree_location }} </h6>
+
+			</div>
+		</div>
+		{% endfor %}
+
+	</div>
+</section>
+<section>
+	<h2 class="monospace">{{ course.past_events_count }} Past {% if course.past_events_count == 1 %}Event{% else %}Events{% endif %}</h2>
+	<div class="row">
+		{%for event in course.past_events %}
+		<div class="col-sm-4">
+			<div class="tile tile-event">
+				<img src="{{ event.tree_img_url }}" alt="Event Location Image" />
+				<h5><a href="/teachers/{{ event.teacher_id }}">{{ event.teacher_name }}</a></h5>
+                <h6>{{ event.course_date.strftime('%A %B %d, %Y') }}</h6>
+                <h6>Tree: {{ event.tree_type }} | Location: {{ event.tree_location }} </h6>
+
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</section>
+
+
+
+
+{% endblock %}

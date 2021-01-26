@@ -2,8 +2,9 @@
 {% block title %}Edit Teacher{% endblock %}
 {% block main %}
 <div class="container-fluid">
-  <form action="{{ url_for('edit_teacher', id=teacher.id) }}" method="post">
-    {{ form.csrf_token }}
+  <form action="/teachers/{{teacher.id}}/edit" method="POST">
+    <!-- url_for('edit_teacher', id=teacher.id)-->
+    <!--{{ form.csrf_token }} -->
       <h3>Edit Teacher</h3>
 
       <div class="form-group">
@@ -23,16 +24,17 @@
       </div>
       <div class="form-group">
         <label for="moves">Moves</label>
+        <small> - Ctrl+Click to select multiple</small>
 
         {{ form.moves(class_ = 'form-control', placeholder='Moves, separated by commas', autofocus = true) }}
       </div>
       <div class="form-group">
-        <label for="img-url">Image URL</label>
-
-        {{ form.image_url(class_ = 'form-control', placeholder='http://', autofocus = true) }}
+        <label for="img_url">Image URL</label>
+        <small> - [Example - https://res.cloudinary.com/potatobug/image/upload/c_thumb,w_180/v1611638032/squirrel_placeholder_kcifcf.jpg]</small>
+        {{ form.img_url(class_ = 'form-control', placeholder='https://') }}
       </div>
       <div class="form-group">
-        {{ form.submit(class="btn btn-primary", value="Edit Teacher") }}
+        {{ form.submit(class="btn btn-primary", value="Update Now") }}
 
       </div>
 

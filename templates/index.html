@@ -3,8 +3,36 @@
 {% block main %}
     <div class="card">
       <div class="card-body">
-        <h3>{{ greeting }}</h3>
-        <p> {{ excited }} </p>
+        <!-- <h3>{{ greeting }}</h3>
+        <p> {{ excited }} </p> -->
+
+        <div class="row">
+          <div class="col-sm-6">
+            <h1>Squirrel Yoga !!! </h1>
+            <p class="lead">Find a tree and move that's right for you.</p>
+            <h3>
+              <a href="/teachers"><button class="btn btn-primary">Our Teachers</button></a>
+              <a href="/courses"><button class="btn btn-primary">Our Courses</button></a>
+
+            </h3>
+            <h3>
+              <a href="/courses/create"><button class="btn btn-info">Add a course</button></a>
+              <a href="/teachers/create"><button class="btn btn-info">Add a Teacher</button></a>
+
+            </h3>
+            <h3>
+              <a href="/events/create"><button class="btn btn-info">Create an event</button></a>
+
+            </h3>
+            
+          </div>
+          
+        </div>
+
     </div>
+    <div class="card-body">
+      <div class="col-sm-6 hidden-sm hidden-xs">
+        <img id="front-splash" src="{{ url_for('static',filename='2squirrel_sm.jpg') }}" alt="2 Squirrels" />
+      </div>
     </div>
 {% endblock %}
