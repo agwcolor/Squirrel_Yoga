@@ -2,6 +2,8 @@ from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, IntegerField, SelectField, SelectMultipleField, DateTimeField, SubmitField
 from wtforms.validators import DataRequired, AnyOf, URL
+from wtforms_sqlalchemy.fields import QuerySelectField #whereshouldthisgo
+
 
 
 tree_type = [
@@ -33,12 +35,17 @@ moves_choices = [
             ('sleepy', 'sleepy'),
         ]
 
+'''class ChoiceForm(FlaskForm):
+    opts = QuerySelectField(query_factory=choice_query, allow_blank=True)'''
+    
 class EventForm(FlaskForm):
+    submit = SubmitField('Submit')
+
     teacher_id = StringField(
         'teacher_id'
     )
-    event_id = StringField(
-        'event_id'
+    course_id = StringField(
+        'course_id'
     )
     tree_id = StringField(
         'tree_id'

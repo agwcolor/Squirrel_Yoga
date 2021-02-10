@@ -23,6 +23,8 @@ def create_app(test_config=None):
 
 app = create_app()
 
+def choice_query():
+    return Teacher.query
 
 # ----------------------------------------------------------------------------#
 # Filters.
@@ -52,10 +54,10 @@ def get_home_page():
     return render_template('index.html')
 
 
-@app.route('/coolsquirrel')
+'''@app.route('/coolsquirrel')
 def be_cool():
     return render_template('index.html', greeting="Be cool man", excited="I'd rather be surfing")
-    #return "Be cool, man, go gather more nuts!"
+    #return "Be cool, man, go gather more nuts!" '''
 
 
 @app.route('/teachers', methods=['GET'])
@@ -574,3 +576,45 @@ def get_events():
         })
 
     return render_template('events.html', events=data)
+
+
+@app.route('/events/create', methods=['GET'])
+def retrieve_new_event_form():
+    form = EventForm()
+    print("I am here")
+    return render_template('forms/add_event.html', form=form)
+
+@app.route('/events/add',
+           methods=['POST'])  # plural collection endpoint
+def create_event():
+    form = EventForm(request.form)
+    
+    error = False
+    try:
+        event = Event(
+            teacher_id=form.teacher_id.data,
+            course_id=form.course_id.data,
+            tree_id=form.tree_id.data,
+            course_date=form.course_date.data)
+        db.session.add(event)  # teacher.insert()
+        db.session.commit()
+        event_id = event.id
+        flash('Event was just added!')
+        '''return jsonify({
+            "success": True,
+            "created": event_id
+        })'''
+    except Exception as e:
+        error = True
+        db.session.rollback()
+        flash('An error occurred. Event could not be listed.')
+        print(e)
+        abort(422)
+    finally:
+        db.session.close()
+    if error:
+        flash('Event could not be listed.')
+        return render_template('events.html')
+    else:
+        flash('Event was listed!')
+        return redirect(url_for('get_events'))
