@@ -48,14 +48,8 @@ app.jinja_env.filters['datetime'] = format_datetime'''
 @app.route('/')
 @app.route('/index')
 @app.route('/index.html')
-
-def get_greeting():
-    excited = os.environ['EXCITED']
-    greeting = "Squirrel Yoga"
-    if excited == 'true':
-        greeting += "!!!!!"
-    #return greeting
-    return render_template('index.html', greeting=greeting, excited=excited)
+def get_home_page():
+    return render_template('index.html')
 
 
 @app.route('/coolsquirrel')
@@ -188,44 +182,54 @@ TEST:
 curl http://127.0.0.1:5000/teachers/add
 -X POST
 -H "Content-Type: application/json"
--d '{"name":"Reuil1","age":5, "temperament":"frisky",
-    "moves":"my fav move"}'
+-d '{"name":"rocky","age":2, "temperament":"sly", "moves":["outhere","highbounce","horizontal fling"], "img_url":"https://res.cloudinary.com/potatobug/image/upload/c_scale,e_brightness:7,w_180/e_sharpen:100/v1611551627/squirrel_rounded_ey5qgk.jpg"}'
 
 '''
 
 
+@app.route('/teachers/add', methods=['GET'])
+def retrieve_new_teacher_form():
+    form = TeacherForm()
+    print("I am here")
+    return render_template('forms/add_teacher.html', form=form)
+
 @app.route('/teachers/add',
            methods=['POST'])  # plural collection endpoint
 def create_teacher():
+    form = TeacherForm(request.form)
+    
+    error = False
     try:
-        body = request.get_json()
-        new_teacher = body.get('name', None)
-        new_age = body.get('age', None)
-        new_temperament = body.get('temperament', None)
-        new_moves = body.get('moves', None)
-        new_img = body.get('image_url', None)
-        teacher = (
-            Teacher(
-                name=new_teacher,
-                age=new_age,
-                temperament=new_temperament,
-                moves=new_moves)
-            )
+        teacher = Teacher(
+            name=form.name.data,
+            age=form.age.data,
+            temperament=form.temperament.data,
+            moves=form.moves.data,
+            img_url=form.img_url.data)
         db.session.add(teacher)  # teacher.insert()
         db.session.commit()
         teacher_id = teacher.id
-        flash('Teacher ' + new_teacher + ' was just added!')
-        return jsonify({
+        flash('Teacher ' + teacher.name + ' was just added!')
+        '''return jsonify({
             "success": True,
-            "created": teacher.id
-        })
+            "created": teacher_id
+        })'''
     except Exception as e:
+        error = True
         db.session.rollback()
         flash('An error occurred. Teacher' + new_teacher + ' could not be listed.')
         print(e)
         abort(422)
     finally:
         db.session.close()
+    if error:
+        flash('Teacher ' +
+              request.form['name'] + ' could not be listed.')
+        return render_template('teachers.html')
+    else:
+        flash('Teacher ' + request.form['name'] + ' was listed!')
+        return redirect(url_for('show_teacher', id=teacher_id))
+
 
 @app.route('/teachers/<int:id>/edit', methods=['GET'])
 def retrieve_teacher_info(id):

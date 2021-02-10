@@ -2,24 +2,28 @@
 {% block title %}Add Teacher{% endblock %}
 {% block main %}
 <div class="container-fluid">
-  <form action="{{ url_for('/teachers/add') }}" method="post">
+  <form action="/teachers/add" method="POST">
     {{ form.csrf_token }}
       <h3>New Teacher</h3>
 
-      <div class="row">
+      <div class="form-group">
+        <label for="name">Name</label>
         {{ form.name(class_ = 'form-control', placeholder='Name', autofocus = true) }}
       </div>
-      <div class="row">
+      <div class="form-group">
+        <label for="age">Age</label>
         {{ form.age(class_ = 'form-control', placeholder='Age', autofocus = true) }}
       </div>
-      <div class="row">
-        {{ form.temperament(class_ = 'form-control', placeholder='Name', autofocus = true) }}
+      <div class="form-group">
+        <label for="temperament">Temperament</label>
+        {{ form.temperament(class_ = 'form-control', placeholder='Temperament', autofocus = true) }}
       </div>
-      <div class="row">
+      <div class="form-group">
+        <label for="moves">Moves</label>
         {{ form.moves(class_ = 'form-control', placeholder='Moves, separated by commas', autofocus = true) }}
       </div>
-      <div class="row">
-        {{ form.image_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
+      <div class="form-group">
+        <label for="img_url">Image URL</label>        {{ form.img_url(class_ = 'form-control', placeholder='http://', autofocus = true) }}
       </div>
       <div class="col">
         {{ form.submit(class="btn btn-primary", value="Create Teacher") }}
