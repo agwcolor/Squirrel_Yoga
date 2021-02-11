@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, IntegerField, SelectField, SelectMultipleField, DateTimeField, SubmitField
 from wtforms.validators import DataRequired, AnyOf, URL
 from wtforms_sqlalchemy.fields import QuerySelectField #whereshouldthisgo
-
+from models import Teacher, Course, Tree
 
 
 tree_type = [
@@ -37,8 +37,47 @@ moves_choices = [
 
 '''class ChoiceForm(FlaskForm):
     opts = QuerySelectField(query_factory=choice_query, allow_blank=True)'''
-    
+
+def teacher_query():
+    return Teacher.query
+
+def course_query():
+    return Course.query
+
+def tree_query():
+    return Tree.query
+
 class EventForm(FlaskForm):
+    submit = SubmitField('Submit')
+    teacher = QuerySelectField(
+        'teacher_id',
+        query_factory=teacher_query,
+        allow_blank=True,
+        blank_text=(u'Choose a teacher ...'),
+        get_label='name')
+
+    course = QuerySelectField(
+        'course_id',
+        query_factory=course_query,
+        allow_blank=True,
+        blank_text=(u'Choose a course ...'),
+        get_label='name')
+
+    tree = QuerySelectField(
+        'tree_id',
+        default="My tree",
+        query_factory=tree_query,
+        allow_blank=True,
+        blank_text=(u'Choose a tree location ...'),
+        get_label='name')
+
+    course_date = DateTimeField(
+        'course_date',
+        validators=[DataRequired()],
+        default=datetime.today()
+    )
+    '''
+    class EventForm(FlaskForm):
     submit = SubmitField('Submit')
 
     teacher_id = StringField(
@@ -54,7 +93,7 @@ class EventForm(FlaskForm):
         'course_date',
         validators=[DataRequired()],
         default=datetime.today()
-    )
+    )'''
 
 class CourseForm(FlaskForm):
     submit = SubmitField('Submit')

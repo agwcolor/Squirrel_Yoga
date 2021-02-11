@@ -23,8 +23,7 @@ def create_app(test_config=None):
 
 app = create_app()
 
-def choice_query():
-    return Teacher.query
+
 
 # ----------------------------------------------------------------------------#
 # Filters.
@@ -417,10 +416,6 @@ def show_course(id):
         abort(404)
 
 
-
-
-
-
 '''
 Endpoint : POST a new yoga course,
 Requires: Course name text, level number.
@@ -588,13 +583,24 @@ def retrieve_new_event_form():
            methods=['POST'])  # plural collection endpoint
 def create_event():
     form = EventForm(request.form)
+    teacher_name = form.teacher.data.name
+    course_name = form.course.data.name
+    tree_name = form.tree.data.name
+    #form.teacher.query = Teacher.query.filter(Teacher.id > 0)
+    #form.course.query = Course.query.filter(Course.id > 0)
+    #form.tree.query = Tree.query.filter(Tree.id > 0)
     
     error = False
     try:
+
+        teacher = Teacher.query.filter(Teacher.name == form.teacher.data.name).one_or_none()
+        course = Course.query.filter(Course.name == form.course.data.name).one_or_none()
+        tree = Tree.query.filter(Tree.name == form.tree.data.name).one_or_none()
+        print(form.course_date.data, " is the course date")
         event = Event(
-            teacher_id=form.teacher_id.data,
-            course_id=form.course_id.data,
-            tree_id=form.tree_id.data,
+            teacher_id=teacher.id,
+            course_id=course.id,
+            tree_id=tree.id,
             course_date=form.course_date.data)
         db.session.add(event)  # teacher.insert()
         db.session.commit()
@@ -602,6 +608,9 @@ def create_event():
         flash('Event was just added!')
         '''return jsonify({
             "success": True,
+            "teacher_id": teacher.id,
+            "course_id": course.id,
+            "tree_id": tree.id,
             "created": event_id
         })'''
     except Exception as e:
@@ -616,5 +625,65 @@ def create_event():
         flash('Event could not be listed.')
         return render_template('events.html')
     else:
-        flash('Event was listed!')
+        flash('Event ' + str(event_id) +
+              '-->  ' + course_name +
+              '  with teacher ' + teacher_name +
+              ' at ' + tree_name + ' tree was listed!')
         return redirect(url_for('get_events'))
+
+
+
+@app.route('/events/<int:id>/edit',
+           methods=['GET'])  # plural collection endpoint
+def retrieve_event_info(id):
+    event = Event.query.filter(Event.id == id).one_or_none()
+    form = EventForm(obj=event)  # Populate form with course
+    teacher = Teacher.query.filter(Teacher.id == event.teacher_id).one_or_none()
+    course = Course.query.filter(Course.id == event.course_id).one_or_none()
+    tree = Tree.query.filter(Tree.id == event.tree_id).one_or_none()
+    return render_template('forms/edit_event.html', form=form, event=event, teacher=teacher, course=course, tree=tree)
+
+
+@app.route('/events/<int:id>/edit',
+           methods=['POST'])  # plural collection endpoint
+def edit_event(id):
+    event = Event.query.filter(Event.id == id).one_or_none()
+    form = EventForm(obj=event)  # Populate form with course
+    print(event.id, " is the event id")
+    teacher_name = form.teacher.data.name
+    course_name = form.course.data.name
+    tree_name = form.tree.data.name
+
+    if event:
+        try:
+            teacher = Teacher.query.filter(Teacher.name == form.teacher.data.name).one_or_none()
+            course = Course.query.filter(Course.name == form.course.data.name).one_or_none()
+            tree = Tree.query.filter(Tree.name == form.tree.data.name).one_or_none()
+            print(form.course_date.data, " is the course date")
+            event = Event(
+                teacher_id=teacher.id,
+                course_id=course.id,
+                tree_id=tree.id,
+                course_date=form.course_date.data)
+            db.session.add(event)  # teacher.insert()
+            db.session.commit()
+            event_id = event.id
+            '''return jsonify({
+                "success": True,
+                "modidifed": course_id,
+                "name": course.name,
+                "level": course.course_level
+            })'''
+            flash('Event was successfully updated!')
+            #return render_template('events.html')
+            return redirect(url_for('get_events'))
+
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred. Event could not be listed.')
+            print(e)
+            abort(422)
+        finally:
+            db.session.close()
+    else:
+        abort(404)
