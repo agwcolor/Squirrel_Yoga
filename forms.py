@@ -52,23 +52,26 @@ class EventForm(FlaskForm):
     teacher = QuerySelectField(
         'teacher_id',
         query_factory=teacher_query,
+        validators=[DataRequired()],
         allow_blank=True,
-        blank_text=(u'Choose a teacher ...'),
+        #blank_text=(u'Choose a teacher ...'),
         get_label='name')
 
     course = QuerySelectField(
         'course_id',
         query_factory=course_query,
+        validators=[DataRequired()],
         allow_blank=True,
-        blank_text=(u'Choose a course ...'),
+        #blank_text=(u'Choose a course ...'),
         get_label='name')
 
     tree = QuerySelectField(
         'tree_id',
         default="My tree",
         query_factory=tree_query,
+        validators=[DataRequired()],
         allow_blank=True,
-        blank_text=(u'Choose a tree location ...'),
+        #blank_text=(u'Choose a tree location ...'),
         get_label='name')
 
     course_date = DateTimeField(

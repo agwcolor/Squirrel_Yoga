@@ -5,11 +5,11 @@
   <form action="/events/{{event.id}}/edit" method="POST">
     <!-- url_for('edit_course', id=course.id)-->
     <!--{{ form.csrf_token }} -->
-    {{ form.csrf_token }}
+    <!--{{ form.csrf_token }} -->
     <h3>Edit Event</h3>
 
     <div class="form-group">
-      <label for="event">Current Teacher : {{ teacher.name }}</label>
+      <label for="teacher">Current Teacher : {{ teacher.name }}</label>
       <!-- <textarea class="form-control" name="about">{{ teacher.name }}</textarea> -->
       {{ form.teacher(class_ = 'form-control', placeholder=form.teacher.label.text, autofocus = true) }}
     </div>

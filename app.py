@@ -427,6 +427,11 @@ curl http://127.0.0.1:5000/courses/add
 -d '{"name":"Dangle","course_level":5}'
 
 '''
+@app.route('/courses/add', methods=['GET'])
+def retrieve_new_course_form():
+    form = CourseForm()
+    print("I am here")
+    return render_template('forms/add_course.html', form=form)
 
 
 @app.route('/courses/add',
@@ -648,26 +653,62 @@ def retrieve_event_info(id):
            methods=['POST'])  # plural collection endpoint
 def edit_event(id):
     event = Event.query.filter(Event.id == id).one_or_none()
-    form = EventForm(obj=event)  # Populate form with course
+    form = EventForm(request.form)  # Populate form with course
     print(event.id, " is the event id")
-    teacher_name = form.teacher.data.name
-    course_name = form.course.data.name
-    tree_name = form.tree.data.name
+
+    if form.teacher.data:
+        teacher_name = form.teacher.data.name
+    else:
+        teacher = Teacher.query.filter(event.teacher_id == Teacher.id)[0]
+        print(teacher.name, " is the teacher here ")
+        teacher_name = teacher.name
+    if form.course.data:
+        course_name = form.course.data.name
+    else:
+        course = Course.query.filter(event.course_id == Course.id)[0]
+        print(course.name, " is the teacher here ")
+        course_name = course.name
+    if form.tree.data:
+        tree_name = form.tree.data.name
+    else:
+        tree = Tree.query.filter(event.tree_id == Tree.id)[0]
+        print(tree.name, " is the teacher here ")
+        tree_name = tree.name
+
+    print(teacher_name)
+    print(course_name)
+    print(tree_name)
+    print(event.id, "event id")
+
+    #teacher_name = form.teacher.data.name
+    #course_name = form.course.data.name
+    #tree_name = form.tree.data.name
 
     if event:
         try:
-            teacher = Teacher.query.filter(Teacher.name == form.teacher.data.name).one_or_none()
-            course = Course.query.filter(Course.name == form.course.data.name).one_or_none()
-            tree = Tree.query.filter(Tree.name == form.tree.data.name).one_or_none()
-            print(form.course_date.data, " is the course date")
+            teacher = Teacher.query.filter(Teacher.name == teacher_name).one_or_none()
+            print(teacher.name, " is the teacher !!!!!", teacher.id)
+            course = Course.query.filter(Course.name == course_name).one_or_none()
+            print(course.name, " is the coure !!!!!", course.id)
+            tree = Tree.query.filter(Tree.name == tree_name).one_or_none()
+            print(tree.name, " is the tree !!!!!", tree.id)
+            print(teacher.id, course.id, tree.id, "latest stats")
+            event.teacher_id=teacher.id
+            event.course_id=course.id
+            event.tree_id=tree.id
+            event.course_date=form.course_date.data
+            '''
             event = Event(
                 teacher_id=teacher.id,
                 course_id=course.id,
                 tree_id=tree.id,
                 course_date=form.course_date.data)
-            db.session.add(event)  # teacher.insert()
+            '''
+            print(event.id, " is the event.id")
+            #db.session.add(event)  # teacher.insert()
             db.session.commit()
-            event_id = event.id
+            #event_id = event.id
+            print("and here's the latest event.id to check", event.id)
             '''return jsonify({
                 "success": True,
                 "modidifed": course_id,
@@ -677,6 +718,7 @@ def edit_event(id):
             flash('Event was successfully updated!')
             #return render_template('events.html')
             return redirect(url_for('get_events'))
+            
 
         except Exception as e:
             db.session.rollback()
@@ -685,5 +727,6 @@ def edit_event(id):
             abort(422)
         finally:
             db.session.close()
+            print("hallellllllooooyaaaa")
     else:
         abort(404)
