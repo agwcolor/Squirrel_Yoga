@@ -59,6 +59,11 @@ def be_cool():
     #return "Be cool, man, go gather more nuts!" '''
 
 
+#  ----------------------------------------------------------------
+#  Teacher Endpoints
+#  ----------------------------------------------------------------
+
+
 @app.route('/teachers', methods=['GET'])
 def get_teachers():
     try:
@@ -296,6 +301,10 @@ def delete_teacher(id):
         abort(404)
 
 
+#  ----------------------------------------------------------------
+#  Course Endpoints
+#  ----------------------------------------------------------------
+
 @app.route('/courses', methods=['GET'])
 def get_courses():
     try:
@@ -402,9 +411,7 @@ def show_course(id):
 
         except Exception as e:
             exception_type, exception_object, exception_traceback = sys.exc_info()
-
             filename = exception_traceback.tb_frame.f_code.co_filename
-
             line_number = exception_traceback.tb_lineno
 
             print("Exception type: ", exception_type)
@@ -529,6 +536,10 @@ def delete_course(id):
 if __name__ == '__main__':
     app.run()
 
+#  ----------------------------------------------------------------
+#  Tree  Endpoints
+#  ----------------------------------------------------------------
+
 
 @app.route('/trees', methods=['GET'])
 def get_trees():
@@ -552,9 +563,131 @@ def get_trees():
     except Exception:
         abort(422)
 
+
+'''
+Endpoint : POST a new yoga tree location,
+Requires: Tree name text, type, location.
+TEST:
+
+curl http://127.0.0.1:5000/trees/add
+-X POST
+-H "Content-Type: application/json"
+-d '{"name":"Figgy","type": "Fig", "location": "Scary Dog's Garden"}'
+
+'''
+@app.route('/trees/add', methods=['GET'])
+def retrieve_new_tree_form():
+    form = TreeForm()
+    print("I am here")
+    return render_template('forms/add_tree.html', form=form)
+
+
+@app.route('/trees/add',
+           methods=['POST'])  # plural collection endpoint
+def create_tree():
+    try:
+        body = request.get_json()
+        new_tree = body.get('name', None)
+        new_type = body.get('type', None)
+        new_location = body.get('location', None)
+
+        tree = (
+            Tree(
+                name=new_tree,
+                tree_level=new_level,
+                )
+            )
+        db.session.add(tree)  # tree.insert()
+        db.session.commit()
+        tree_id = tree.id
+        flash('Tree ' + new_tree + ' was just added!')
+        return jsonify({
+            "success": True,
+            "created": tree_id
+        })
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred. tree could not be listed.')
+        print(e)
+        abort(422)
+    finally:
+        db.session.close()
+
+@app.route('/trees/<int:id>/edit',
+           methods=['GET'])  # plural collection endpoint
+def retrieve_tree_info(id):
+    tree = Tree.query.filter(Tree.id == id).one_or_none()
+    form = TreeForm(obj=tree)  # Populate form with tree
+    return render_template('forms/edit_tree.html', form=form, tree=tree)
+
+
+@app.route('/trees/<int:id>/edit',
+           methods=['POST'])  # plural collection endpoint
+def edit_tree(id):
+    tree = Tree.query.filter(Tree.id == id).one_or_none()
+    form = TreeForm(obj=tree)  # Populate form with tree
+
+    if tree:
+        try:
+            tree.name = form.name.data
+            tree.type = form.tree_type.data
+            tree.location = form.tree_location.data
+
+            db.session.commit()
+            tree_id = tree.id
+            flash('tree ' + tree.name + ' was just updated!')
+            '''return jsonify({
+                "success": True,
+                "modidifed": tree_id,
+                "name": tree.name,
+                "type": tree.type
+            })'''
+            return redirect(url_for('show_tree', id=tree_id))
+
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred. tree could not be listed.')
+            print(e)
+            abort(422)
+        finally:
+            db.session.close()
+    else:
+        abort(404)
+
+@app.route('/trees/<int:id>', methods=['DELETE'])
+#@requires_auth('delete:drinks')
+def delete_tree(id):
+    tree = Tree.query.filter(Tree.id == id).one_or_none()
+    print(tree, " is the tree")
+    if tree:
+        try:
+            tree_id = tree.id
+            db.session.delete(tree)
+            db.session.commit()
+            return jsonify({
+                "success": True,
+                "delete": tree_id
+            })
+        except Exception as e:
+            db.session.rollback()
+            print(e)
+            abort(422)
+        finally:
+            db.session.close()
+    else:
+        abort(404)
+        
+        
+#  ----------------------------------------------------------------
+#  Event Endpoints
+#  ----------------------------------------------------------------
+
+
 @app.route('/events')
 def get_events():
-    events = db.session.query(Event).all()
+    #events = db.session.query(Event).all()
+    events = Event.query.order_by(Event.course_date).all()
+
     data = []
     for event in events:
         teacher_name = db.session.query(Teacher).filter(
@@ -576,6 +709,7 @@ def get_events():
         })
 
     return render_template('events.html', events=data)
+
 
 
 @app.route('/events/create', methods=['GET'])
@@ -718,7 +852,6 @@ def edit_event(id):
             flash('Event was successfully updated!')
             #return render_template('events.html')
             return redirect(url_for('get_events'))
-            
 
         except Exception as e:
             db.session.rollback()

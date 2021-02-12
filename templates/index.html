@@ -5,22 +5,29 @@
       <div class="card-body">
         <div class="row">
           <div class="col-sm-6">
-            <h1>Squirrel Yoga !!! </h1>
+            <h1>Squirrel Yoga ! </h1>
             <p class="lead">Find a tree and move that's right for you.</p>
             <h3>
-              <a href="{{ url_for('get_teachers') }}"><button class="btn btn-primary">Our Teachers</button></a>
-              <a href="{{ url_for('get_courses') }}"><button class="btn btn-primary">Our Courses</button></a>
-              <a href="{{ url_for('get_events') }}"><button class="btn btn-primary">Event Listing</button></a>
-
+          
+              <a href="{{ url_for('get_teachers') }}"><button class="btn btn-primary">Teachers</button></a>
+              <a href="{{ url_for('get_courses') }}"><button class="btn btn-primary">Courses</button></a>
+              <a href="{{ url_for('get_events') }}"><button class="btn btn-primary">Events</button></a>
+              <a href="{{ url_for('get_trees') }}"><button class="btn btn-primary">Tree Locations</button></a>
+            
             </h3>
+            <p class="lead">Manage courses, trees, teachers, events </p>
+            
             <h3>
               <a href="{{ url_for('retrieve_new_course_form') }}"><button class="btn btn-info">Add a course</button></a>
-              <a href="{{ url_for('retrieve_new_teacher_form') }}"><button class="btn btn-info">Add a Teacher</button></a>
+              <a href="{{ url_for('retrieve_new_teacher_form') }}"><button class="btn btn-info">Add a teacher</button></a>
               <a href="{{ url_for('retrieve_new_event_form') }}"><button class="btn btn-info">Add an event</button></a>
+            </h3>
+            <h3>
+              <a href="{{ url_for('retrieve_new_tree_form') }}"><button class="btn btn-info">Add tree location</button></a>
 
             </h3>
             <small>Note: In order to create an event,
-              the course and teacher must already exist in our database.</small>
+              the course, teacher, and tree location must already exist in our database.</small>
 
             <h3>
 

@@ -10,7 +10,9 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
     
     <title>Tasks</title>
   </head>
@@ -18,11 +20,14 @@
     <div class="container-fluid">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <ul class="navbar-nav">
-          <li class="nav-item"><a href="{{ url_for('get_home_page') }}" class="nav-link">Get Greeting</a></li>
+          <li class="nav-item"><a href="{{ url_for('get_home_page') }}" class="nav-link"><span class="material-icons md-dark">nature</span></a></li>
           <li class="nav-item"><a href="{{ url_for('get_events') }}" class="nav-link">Events</a></li>
           <li class="nav-item"><a href="{{ url_for('get_courses') }}" class="nav-link">Courses</a></li>
           <li class="nav-item"><a href="{{ url_for('get_teachers') }}" class="nav-link">Teachers</a></li>
+          <li class="nav-item"><a href="{{ url_for('get_trees') }}" class="nav-link">Tree Locations</a></li>
+
         </ul>
+    
       </nav>
       <br>
       {% with messages = get_flashed_messages() %}
