@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-lg-3 col-md-4 col-sm-6">
             <div class = row>
-                <div class="container-fluid">
+                <div class="container-fluid tile">
 
         <h3>{{ tree.name }}</h3>
         <img src="{{ tree.tree_img_url }}" alt="Tree Image" />
@@ -35,15 +35,15 @@
 		{%for event in tree.upcoming_events %}
 		<div class="col-lg-3 col-md-4 col-sm-6">
 			<!-- <div class="tile tile-event"> -->
-            <div class="container-fluid">
+            <div class="container-fluid tile">
 
                 <img src="{{ event.teacher_img_url }}" alt="Event Teacher Image" />
                 <h5>Teacher: {{ event.teacher_name }} </h5>
 
 				<h6>Course: <a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h6>
 
-                <h6>{{ event.course_date.strftime('%A %B %d, %Y') }}</h6>
-                
+                <h6>{{ event.course_date.strftime('%A %b %d, %Y') }}</h6>
+            
 			</div>
         </div>
         
@@ -57,10 +57,10 @@
 	<div class="row">
 		{%for event in tree.past_events %}
 		<div class="col-lg-3 col-md-4 col-sm-6">
-			<div class="container-fluid">
+			<div class="container-fluid tile">
 				<img src="{{ event.teacher_img_url }}" alt="Event Teacher Image" />
 				<h5><a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h5>
-                <h6>{{ event.course_date.strftime('%A %B %d, %Y') }}</h6>
+                <h6>{{ event.course_date.strftime('%a %b %d, %Y') }}</h6>
                 <h6>Teacher: {{ event.teacher_name }} </h6>
 			</div>
 		</div>
