@@ -444,8 +444,10 @@ def retrieve_new_course_form():
 @app.route('/courses/add',
            methods=['POST'])  # plural collection endpoint
 def create_course():
+    #form = CourseForm(request.form)
     try:
-        body = request.get_json()
+        body = request.form
+        print(type(body))
         new_course = body.get('name', None)
         new_level = body.get('course_level', None)
         course = (
@@ -458,10 +460,11 @@ def create_course():
         db.session.commit()
         course_id = course.id
         flash('Course ' + new_course + ' was just added!')
-        return jsonify({
+        return redirect(url_for('show_course', id=course_id))
+        '''return jsonify({
             "success": True,
             "created": course_id
-        })
+        })'''
     except Exception as e:
         db.session.rollback()
         flash('An error occurred. Course could not be listed.')
@@ -555,15 +558,99 @@ def get_trees():
                 "img_url": tree.img_url
             })
         print(data)
-        return jsonify({
+        '''return jsonify({
             'success': True,
             'count': len(trees),
             'data': data
-        })
+        })'''
+        return render_template('trees.html', trees=data)
     except Exception:
         abort(422)
 
 
+@app.route('/trees/<int:id>', methods=['GET'])
+def show_tree(id):
+
+    tree = Tree.query.filter(Tree.id == id).one_or_none()
+    if tree:
+        try:
+            data = []
+            u_events = db.session.query(Event).filter(Event.tree_id == id).filter(
+                Event.course_date > datetime.now()).all()
+            print("  my ", len(u_events), " upcoming events", u_events)
+            print(len(u_events), "is the length of upcoming events")
+            p_events = db.session.query(Event).filter(Event.tree_id == id).filter(
+                Event.course_date < datetime.now()).all()
+            print("  my ", len(p_events), " past events", p_events)
+            print(len(p_events), "is the length of past events")
+            
+
+            upcoming_events = []
+            for event in u_events:
+                #print(event, " is the event")
+                teacher = db.session.query(Teacher).filter(Teacher.id==event.teacher_id).all()
+                course = db.session.query(Course).filter(Course.id==event.course_id).all()
+                #print(type(course), " is the length of the course")
+                if len(teacher) > 0:
+                    upcoming_events.append({
+                        "teacher_id": teacher[0].id,
+                        "teacher_name": teacher[0].name,
+                        "teacher_img_url": teacher[0].img_url,
+                        "course_date": event.course_date,
+                        "course_name": course[0].name,
+                        "course_level": course[0].course_level,
+                
+                    })
+
+            past_events = []
+            for event in p_events:
+                #print(event, " is the event")
+                teacher = db.session.query(Teacher).filter(Teacher.id==event.teacher_id).all()
+                course = db.session.query(Course).filter(Course.id==event.course_id).all()
+                if len(teacher) > 0:
+                    past_events.append({
+                        "teacher_id": teacher[0].id,
+                        "teacher_name": teacher[0].name,
+                        "teacher_img_url": teacher[0].img_url,
+                        "course_date": event.course_date,
+                        "course_name": course[0].name,
+                        "course_level": course[0].course_level,
+                
+                    })
+            #print("upcoming events, past events", upcoming_events, past_events)
+            data.append({
+                "id": tree.id,
+                "name": tree.name,
+                "tree_type": tree.type,
+                "tree_location": tree.location,
+                "tree_img_url": tree.img_url,
+                "upcoming_events": upcoming_events,
+                "past_events": past_events,
+                "past_events_count": len(p_events),
+                "upcoming_events_count": len(u_events)
+            })
+
+
+            print("Upcoming Events \n", len(upcoming_events), upcoming_events )
+            print("Past Events \n", len(past_events), past_events )
+            return render_template('show_tree.html', tree=data[0])
+
+            #print(data[0].temperament, " is the temperament")
+
+        except Exception as e:
+            exception_type, exception_object, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+
+            print("Exception type: ", exception_type)
+            print("File name: ", filename)
+            print("Line number: ", line_number)
+            print(e, " is the error")
+            abort(422)
+    else:
+        abort(404)
+        
+        
 '''
 Endpoint : POST a new yoga tree location,
 Requires: Tree name text, type, location.

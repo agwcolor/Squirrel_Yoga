@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Squirrel Yoga | ['GET'] Tree Profile{% endblock %}
+
+{% block main %}
+<h2>Squirrel Yoga Tree Profile</h2>
+<div class="outer-container container-fluid">
+
+    <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class = row>
+                <div class="container-fluid">
+
+        <h3>{{ tree.name }}</h3>
+        <img src="{{ tree.tree_img_url }}" alt="Tree Image" />
+        <p> Name - {{ tree.name}}</p>
+        <p> Type - {{ tree.tree_type }}</p>
+        <p> Location - {{ tree.tree_location }} </p>
+        <p>
+			<form action="{{url_for('retrieve_tree_info', id=tree.id) }}" method="GET">
+				<input type="submit" value="Edit" class="btn btn-primary"></form>
+           </p>
+           </div>
+           </div>
+        </div>
+    </div>
+<br>
+
+  <section>
+    <h2 class="monospace">{{ tree.upcoming_events_count }} Upcoming {% if tree.upcoming_events_count == 1 %}Event{% else %}Events{% endif %} 
+    </h2>
+
+<hr>
+	<div class="row">
+        
+		{%for event in tree.upcoming_events %}
+		<div class="col-lg-3 col-md-4 col-sm-6">
+			<!-- <div class="tile tile-event"> -->
+            <div class="container-fluid">
+
+                <img src="{{ event.teacher_img_url }}" alt="Event Teacher Image" />
+                <h5>Teacher: {{ event.teacher_name }} </h5>
+
+				<h6>Course: <a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h6>
+
+                <h6>{{ event.course_date.strftime('%A %B %d, %Y') }}</h6>
+                
+			</div>
+        </div>
+        
+		{% endfor %}
+	</div>
+</section>
+
+<section>
+    <h2 class="monospace">{{ tree.past_events_count }} Past {% if tree.past_events_count == 1 %}Event{% else %}Events{% endif %}</h2>
+<hr>
+	<div class="row">
+		{%for event in tree.past_events %}
+		<div class="col-lg-3 col-md-4 col-sm-6">
+			<div class="container-fluid">
+				<img src="{{ event.teacher_img_url }}" alt="Event Teacher Image" />
+				<h5><a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h5>
+                <h6>{{ event.course_date.strftime('%A %B %d, %Y') }}</h6>
+                <h6>Teacher: {{ event.teacher_name }} </h6>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</section>
+
+</div>
+
+
+
+{% endblock %}

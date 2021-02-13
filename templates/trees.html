@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Squirrel Yoga | ['GET'] Tree Location{% endblock %}
+
+{% block main %}
+<h2>Squirrel Tree Locations</h2>
+<p>
+    <form action="{{url_for('retrieve_new_tree_form') }}" method="GET">
+        <input type="submit" value="Add a new tree" class="btn btn-primary"></form>
+   </p>
+  {% for tree in trees %}
+    <div class="card">
+      <div class="card-body">
+        <a href="/trees/{{ tree.id }}">
+        <h3>{{ tree.name }}</h3>
+      </a>
+        <img src="{{ tree.img_url }}" alt="Tree Image" />
+        <p> Name - {{tree.name}}</p>
+        <p> Type - {{ tree.tree_type }}</p>
+        <p> Location - {{ tree.tree_location}}</p>
+        </div>
+    </div>
+  {% endfor %}
+{% endblock %}

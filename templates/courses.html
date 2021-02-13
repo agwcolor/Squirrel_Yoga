@@ -3,6 +3,10 @@
 
 {% block main %}
 <h2>Squirrel Yoga Courses </h2>
+<p>
+    <form action="{{url_for('retrieve_new_course_form') }}" method="GET">
+        <input type="submit" value="Add a new course" class="btn btn-primary"></form>
+   </p>
   {% for course in courses %}
     <div class="card">
       <div class="card-body">
