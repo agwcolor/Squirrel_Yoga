@@ -215,7 +215,6 @@ def create_teacher():
         db.session.add(teacher)  # teacher.insert()
         db.session.commit()
         teacher_id = teacher.id
-        flash('Teacher ' + teacher.name + ' was just added!')
         '''return jsonify({
             "success": True,
             "created": teacher_id
@@ -233,7 +232,7 @@ def create_teacher():
               request.form['name'] + ' could not be listed.')
         return render_template('teachers.html')
     else:
-        flash('Teacher ' + request.form['name'] + ' was listed!')
+        flash('Teacher ' + request.form['name'] + ' was added!')
         return redirect(url_for('show_teacher', id=teacher_id))
 
 
@@ -277,20 +276,23 @@ def edit_teacher(id):
     else:
         abort(404)
 
-@app.route('/teachers/<int:id>', methods=['DELETE'])
+@app.route('/teachers/<int:id>', methods=['POST'])
 #@requires_auth('delete:drinks')
 def delete_teacher(id):
     teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
-
+    teacher_name = teacher.name
     if teacher:
         try:
             teacher_id = teacher.id
             db.session.delete(teacher)
             db.session.commit()
-            return jsonify({
+            '''return jsonify({
                 "success": True,
                 "delete": teacher_id
-            })
+            })'''
+            flash('Teacher '  + teacher_name + ' was successfully deleted!')
+            #return render_template('events.html')
+            return redirect(url_for('get_teachers'))
         except Exception as e:
             db.session.rollback()
             print(e)
@@ -391,23 +393,20 @@ def show_course(id):
                         "tree_location": tree[0].location,
                         "tree_img_url": tree[0].img_url
                     })
-            #print("upcoming events, past events", upcoming_events, past_events)
             data.append({
                 "id": course.id,
                 "name": course.name,
                 "course_level": course.course_level,
                 "upcoming_events": upcoming_events,
                 "past_events": past_events,
-                "past_events_count": len(db.session.query(Event).filter(Event.course_id == course.id).filter(Event.course_date < datetime.now()).all()),
-                "upcoming_events_count": len(db.session.query(Event).filter(Event.course_id == course.id).filter(Event.course_date > datetime.now()).all())
+                "past_events_count": len(p_events),
+                "upcoming_events_count": len(u_events)
             })
-
-
             print(data, "is the data")
             print(type(data[0]))
             return render_template('show_course.html', course=data[0])
 
-            #print(data[0].temperament, " is the temperament")
+            # print(data[0].temperament, " is the temperament")
 
         except Exception as e:
             exception_type, exception_object, exception_traceback = sys.exc_info()
@@ -461,10 +460,12 @@ def create_course():
         course_id = course.id
         flash('Course ' + new_course + ' was just added!')
         return redirect(url_for('show_course', id=course_id))
-        '''return jsonify({
-            "success": True,
-            "created": course_id
-        })'''
+        '''
+            return jsonify({
+                "success": True,
+                "created": course_id
+            })
+        '''
     except Exception as e:
         db.session.rollback()
         flash('An error occurred. Course could not be listed.')
@@ -512,20 +513,25 @@ def edit_course(id):
     else:
         abort(404)
 
-@app.route('/courses/<int:id>', methods=['DELETE'])
+@app.route('/courses/<int:id>', methods=['POST'])
 #@requires_auth('delete:drinks')
 def delete_course(id):
     course = Course.query.filter(Course.id == id).one_or_none()
+    course_name = course.name
     print(course, " is the course")
     if course:
         try:
             course_id = course.id
             db.session.delete(course)
             db.session.commit()
+            '''
             return jsonify({
-                "success": True,
-                "delete": course_id
+                "success":True,
+                "delete":course_id
             })
+            '''
+            flash('Course ' + course_name + ' was successfully deleted!')
+            return redirect(url_for('get_courses'))
         except Exception as e:
             db.session.rollback()
             print(e)
@@ -596,6 +602,7 @@ def show_tree(id):
                         "teacher_id": teacher[0].id,
                         "teacher_name": teacher[0].name,
                         "teacher_img_url": teacher[0].img_url,
+                        "course_id": course[0].id,
                         "course_date": event.course_date,
                         "course_name": course[0].name,
                         "course_level": course[0].course_level,
@@ -612,6 +619,7 @@ def show_tree(id):
                         "teacher_id": teacher[0].id,
                         "teacher_name": teacher[0].name,
                         "teacher_img_url": teacher[0].img_url,
+                        "course_id": course[0].id,
                         "course_date": event.course_date,
                         "course_name": course[0].name,
                         "course_level": course[0].course_level,
@@ -672,26 +680,26 @@ def retrieve_new_tree_form():
 @app.route('/trees/add',
            methods=['POST'])  # plural collection endpoint
 def create_tree():
+    form = TreeForm(request.form)
+    error = False
     try:
-        body = request.get_json()
-        new_tree = body.get('name', None)
-        new_type = body.get('type', None)
-        new_location = body.get('location', None)
-
         tree = (
             Tree(
-                name=new_tree,
-                tree_level=new_level,
+                name=form.name.data,
+                type=form.tree_type.data,
+                location=form.location.data,
+                img_url=form.img_url.data
                 )
             )
         db.session.add(tree)  # tree.insert()
         db.session.commit()
         tree_id = tree.id
-        flash('Tree ' + new_tree + ' was just added!')
+        '''
         return jsonify({
             "success": True,
             "created": tree_id
         })
+        '''
     except Exception as e:
         db.session.rollback()
         flash('An error occurred. tree could not be listed.')
@@ -699,6 +707,14 @@ def create_tree():
         abort(422)
     finally:
         db.session.close()
+    if error:
+        flash('Tree ' +
+              request.form['name'] + ' could not be listed.')
+        return render_template('trees.html')
+    else:
+        flash('Tree ' + request.form['name'] + ' was added!')
+        return redirect(url_for('show_tree', id=tree_id))
+    
 
 @app.route('/trees/<int:id>/edit',
            methods=['GET'])  # plural collection endpoint
@@ -727,7 +743,8 @@ def edit_tree(id):
                 "success": True,
                 "modidifed": tree_id,
                 "name": tree.name,
-                "type": tree.type
+                "type": tree.type,
+                "location": tree.location
             })'''
             return redirect(url_for('show_tree', id=tree_id))
 
@@ -741,20 +758,24 @@ def edit_tree(id):
     else:
         abort(404)
 
-@app.route('/trees/<int:id>', methods=['DELETE'])
+@app.route('/trees/<int:id>', methods=['POST'])
 #@requires_auth('delete:drinks')
 def delete_tree(id):
     tree = Tree.query.filter(Tree.id == id).one_or_none()
     print(tree, " is the tree")
+    tree_name = tree.name
     if tree:
         try:
             tree_id = tree.id
             db.session.delete(tree)
             db.session.commit()
-            return jsonify({
+            '''return jsonify({
                 "success": True,
                 "delete": tree_id
-            })
+            })'''
+            flash('Tree '  + tree_name + ' was successfully deleted!')
+            #return render_template('events.html')
+            return redirect(url_for('get_trees'))
         except Exception as e:
             db.session.rollback()
             print(e)
@@ -786,8 +807,10 @@ def get_events():
         '''teacher_image_link = db.session.query(Teacher).filter(
             event.teacher_id == Teacher.id).all()[0].image_link'''
         data.append({
+            "event_id": event.id,
             "course_id": event.course_id,
             "teacher_id": event.teacher_id,
+            "tree_id": event.tree_id,
             "course_date": event.course_date,
             "teacher_name": teacher_name,
             "tree_name": tree_name,
@@ -948,5 +971,32 @@ def edit_event(id):
         finally:
             db.session.close()
             print("hallellllllooooyaaaa")
+    else:
+        abort(404)
+        
+    
+@app.route('/events/<int:id>', methods=['POST'])
+#@requires_auth('delete:drinks')
+def delete_event(id):
+    event = Event.query.filter(Event.id == id).one_or_none()
+
+    if event:
+        try:
+            event_id = event.id
+            db.session.delete(event)
+            db.session.commit()
+            '''return jsonify({
+                "success": True,
+                "delete": event_id
+            })'''
+            flash('Event was successfully deleted!')
+            #return render_template('events.html')
+            return redirect(url_for('get_events'))
+        except Exception as e:
+            db.session.rollback()
+            print(e)
+            abort(422)
+        finally:
+            db.session.close()
     else:
         abort(404)

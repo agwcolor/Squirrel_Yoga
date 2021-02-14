@@ -130,3 +130,19 @@ class TeacherForm(FlaskForm):
     img_url = StringField(
         'img_url', validators=[URL()]
     )
+
+class TreeForm(FlaskForm):
+    submit = SubmitField('Submit')
+
+    name = StringField(
+        'name', validators=[DataRequired()]
+    )
+    tree_type = IntegerField(
+        'type', validators=[DataRequired()]
+    )
+    location = IntegerField(
+        'location', validators=[DataRequired()]
+    )
+    img_url = StringField(
+        'img_url', validators=[URL()]
+    )

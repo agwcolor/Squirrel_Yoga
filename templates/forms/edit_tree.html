@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Edit Tree{% endblock %}
+{% block main %}
+<div class="container-fluid">
+  <form action="/trees/{{tree.id}}/edit" method="POST">
+    <!-- url_for('edit_Tree', id=Tree.id)-->
+    {{ form.csrf_token }}
+      <h3>Edit Tree Details</h3>
+
+      <div class="form-group">
+        <label for="name">Name</label>
+        {{ form.name(class_ = 'form-control', placeholder="Name", autofocus = true) }}
+      </div>
+
+      <div class="form-group">
+        <label for="tree_type">Tree Type</label>
+        {{ form.tree_type(class_ = 'form-control', placeholder="Type", autofocus = true) }}
+      </div>
+
+      <div class="form-group">
+        <label for="location">Tree Location</label>
+        {{ form.location(class_ = 'form-control', placeholder="Location", autofocus = true) }}
+      </div>
+
+      <div class="form-group">
+        <label for="img_url">Image URL</label>
+        <small> - [Example - https://res.cloudinary.com/potatobug/image/upload/c_thumb,w_180/v1611638032/squirrel_placeholder_kcifcf.jpg]</small>
+        {{ form.img_url(class_ = 'form-control', placeholder='https://') }}
+      </div>
+
+      <div class="form-group">
+        {{ form.submit(class="btn btn-primary", value="Update Now") }}
+      </div>
+
+    </div>
+  </form>
+</div>
+{% endblock %}

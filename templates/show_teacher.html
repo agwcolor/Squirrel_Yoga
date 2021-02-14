@@ -2,7 +2,7 @@
 {% block title %}Squirrel Yoga | ['GET'] Teacher Profile{% endblock %}
 
 {% block main %}
-<h2>Squirrel Yoga Teacher Profile</h2>
+<h2>Teacher Profile</h2>
     <div class="card">
       <div class="card-body">
         <h3>{{ teacher.name }}</h3>
@@ -14,13 +14,23 @@
             {{ move }}, 
         {% endfor %}
         </p>
-        <p>
-			<form action="{{url_for('retrieve_teacher_info', id=teacher.id) }}" method="GET">
-				<input type="submit" value="Edit" class="btn btn-primary"></form>
-		   </p>
+		   <div class="button group">
+			<div class="row">
+		
+		   <div class="button_side_by_side"> <form action="{{url_for('retrieve_teacher_info', id=teacher.id) }}" method="GET">
+			<input type="submit" value="Edit" class="btn btn-primary"></form>
+		</div>
+		<div>  </div>
+		<div class="button_side_by_side">
+			<form class="form" action="{{url_for('delete_teacher', id=teacher.id) }}" method="POST">
+				<input type="submit" value="Delete" class="btn btn-danger"></form>
+			</div>
+		
+		
+		</div>
         </div>
     </div>
-
+<hr></hr>
 
   <section>
 	<h2 class="monospace">{{ teacher.upcoming_events_count }} Upcoming {% if teacher.upcoming_events_count == 1 %}Event{% else %}Events{% endif %}</h2>
@@ -29,9 +39,10 @@
 		<div class="col-sm-4">
 			<div class="tile tile-event">
 				<img src="{{ event.tree_img_url }}" alt="Event Location Image" />
-				<h5><a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h5>
+				
+				<h5>{{ event.course_date.strftime('%a %b %d, %Y') }}</h5>
+				<h6>Course: <a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h6>
 
-                <h6>{{ event.course_date.strftime('%A %B %d, %Y') }}</h6>
                 <h6>Tree: {{ event.tree_type }} | Location: {{ event.tree_location }} </h6>
 
 			</div>
@@ -47,8 +58,10 @@
 		<div class="col-sm-4">
 			<div class="tile tile-event">
 				<img src="{{ event.tree_img_url }}" alt="Event Location Image" />
-				<h5><a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h5>
-                <h6>{{ event.course_date.strftime('%A %B %d, %Y') }}</h6>
+				
+				<h5>{{ event.course_date.strftime('%a %b %d, %Y') }}</h5>
+				<h6>Course: <a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h6>
+
                 <h6>Tree: {{ event.tree_type }} | Location: {{ event.tree_location }} </h6>
 
 			</div>
