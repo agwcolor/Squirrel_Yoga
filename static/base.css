@@ -18,3 +18,9 @@
 .button_side_by_side {
     padding: 5px;
 }
+
+
+.content {
+    max-width: 1000px;
+    margin: auto;
+  }
