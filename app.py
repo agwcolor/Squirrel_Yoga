@@ -197,13 +197,15 @@ curl http://127.0.0.1:5000/teachers/add
 def retrieve_new_teacher_form():
     form = TeacherForm()
     print("I am here")
+    print(form.name.data, "is the data")
+    print(form, " is the form")
     return render_template('forms/add_teacher.html', form=form)
 
 @app.route('/teachers/add',
            methods=['POST'])  # plural collection endpoint
 def create_teacher():
     form = TeacherForm(request.form)
-    
+    print("wackjob", type(form), form.name.data)
     error = False
     try:
         teacher = Teacher(
@@ -1000,3 +1002,59 @@ def delete_event(id):
             db.session.close()
     else:
         abort(404)
+        
+# --------------------------------------------------------------------- #
+# @app.errorhandler decoratior to format error responses as JSON objects
+# for status codes: 401, 403 (Autherrors), 404 (not found), 
+# 422 (unprocessable entity)
+# --------------------------------------------------------------------- #
+
+
+@app.errorhandler(422)
+def unprocessable(error):
+    return jsonify({
+        "success": False,
+        "error": 422,
+        "message": "unprocessable"
+    }), 422
+
+
+'''
+404 : resource not found
+'''
+
+
+@app.errorhandler(404)
+def unprocessable(error):
+    return jsonify({
+        "success": False,
+        "error": 404,
+        "message": "resource not found"
+    }), 404
+
+
+'''
+AuthErrors - 401 : unauthorized
+             403 : forbidden
+'''
+
+
+@app.errorhandler(401)
+def auth_error(error):
+    return jsonify({
+        "success": False,
+        "error": 401,
+        "message": "unauthorized"
+    }),  401
+
+'''
+@app.errorhandler(AuthError)
+def auth_error(ex):
+    print(ex.error['code'], "is the code")
+    print(ex.status_code, "is the status code")
+    return jsonify({
+        "success": False,
+        "error": ex.status_code,
+        "message": ex.error['code']
+    }),  ex.status_code  # 403 status code
+    '''
