@@ -47,8 +47,8 @@ app.jinja_env.filters['datetime'] = format_datetime'''
 
 
 @app.route('/')
-@app.route('/index')
-@app.route('/index.html')
+#@app.route('/index')
+#@app.route('/index.html')
 def get_home_page():
     return render_template('index.html')
 
@@ -278,7 +278,7 @@ def edit_teacher(id):
     else:
         abort(404)
 
-@app.route('/teachers/<int:id>', methods=['POST'])
+@app.route('/teachers/<int:id>', methods=['DELETE'])
 #@requires_auth('delete:drinks')
 def delete_teacher(id):
     teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
