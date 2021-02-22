@@ -1,22 +1,23 @@
 import unittest
+from flask_testing import TestCase
 import json
 from flask_sqlalchemy import SQLAlchemy
 from flask import url_for, request
 from app import create_app
 from models import setup_db, Teacher, Course, Event, Tree
 
-class BaseTestCase(unittest.TestCase):
+class BaseTestCase(TestCase):
     """This class represents the squirrel test case"""
     def setUp(self):
         """Define test variables and initialize app."""
         self.app = create_app(test_config=True)
-        #self.app.app_context().push()
         self.app.config['WTF_CSRF_ENABLED'] = False
         self.app.config['TESTING'] = True
         self.database_name = "postgres_test"
         self.database_path = "postgresql://{}/{}".format(
             'localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
+        
         self.client = self.app.test_client()
 
         # binds the app to the current context
@@ -52,13 +53,24 @@ class BaseTestCase(unittest.TestCase):
         with self.app.app_context():
             self.db.session.remove()
             self.db.drop_all()
+    
+    
+    
+    """ Using assert_template_used in getting front page """
+    def test_greeting(self):
+            print(self.app, " is the app while trying to use GET")
+            self.app.get('/')
+            self.assert_template_used('index.html')
+            self.assert_context("greeting", "hello")
 
     """Get Front Page """
+    '''
     #method 2 of getting front page also doesn't work
     def test_main_page2(self):
         with self.app.test_client() as c:
             res = c.get('/')
             self.assertEqual(res.status_code, 200)
+    
 
     """Get Teachers """
     def test_teachers(self):
@@ -75,7 +87,6 @@ class BaseTestCase(unittest.TestCase):
             self.db.session.commit()
             teacher = Teacher.query.filter(Teacher.name == "Test_Teacher11").one_or_none()
             teacher_id = teacher.id
-            
             res = c.get(f'/teacher/{teacher_id}')
             self.assertEqual(res.status_code, 200)
 
@@ -96,17 +107,16 @@ class BaseTestCase(unittest.TestCase):
             self.assertEqual(res.status_code, 200)
             self.assertEqual(teacher, None)  # make sure it no longer exists
 
-
-        """Load Front Page"""
-    '''
+    """Load Front Page"""
+    
     def test_home(self):
         tester = self.app.test_client(self)
         response = tester.get('/', content_type='html/text')
         self.assertEqual(response.status_code, 200)
         #self.assertEqual(response.data, b'Hello World!')
-    '''
     
-    '''
+    
+    
     def test_main_page(self):
         with self.app.test_request_context('/'):
             assert request.path == '/'

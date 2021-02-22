@@ -46,11 +46,11 @@ app.jinja_env.filters['datetime'] = format_datetime'''
 # ----------------------------------------------------------------------------#
 
 
-@app.route('/')
-#@app.route('/index')
-#@app.route('/index.html')
+@app.route('/', methods =['GET'])
+@app.route('/index', methods =['GET'])
+@app.route('/index.html', methods =['GET'])
 def get_home_page():
-    return render_template('index.html')
+    return render_template('index.html',greeting="Hello!")
 
 
 '''@app.route('/coolsquirrel')
