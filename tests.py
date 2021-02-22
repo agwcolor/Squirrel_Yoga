@@ -61,7 +61,7 @@ class BaseTestCase(TestCase):
             print(self.app, " is the app while trying to use GET")
             self.app.get('/')
             self.assert_template_used('index.html')
-            self.assert_context("greeting", "hello")
+            self.assert_context("greeting", "Hello!")
 
     """Get Front Page """
     '''
