@@ -84,7 +84,7 @@ def create_app(test_config=None):
                     "moves": teacher.moves,
                     "img_url": teacher.img_url
                 })
-            print(data)
+            #print(data)
             '''
             return jsonify({
                 'success': True,
