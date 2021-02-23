@@ -6,18 +6,20 @@ from flask import url_for, request
 from app import create_app
 from models import setup_db, Teacher, Course, Event, Tree
 
-class BaseTestCase(TestCase):
+
+class BaseTestCase(unittest.TestCase):
     """This class represents the squirrel test case"""
     def setUp(self):
         """Define test variables and initialize app."""
-        self.app = create_app(test_config=True)
+        self.app = create_app(self)
+        #self.app = Flask(__name__)
         self.app.config['WTF_CSRF_ENABLED'] = False
         self.app.config['TESTING'] = True
         self.database_name = "postgres_test"
         self.database_path = "postgresql://{}/{}".format(
             'localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
-        
+
         self.client = self.app.test_client()
 
         # binds the app to the current context
@@ -57,11 +59,18 @@ class BaseTestCase(TestCase):
     
     
     """ Using assert_template_used in getting front page """
+    
+    
     def test_greeting(self):
-            print(self.app, " is the app while trying to use GET")
-            self.app.get('/')
-            self.assert_template_used('index.html')
-            self.assert_context("greeting", "Hello!")
+            print(self.app.import_name, " is the app while trying to use GET")
+            #print(self.app.__dict__, " is the object")
+            with self.app.test_client() as c:
+                res = c.get('/')
+                print(res.__dict__, " is the response")
+                print(res._status, " is the status")
+                self.assertEqual(res.status_code, 200)
+                #self.app.assert_template_used('index.html')
+                #self.assert_context("greeting", "Hello!")
 
     """Get Front Page """
     '''
