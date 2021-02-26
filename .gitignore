@@ -8,6 +8,7 @@ RandomNotes.sql
 setup.sh
 config.py
 configpybackup.py
+*.bak*
 
 # OS generated files #
 ######################

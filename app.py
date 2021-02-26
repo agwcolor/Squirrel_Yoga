@@ -1,7 +1,7 @@
 import sys
 import os
 from flask import Flask, request, abort, flash, json, jsonify, render_template, redirect, url_for
-from models import setup_db, db, Person, Teacher, Course, Tree, Event
+from models import setup_db, db, Teacher, Course, Tree, Event
 #import config
 from flask_cors import CORS
 import dateutil.parser
@@ -209,7 +209,12 @@ def create_app(test_config=None):
             methods=['POST'])  # plural collection endpoint
     def create_teacher():
         form = TeacherForm(request.form)
-        print("wackjob", type(form), form.name.data)
+        print("My form info", type(form), form.name.data)
+        if (form.name.data or form.age.data or
+                form.temperament.data or form.moves.data or 
+                form.img_url.data):
+            print("form not valid")
+        
         error = False
         try:
             teacher = Teacher(
@@ -250,7 +255,7 @@ def create_app(test_config=None):
 
 
     @app.route('/teachers/<int:id>/edit',
-            methods=['POST'])  # plural collection endpoint
+            methods=['PATCH','POST'])  # plural collection endpoint
     def edit_teacher(id):
         teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
         form = TeacherForm(request.form)
@@ -282,21 +287,20 @@ def create_app(test_config=None):
         else:
             abort(404)
 
-    @app.route('/teachers/<int:id>', methods=['DELETE'])
+    @app.route('/teachers/<int:id>', methods=['POST','DELETE'])
     #@requires_auth('delete:drinks')
     def delete_teacher(id):
         teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
-        teacher_name = teacher.name
         if teacher:
             try:
-                teacher_id = teacher.id
+                #teacher_id = teacher.id
                 db.session.delete(teacher)
                 db.session.commit()
                 '''return jsonify({
                     "success": True,
                     "delete": teacher_id
                 })'''
-                flash('Teacher '  + teacher_name + ' was successfully deleted!')
+                flash('Teacher '  + teacher.name + ' was successfully deleted!')
                 #return render_template('events.html')
                 return redirect(url_for('get_teachers'))
             except Exception as e:
@@ -489,7 +493,7 @@ def create_app(test_config=None):
 
 
     @app.route('/courses/<int:id>/edit',
-            methods=['POST'])  # plural collection endpoint
+            methods=['POST','PATCH'])  # plural collection endpoint
     def edit_course(id):
         course = Course.query.filter(Course.id == id).one_or_none()
         form = CourseForm(obj=course)  # Populate form with course
@@ -519,8 +523,8 @@ def create_app(test_config=None):
         else:
             abort(404)
 
-    @app.route('/courses/<int:id>', methods=['POST'])
-    #@requires_auth('delete:drinks')
+    @app.route('/courses/<int:id>', methods=['DELETE','POST'])
+    #@requires_auth('delete:courses')
     def delete_course(id):
         course = Course.query.filter(Course.id == id).one_or_none()
         course_name = course.name
@@ -729,7 +733,7 @@ def create_app(test_config=None):
 
 
     @app.route('/trees/<int:id>/edit',
-            methods=['POST'])  # plural collection endpoint
+            methods=['POST','PATCH'])  # plural collection endpoint
     def edit_tree(id):
         tree = Tree.query.filter(Tree.id == id).one_or_none()
         form = TreeForm(obj=tree)  # Populate form with tree
@@ -762,8 +766,8 @@ def create_app(test_config=None):
         else:
             abort(404)
 
-    @app.route('/trees/<int:id>', methods=['POST'])
-    #@requires_auth('delete:drinks')
+    @app.route('/trees/<int:id>', methods=['DELETE','POST'])
+    #@requires_auth('delete:trees')
     def delete_tree(id):
         tree = Tree.query.filter(Tree.id == id).one_or_none()
         print(tree, " is the tree")
@@ -898,7 +902,7 @@ def create_app(test_config=None):
 
 
     @app.route('/events/<int:id>/edit',
-            methods=['POST'])  # plural collection endpoint
+            methods=['POST','PATCH'])  # plural collection endpoint
     def edit_event(id):
         event = Event.query.filter(Event.id == id).one_or_none()
         form = EventForm(request.form)  # Populate form with course
@@ -979,8 +983,8 @@ def create_app(test_config=None):
             abort(404)
             
         
-    @app.route('/events/<int:id>', methods=['POST'])
-    #@requires_auth('delete:drinks')
+    @app.route('/events/<int:id>', methods=['DELETE','POST'])
+    #@requires_auth('delete:events')
     def delete_event(id):
         event = Event.query.filter(Event.id == id).one_or_none()
 
@@ -1034,7 +1038,18 @@ def create_app(test_config=None):
             "message": "resource not found"
         }), 404
 
-
+    '''
+    400 :
+    '''
+    
+    @app.errorhandler(400)
+    def unprocessable(error):
+        return jsonify({
+            "success": False,
+            "error": 400,
+            "message": "bad request"
+        }), 400
+        
     '''
     AuthErrors - 401 : unauthorized
                 403 : forbidden
