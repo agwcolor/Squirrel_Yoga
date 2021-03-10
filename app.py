@@ -9,7 +9,11 @@ import babel
 from flask_wtf import FlaskForm
 from forms import *
 from datetime import datetime
-
+# from auth import AuthError, requires_auth
+from server import AuthError, requires_auth
+from authlib.integrations.flask_client import OAuth
+from flask import session
+from six.moves.urllib.parse import urlencode
 
 def create_app(test_config=None):
 
@@ -19,6 +23,21 @@ def create_app(test_config=None):
     print("nothings working")
     CORS(app)
     
+    #  AUTH
+    oauth = OAuth(app)
+
+    auth0 = oauth.register(
+        'auth0',
+        client_id=os.environ.get('CLIENT_ID'),
+        client_secret=os.environ.get('CLIENT_SECRET'),
+        api_base_url=os.environ.get('API_BASE_URL'),
+        access_token_url=os.environ.get('ACCESS_TOKEN_URL'),
+        authorize_url=os.environ.get('AUTHORIZE_URL'),
+        client_kwargs={
+            'scope': 'openid profile email',
+        },
+    )
+    
     @app.after_request  # after request received run this method
     def after_request(response):
         response.headers.add('Access-Control-Allow-Headers',
@@ -26,6 +45,7 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Headers',
                              'GET,POST,PATCH,DELETE,OPTIONS')
         return response
+    
     
 
 
@@ -44,10 +64,67 @@ def create_app(test_config=None):
 
 
     app.jinja_env.filters['datetime'] = format_datetime'''
+    
+# ----------------------------------------------------------------------------#
+# Auth Enpoints.
+# ----------------------------------------------------------------------------#
+
+    # /server.py
+
+    @app.route('/dashboard')
+    @requires_auth
+    def dashboard():
+        return render_template('dashboard.html',
+                            userinfo=session['profile'],
+                            userinfo_pretty=json.dumps(session['jwt_payload'], indent=4))
+
+    # /server.py
+
+    @app.route('/logout')
+    def logout():
+        # Clear session stored data
+        session.clear()
+        # Redirect user to logout endpoint
+        params = {'returnTo': url_for('confirm_logout', _external=True), 'client_id': auth0.client_id}
+        return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
+
+
+    @app.route('/confirm-logout', methods=['GET'])
+    def confirm_logout():
+            return render_template('logged_out.html')
+
+    # Here we're using the /callback route.
+    @app.route('/callback')
+    def callback_handling():
+        # Handles response from token endpoint
+        auth0.authorize_access_token()
+        resp = auth0.get('userinfo')
+        userinfo = resp.json()
+
+        # Store the user information in flask session.
+        session['jwt_payload'] = userinfo
+        session['profile'] = {
+            'user_id': userinfo['sub'],
+            'name': userinfo['name'],
+            'picture': userinfo['picture']
+        }
+        return redirect('/dashboard')
+
+    # /server.py
+    @app.route('/login', methods=['GET'])
+    def get_login_page():
+        return render_template('home.html')
+    
+    @app.route('/login-auth')
+    def login():
+        return auth0.authorize_redirect(redirect_uri='http://localhost:5000')
+    
+    # /server.py
 
 # ----------------------------------------------------------------------------#
 #  Controllers.
 # ----------------------------------------------------------------------------#
+
 
 
     @app.route('/', methods =['GET'])
@@ -69,6 +146,7 @@ def create_app(test_config=None):
 
 
     @app.route('/teachers', methods=['GET'])
+    @requires_auth('get:teachers')
     def get_teachers():
         try:
             print("I'm in get teachers")
@@ -288,7 +366,7 @@ def create_app(test_config=None):
             abort(404)
 
     @app.route('/teachers/<int:id>', methods=['POST','DELETE'])
-    #@requires_auth('delete:drinks')
+    #@requires_auth('delete:teachers')
     def delete_teacher(id):
         teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
         if teacher:
@@ -1064,7 +1142,7 @@ def create_app(test_config=None):
             "message": "unauthorized"
         }),  401
 
-    '''
+    
     @app.errorhandler(AuthError)
     def auth_error(ex):
         print(ex.error['code'], "is the code")
@@ -1074,7 +1152,9 @@ def create_app(test_config=None):
             "error": ex.status_code,
             "message": ex.error['code']
         }),  ex.status_code  # 403 status code
-        '''
+    
+    
+    
     return app
 
 app = create_app()
