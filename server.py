@@ -122,7 +122,7 @@ def verify_decode_jwt(token):
 '''
 auth0 version
 '''
-
+'''
 def requires_auth(f):
   @wraps(f)
   def decorated(*args, **kwargs):
@@ -135,12 +135,12 @@ def requires_auth(f):
 
   return decorated
 
-
+'''
 '''
 coffeeshop version
 '''
 
-'''
+
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
@@ -154,4 +154,3 @@ def requires_auth(permission=''):
         return wrapper
     return requires_auth_decorator
     
-'''
