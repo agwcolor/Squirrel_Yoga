@@ -33,7 +33,7 @@ class AuthError(Exception):
 '''
 get header from request
 '''
-
+'''
 def get_token_auth_header():
     # unpack request header
     if 'Authorization' not in request.headers:
@@ -46,8 +46,27 @@ def get_token_auth_header():
     elif header_parts[0].lower() != 'bearer':
         abort(401)
     return header_parts[1]  # token itself
+'''
 
-
+def get_token_auth_header():
+    auth_header = request.headers.get("Authorization", None)
+    if auth_header is None:
+        raise AuthError({
+            "code": "authorization_header_missing",
+            "description": "Authorization Header is required."
+        }, 401)
+    auth_header_values = auth_header.split(" ")
+    if len(auth_header_values) != 2:
+        raise AuthError({
+            "code": "invalid_authorization_header",
+            "description": "Authorization Header is malformed."
+        }, 401)
+    elif auth_header_values[0].lower() != "bearer":
+        raise AuthError({
+            "code": "invalid_authorization_header",
+            "description": "Authorization Header must start with \"Bearer\"."
+        }, 401)
+    return auth_header_values[1]
 '''
 check if permission in payload
 '''
