@@ -25,6 +25,8 @@ ALGORITHMS = ['RS256']
 API_AUDIENCE = os.environ.get('API_AUDIENCE')
 
 
+
+
 class AuthError(Exception):
     def __init__(self, error, status_code):
         self.error = error
@@ -141,25 +143,26 @@ def verify_decode_jwt(token):
 '''
 auth0 version
 '''
-'''
-def requires_auth(f):
-  @wraps(f)
-  def decorated(*args, **kwargs):
-    if 'profile' not in session:
-        print(session, " is the session")
+def requires_auth(permission=''):
 
-        # Redirect to Login page here
-        return redirect('/')
-    return f(*args, **kwargs)
+    def requires_auth(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            if 'profile' not in session:
+                print(session, " is the session")
+                # Redirect to Login page here
+                return redirect('/')
+            return f(*args, **kwargs)
+        return decorated
 
-  return decorated
+    return requires_auth
 
-'''
+
 '''
 coffeeshop version
 '''
 
-
+'''
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
@@ -173,3 +176,4 @@ def requires_auth(permission=''):
         return wrapper
     return requires_auth_decorator
     
+'''
