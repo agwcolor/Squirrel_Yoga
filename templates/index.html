@@ -26,8 +26,8 @@
               <a href="{{ url_for('retrieve_new_tree_form') }}"><button class="btn btn-info">Add tree location</button></a>
 
             </h3>
-            <small>Note: In order to create an event,
-              the course, teacher, and tree location must already exist in our database.</small>
+            <small>Note: In order to create an event --
+              the course, teacher, & tree location must already exist in our database.</small>
 
             <h3>
 
@@ -39,8 +39,8 @@
 
     </div>
     <div class="card-body">
-      <div class="col-sm-6 hidden-sm hidden-xs">
-        <img id="front-splash" src="{{ url_for('static',filename='2squirrel_sm.jpg') }}" alt="2 Squirrels" />
+      <div class=" col-xs-6 col-sm-10 col-sm-12">
+        <img class="mx-auto d-block" id="front-splash" src="{{ url_for('static',filename='2squirrel_sm.jpg') }}" alt="2 Squirrels" />
       </div>
     </div>
 {% endblock %}

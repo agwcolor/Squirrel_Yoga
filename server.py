@@ -127,8 +127,10 @@ def requires_auth(f):
   @wraps(f)
   def decorated(*args, **kwargs):
     if 'profile' not in session:
-      # Redirect to Login page here
-      return redirect('/')
+        print(session, " is the session")
+
+        # Redirect to Login page here
+        return redirect('/')
     return f(*args, **kwargs)
 
   return decorated
@@ -138,6 +140,7 @@ def requires_auth(f):
 coffeeshop version
 '''
 
+'''
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
@@ -145,7 +148,10 @@ def requires_auth(permission=''):
             token = get_token_auth_header()
             payload = verify_decode_jwt(token)
             check_permissions(permission, payload)
+            print(payload, "is the payload")
             return f(payload, *args, **kwargs)
-
+             
         return wrapper
     return requires_auth_decorator
+    
+'''
