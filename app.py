@@ -1,85 +1,57 @@
+from dotenv import load_dotenv, find_dotenv
 import sys
 import os
+from os.path import join, dirname
 from flask import Flask, request, abort, flash, json, jsonify, render_template, redirect, url_for
 from models import setup_db, db, Teacher, Course, Tree, Event
 #import config
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import dateutil.parser
 import babel
 from flask_wtf import FlaskForm
 from forms import *
 from datetime import datetime
-# from auth import AuthError, requires_auth
-from server import AuthError, requires_auth
+from auth.auth import AuthError, requires_auth
+#from server import AuthError, requires_auth
 from authlib.integrations.flask_client import OAuth
 from flask import session
 from six.moves.urllib.parse import urlencode
 
+AUTH0_CALLBACK_URL = os.environ['AUTH0_CALLBACK_URL']
+AUTH0_CLIENT_ID = os.environ['AUTH0_CLIENT_ID']
+AUTH0_CLIENT_SECRET = os.environ['AUTH0_CLIENT_SECRET']
+AUTH0_DOMAIN = os.environ['AUTH0_DOMAIN']
+AUTH0_BASE_URL = 'https://' + AUTH0_DOMAIN
+AUTH0_AUDIENCE = os.environ['AUTH0_AUDIENCE']
+
 def create_app(test_config=None):
 
     app = Flask(__name__)
-    app.secret_key = os.urandom(24)
+    app.secret_key = os.environ['SECRET_KEY']
     setup_db(app)
-    print("nothings working")
+    print("creating app ...")
     CORS(app)
-    
-    
-    
-    @app.after_request  # after request received run this method
-    def after_request(response):
-        response.headers.add('Access-Control-Allow-Headers',
-                             'Content-Type, Authorizatoin')
-        response.headers.add('Access-Control-Allow-Headers',
-                             'GET,POST,PATCH,DELETE,OPTIONS')
-        return response
-    
-    #  AUTH
+
     oauth = OAuth(app)
 
     auth0 = oauth.register(
         'auth0',
-        client_id=os.environ.get('CLIENT_ID'),
-        client_secret=os.environ.get('CLIENT_SECRET'),
-        api_base_url=os.environ.get('API_BASE_URL'),
-        access_token_url=os.environ.get('ACCESS_TOKEN_URL'),
-        authorize_url=os.environ.get('AUTHORIZE_URL'),
+        client_id=AUTH0_CLIENT_ID,
+        client_secret=AUTH0_CLIENT_SECRET,
+        api_base_url=AUTH0_BASE_URL,
+        access_token_url=AUTH0_BASE_URL + '/oauth/token',
+        authorize_url=AUTH0_BASE_URL + '/authorize',
         client_kwargs={
             'scope': 'openid profile email',
-        },
+            },
     )
 
-
-# ----------------------------------------------------------------------------#
-# Filters.
-# ----------------------------------------------------------------------------#
-
-
-    '''def format_datetime(value, format='medium'):
-        date = dateutil.parser.parse(value)
-        if format == 'full':
-            format = "EEEE MMMM, d, y 'at' h:mma"
-        elif format == 'medium':
-            format = "EE MM, dd, y h:mma"
-        return babel.dates.format_datetime(date, format)
-
-
-    app.jinja_env.filters['datetime'] = format_datetime'''
     
 # ----------------------------------------------------------------------------#
 # Auth Enpoints.
 # ----------------------------------------------------------------------------#
 
-    # /server.py
-
-    @app.route('/dashboard')
-    @requires_auth
-    def dashboard():
-        return render_template('dashboard.html',
-                            userinfo=session['profile'],
-                            userinfo_pretty=json.dumps(session['jwt_payload'], indent=4))
-
-    # /server.py
-
+    '''
     @app.route('/logout')
     def logout():
         # Clear session stored data
@@ -87,39 +59,67 @@ def create_app(test_config=None):
         # Redirect user to logout endpoint
         params = {'returnTo': url_for('confirm_logout', _external=True), 'client_id': auth0.client_id}
         return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
+    '''
+    # Here we're using the /callback route.
+    @app.route('/callback')
+    
+    def callback_handling():
+        # Handles response from token endpoint
+        token = auth0.authorize_access_token()
+        session['token'] = token['access_token']
+        print(session['token'], " is the session token")
+        resp = auth0.get('userinfo')
+        userinfo = resp.json()
+
+        # Store the user information in flask session.
+        session['JWT_PAYLOAD'] = userinfo
+        session['profile'] = {
+            'user_id': userinfo['sub'],
+            'name': userinfo['name'],
+        #   'picture': userinfo['picture']
+         }
+        return redirect((url_for('get_home_page')))
+    
+    @app.route('/login')
+    @cross_origin()
+    def login():
+        return auth0.authorize_redirect(redirect_uri=AUTH0_CALLBACK_URL, audience=AUTH0_AUDIENCE)
+ 
+    @app.route('/logout')
+    def logout():
+        session.clear()
+        params = {'returnTo': url_for('get_home_page', _external=True), 'client_id': AUTH0_CLIENT_ID}
+        return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
 
 
     @app.route('/confirm-logout', methods=['GET'])
     def confirm_logout():
             return render_template('logged_out.html')
 
-    # Here we're using the /callback route.
-    @app.route('/callback')
-    def callback_handling():
-        # Handles response from token endpoint
-        auth0.authorize_access_token()
-        resp = auth0.get('userinfo')
-        userinfo = resp.json()
-
-        # Store the user information in flask session.
-        session['jwt_payload'] = userinfo
-        session['profile'] = {
-            'user_id': userinfo['sub'],
-            'name': userinfo['name'],
-            'picture': userinfo['picture']
-        }
-        return redirect('/dashboard')
+    
 
     # /server.py
+    '''
     @app.route('/login', methods=['GET'])
     def get_login_page():
         return render_template('home.html')
-    
+        '''
+    '''
     @app.route('/login-auth')
     def login():
-        return auth0.authorize_redirect(redirect_uri='http://localhost:5000')
-    
-    # /server.py
+        print('Audience: {}'.format(API_AUDIENCE))
+        return auth0.authorize_redirect(redirect_uri='http://localhost:5000/callback', audience=API_AUDIENCE)
+    '''
+    ''' AUTH0 Boilerplate
+    @app.route('/dashboard')
+    @requires_auth
+    def dashboard():
+        #print(session['profile'], " session profile")
+        #print(json.dumps(session['jwt_payload'], " jwt payload"))
+        return render_template('dashboard.html',
+                            userinfo=session['constants.PROFILE_KEY'],
+                            userinfo_pretty=json.dumps(session['JWT_PAYLOAD'], indent=4))
+    '''
 
 # ----------------------------------------------------------------------------#
 #  Controllers.
@@ -128,10 +128,11 @@ def create_app(test_config=None):
 
 
     @app.route('/', methods =['GET'])
+    @cross_origin()
     #@app.route('/index', methods =['GET'])
     #@app.route('/index.html', methods =['GET'])
     def get_home_page():
-        return render_template('index.html',greeting="Hello!")
+        return render_template('index.html', greeting="Hello!")
 
 
     '''@app.route('/coolsquirrel')
@@ -146,6 +147,7 @@ def create_app(test_config=None):
 
 
     @app.route('/teachers', methods=['GET'])
+    @cross_origin()
     @requires_auth('get:teachers')
     def get_teachers():
         try:
@@ -289,8 +291,7 @@ def create_app(test_config=None):
         form = TeacherForm(request.form)
         print("My form info", type(form), form.name.data)
         if (form.name.data or form.age.data or
-                form.temperament.data or form.moves.data or 
-                form.img_url.data):
+                form.temperament.data or form.moves.data or form.img_url.data):
             print("form not valid")
         
         error = False
@@ -1162,4 +1163,4 @@ app = create_app()
 # Launch.
 #----------------------------------------------------------------------------#
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=env.get('PORT', 5000))
