@@ -31,6 +31,14 @@ def create_app(test_config=None):
     setup_db(app)
     print("creating app ...")
     CORS(app)
+    
+    @app.after_request  # after request received run this method
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Headers',
+                             'Content-Type, Authorizatoin')
+        response.headers.add('Access-Control-Allow-Headers',
+                             'GET,POST,PATCH,DELETE,OPTIONS')
+        return response
 
     oauth = OAuth(app)
 
