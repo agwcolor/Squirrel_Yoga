@@ -185,16 +185,17 @@ def requires_auth(permission=''):
                 print(f'testing for permission: {permission}')
                 if check_permissions(permission, payload):
                     print('Permission is in permissions!')
-                
                 return f(payload, *args, **kwargs)
-            except Exception:
-                abort(401)
-
+            except Exception as e:
+                print(e, " is the exception")
+                flash('You do not have the correct permissions to do this.')
+                return render_template('index.html', userinfo=session['profile'])
 
         return wrapper
     return requires_auth_decorator
-'''
 
+'''
+'''
 # AUTH0 boilerplate + additional decorator to fix requires f error
 def requires_auth(permission=''):
     
@@ -227,5 +228,50 @@ def requires_auth(permission=''):
                 return render_template('index.html', userinfo=session['profile'])
             
 
+        return decorated
+    return requires_auth_decorator
+'''
+
+def requires_auth(permission=''):
+    def requires_auth_decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            if session:
+                try:
+                    token = None
+                    if session['token']:
+                        token = session['token']
+                    else:
+                        token = get_token_auth_header()
+                        print('token at authorization time: {}'.format(token))
+                    if token is None:
+                        print("There is no token asfdjadlfjadsf")
+                        flash('You must be logged in to do this.')
+                        abort(400)
+                    payload = verify_decode_jwt(token)
+                    print('Payload is: {}'.format(payload))
+                    print(f'testing for permission: {permission}')
+                    if check_permissions(permission, payload):
+                        print('Permission is in permissions!')
+                    return f(payload, *args, **kwargs)
+                except Exception as e:
+                    flash('You do not have the correct permissions to do this.')
+                    #return render_template('index.html', userinfo=session['profile'])
+                    abort(401)
+            else:
+                flash('You must be logged in to do this.')
+                return render_template('index.html', userinfo='')
+        return wrapper
+    return requires_auth_decorator
+
+def requires_auth_auth0(permission=''):
+    def requires_auth_decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            if 'profile' not in session:
+                flash('You are not logged in?.')
+                # Redirect to Login page here
+                return render_template('index.html', userinfo='')
+            return f(*args, **kwargs)
         return decorated
     return requires_auth_decorator

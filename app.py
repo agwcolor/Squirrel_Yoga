@@ -11,7 +11,7 @@ import babel
 from flask_wtf import FlaskForm
 from forms import *
 from datetime import datetime
-from auth.auth import AuthError, requires_auth
+from auth.auth import AuthError, requires_auth, requires_auth_auth0
 #from server import AuthError, requires_auth
 from authlib.integrations.flask_client import OAuth
 from flask import session, g
@@ -127,8 +127,8 @@ def create_app(test_config=None):
     '''
     ''' AUTH0 Boilerplate '''
     @app.route('/dashboard')
-    #@cross_origin()
-    @requires_auth()
+    @cross_origin()
+    @requires_auth_auth0()
     def dashboard():
         print(session['profile'], " session profile")
         #print(json.dumps(session['jwt_payload'], " jwt payload"))
@@ -301,9 +301,8 @@ def create_app(test_config=None):
 
 
     @app.route('/teachers/add', methods=['GET'])
-    @cross_origin()
     @requires_auth('post:teachers')
-    def retrieve_new_teacher_form():
+    def retrieve_new_teacher_form(payload):
         form = TeacherForm()
         print("I am here")
         print(form.name.data, "is the data")
@@ -1148,11 +1147,14 @@ def create_app(test_config=None):
     
     @app.errorhandler(400)
     def unprocessable(error):
+        return render_template('index.html', userinfo='')
+        '''
         return jsonify({
             "success": False,
             "error": 400,
             "message": "bad request"
         }), 400
+        '''
         
     '''
     AuthErrors - 401 : unauthorized
@@ -1162,7 +1164,8 @@ def create_app(test_config=None):
 
     @app.errorhandler(401)
     def auth_error(error):
-        return redirect('/')
+        print("I'm in auth error 401 I should be logged in")
+        return render_template('index.html', userinfo=session['profile'])
         '''
         return jsonify({
             "success": False,
