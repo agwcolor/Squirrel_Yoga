@@ -31,3 +31,13 @@ img {
     height: auto;
 }
 
+.avatar {
+    padding: 2em;
+}
+
+.auth-state {
+    text-emphasis-color: green;
+    color: blueviolet;
+    background-color: aliceblue;
+}
+

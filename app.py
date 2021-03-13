@@ -14,7 +14,7 @@ from datetime import datetime
 from auth.auth import AuthError, requires_auth
 #from server import AuthError, requires_auth
 from authlib.integrations.flask_client import OAuth
-from flask import session
+from flask import session, g
 from six.moves.urllib.parse import urlencode
 
 AUTH0_CALLBACK_URL = os.environ['AUTH0_CALLBACK_URL']
@@ -38,6 +38,7 @@ def create_app(test_config=None):
                              'Content-Type, Authorizatoin')
         response.headers.add('Access-Control-Allow-Headers',
                              'GET,POST,PATCH,DELETE,OPTIONS')
+        print(response, " is the response in after_request")
         return response
 
     oauth = OAuth(app)
@@ -54,7 +55,10 @@ def create_app(test_config=None):
             },
     )
 
-    
+    '''@app.context_processor
+    def inject_user():
+        return dict(user=g.user)
+    '''
 # ----------------------------------------------------------------------------#
 # Auth Enpoints.
 # ----------------------------------------------------------------------------#
@@ -69,8 +73,9 @@ def create_app(test_config=None):
         return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
     '''
     # Here we're using the /callback route.
+
     @app.route('/callback')
-    
+    @cross_origin()
     def callback_handling():
         # Handles response from token endpoint
         token = auth0.authorize_access_token()
@@ -84,9 +89,10 @@ def create_app(test_config=None):
         session['profile'] = {
             'user_id': userinfo['sub'],
             'name': userinfo['name'],
-        #   'picture': userinfo['picture']
+            'nickname': userinfo['nickname'],
+            'picture': userinfo['picture']
          }
-        return redirect((url_for('get_home_page')))
+        return redirect('/dashboard', )
     
     @app.route('/login')
     @cross_origin()
@@ -94,9 +100,10 @@ def create_app(test_config=None):
         return auth0.authorize_redirect(redirect_uri=AUTH0_CALLBACK_URL, audience=AUTH0_AUDIENCE)
  
     @app.route('/logout')
+    @cross_origin()
     def logout():
         session.clear()
-        params = {'returnTo': url_for('get_home_page', _external=True), 'client_id': AUTH0_CLIENT_ID}
+        params = {'returnTo': url_for('confirm_logout', _external=True), 'client_id': AUTH0_CLIENT_ID}
         return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
 
 
@@ -118,16 +125,17 @@ def create_app(test_config=None):
         print('Audience: {}'.format(API_AUDIENCE))
         return auth0.authorize_redirect(redirect_uri='http://localhost:5000/callback', audience=API_AUDIENCE)
     '''
-    ''' AUTH0 Boilerplate
+    ''' AUTH0 Boilerplate '''
     @app.route('/dashboard')
-    @requires_auth
+    #@cross_origin()
+    @requires_auth()
     def dashboard():
-        #print(session['profile'], " session profile")
+        print(session['profile'], " session profile")
         #print(json.dumps(session['jwt_payload'], " jwt payload"))
         return render_template('dashboard.html',
-                            userinfo=session['constants.PROFILE_KEY'],
+                            userinfo=session['profile'],
                             userinfo_pretty=json.dumps(session['JWT_PAYLOAD'], indent=4))
-    '''
+    
 
 # ----------------------------------------------------------------------------#
 #  Controllers.
@@ -139,14 +147,21 @@ def create_app(test_config=None):
     @cross_origin()
     #@app.route('/index', methods =['GET'])
     #@app.route('/index.html', methods =['GET'])
+    
+        
     def get_home_page():
-        return render_template('index.html', greeting="Hello!")
+        if not session:
+            userinfo=""
+        else:
+            userinfo=session['profile']
+        return render_template('index.html', userinfo=userinfo)
 
 
     '''@app.route('/coolsquirrel')
     def be_cool():
         return render_template('index.html', greeting="Be cool man", excited="I'd rather be surfing")
-        #return "Be cool, man, go gather more nuts!" '''
+        #return "Be cool, man, go gather more nuts!" 
+        # '''
 
 
 #  ----------------------------------------------------------------
@@ -156,7 +171,6 @@ def create_app(test_config=None):
 
     @app.route('/teachers', methods=['GET'])
     @cross_origin()
-    @requires_auth('get:teachers')
     def get_teachers():
         try:
             print("I'm in get teachers")

@@ -1,10 +1,25 @@
 {% extends "base.html" %}
-
+<div class="card">
+  
+</div>
 {% block main %}
+<div class="card">
     <div class="card">
+      <div class="auth-state">
+        {% if userinfo['name'] %}
+              You are logged in as {{userinfo['name']}}
+              <a href="{{ url_for('logout') }}"><button class="btn btn-sm btn-outline-primary">Logout</button></a>
+              {% else %}
+              You are not logged in.
+              <a href="{{ url_for('login') }}"><button class="btn btn-sm btn-outline-primary">Login</button></a>
+      
+              {% endif %}
+        
+      </div>
       <div class="card-body">
         <div class="row">
           <div class="col">
+            
             <h1>Squirrel Yoga ! </h1>
             <p class="lead">Find a tree and move that's right for you.</p>
             <h3>
