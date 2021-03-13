@@ -144,16 +144,17 @@ def create_app(test_config=None):
 
 
     @app.route('/', methods =['GET'])
-    @cross_origin()
     #@app.route('/index', methods =['GET'])
     #@app.route('/index.html', methods =['GET'])
-    
-        
+    @cross_origin()
     def get_home_page():
-        if not session:
+        if not session: 
+            print("there is no session?? Why")
             userinfo=""
         else:
             userinfo=session['profile']
+            print(session, " is the session")
+            print(userinfo, "userinfo profile")
         return render_template('index.html', userinfo=userinfo)
 
 
@@ -300,6 +301,8 @@ def create_app(test_config=None):
 
 
     @app.route('/teachers/add', methods=['GET'])
+    @cross_origin()
+    @requires_auth('post:teachers')
     def retrieve_new_teacher_form():
         form = TeacherForm()
         print("I am here")
@@ -1159,11 +1162,14 @@ def create_app(test_config=None):
 
     @app.errorhandler(401)
     def auth_error(error):
+        return redirect('/')
+        '''
         return jsonify({
             "success": False,
             "error": 401,
             "message": "unauthorized"
         }),  401
+        '''
 
     
     @app.errorhandler(AuthError)

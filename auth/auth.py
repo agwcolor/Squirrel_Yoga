@@ -1,7 +1,7 @@
 import json
 import os
 import sys
-from flask import request, _request_ctx_stack, abort, session
+from flask import request, _request_ctx_stack, render_template, abort, session, redirect, flash
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
@@ -201,10 +201,31 @@ def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
         def decorated(*args, **kwargs):
-            if 'profile' not in session:
-            # Redirect to Login page here
-                return redirect('/')
-            return f(*args, **kwargs)
+            try:
+                token = None
+                if session['token']:
+                    token = session['token']
+                else:
+                    token = get_token_auth_header()
+                print('token at authorizatin time: {}'.format(token))
+                if token is None:
+                    abort(400)
+                if 'profile' not in session:
+                    flash('You are not logged in?.')
+                # Redirect to Login page here
+                    #return redirect('/')
+                    return render_template('index.html', userinfo='')
+                payload = verify_decode_jwt(token)
+                print('Payload is: {}'.format(payload))
+                print(f'testing for permission: {permission}')
+                if check_permissions(permission, payload):
+                    print('Permission is in permissions!')
+                return f(*args, **kwargs)
+
+            except Exception as e:
+                flash('You do not have the correct permissions to do this.')
+                return render_template('index.html', userinfo=session['profile'])
+            
 
         return decorated
     return requires_auth_decorator
