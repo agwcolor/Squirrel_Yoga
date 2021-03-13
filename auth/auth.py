@@ -7,6 +7,7 @@ from jose import jwt
 from urllib.request import urlopen
 from os import environ
 
+## COFFEESHOP PROJECT BOILERPLATE + AUTH0 Boilerplate for requires_auth()
 
 AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
 ALGORITHMS = ['RS256']
@@ -194,7 +195,7 @@ def requires_auth(permission=''):
     return requires_auth_decorator
 '''
 
-# AUTH0 boilerplate
+# AUTH0 boilerplate + additional decorator to fix requires f error
 def requires_auth(permission=''):
     
     def requires_auth_decorator(f):
