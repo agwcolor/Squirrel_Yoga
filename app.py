@@ -149,11 +149,14 @@ def create_app(test_config=None):
     @cross_origin()
     def get_home_page():
         if not session: 
-            print("there is no session?? Why")
+            print("there is no session")
             userinfo=""
+        elif 'profile' not in session:
+            userinfo=""
+            print("there's a session but no profile")
+            print(session, " is the session")
         else:
             userinfo=session['profile']
-            print(session, " is the session")
             print(userinfo, "userinfo profile")
         return render_template('index.html', userinfo=userinfo)
 
