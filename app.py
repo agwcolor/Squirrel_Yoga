@@ -314,6 +314,7 @@ def create_app(test_config=None):
 
     @app.route('/teachers/add',
             methods=['POST'])  # plural collection endpoint
+    @requires_auth('post:teachers')
     def create_teacher():
         form = TeacherForm(request.form)
         print("My form info", type(form), form.name.data)
@@ -354,6 +355,7 @@ def create_app(test_config=None):
 
 
     @app.route('/teachers/<int:id>/edit', methods=['GET'])
+    #@requires_auth('patch:teachers')
     def retrieve_teacher_info(id):
         teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
         form = TeacherForm(obj=teacher)  # Populate form with teacher
@@ -550,6 +552,7 @@ def create_app(test_config=None):
 
     '''
     @app.route('/courses/add', methods=['GET'])
+    #@requires_auth('post:courses')
     def retrieve_new_course_form():
         form = CourseForm()
         print("I am here")
@@ -592,6 +595,7 @@ def create_app(test_config=None):
 
     @app.route('/courses/<int:id>/edit',
             methods=['GET'])  # plural collection endpoint
+    #@requires_auth('patch:courses')
     def retrieve_course_info(id):
         course = Course.query.filter(Course.id == id).one_or_none()
         form = CourseForm(obj=course)  # Populate form with course
@@ -785,6 +789,7 @@ def create_app(test_config=None):
 
     '''
     @app.route('/trees/add', methods=['GET'])
+    #@requires_auth('post:trees')
     def retrieve_new_tree_form():
         form = TreeForm()
         print("I am here")
@@ -832,6 +837,7 @@ def create_app(test_config=None):
 
     @app.route('/trees/<int:id>/edit',
             methods=['GET'])  # plural collection endpoint
+    #@requires_auth('patch:trees')
     def retrieve_tree_info(id):
         tree = Tree.query.filter(Tree.id == id).one_or_none()
         form = TreeForm(obj=tree)  # Populate form with tree
@@ -937,6 +943,7 @@ def create_app(test_config=None):
 
 
     @app.route('/events/create', methods=['GET'])
+    #@requires_auth('post:events')
     def retrieve_new_event_form():
         form = EventForm()
         print("I am here")
@@ -998,6 +1005,7 @@ def create_app(test_config=None):
 
     @app.route('/events/<int:id>/edit',
             methods=['GET'])  # plural collection endpoint
+    #@requires_auth('patch:events')
     def retrieve_event_info(id):
         event = Event.query.filter(Event.id == id).one_or_none()
         form = EventForm(obj=event)  # Populate form with course
