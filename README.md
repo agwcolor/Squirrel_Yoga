@@ -6,7 +6,7 @@ Squirrel Yoga ---- <Work in Progress - not completed>
 Squirrel Yoga is a full-stack website where users can create/modify/delete and manage teachers, courses, events, and tree locations.  
 
 ## Overview
-This project is an implentation of an app using a Model View Controller architecture to store and retrieve data via an API written in Python usinpwdg Flask. Authentication using Auth0, a 3rd party authentication service and tests written using unittest are also required. The final project is deployed on Heroku.  Although a Front-End was not required, I included a light-weight one using Jinja Templates so that I could learn how to do this and also have a convenient visual interface and to complete a full-stack app that anyone can use.
+This project is an implentation of an app using a Model-View-Controller architecture to store and retrieve data via an API written in Python using Flask. Authentication is implemented using Auth0, a 3rd party authentication service. Tests written using unittest. The final project is deployed on Heroku.  Although a Front-End was not required, I included a light-weight one using Jinja Templates so that I could learn how to do this and also have a convenient visual interface and to complete a full-stack app that anyone can use.
 
 ## Tech Stack (Dependencies)
 
@@ -564,7 +564,7 @@ GET '/trees/:id'
 POST '/trees/add'
 - Adds a tree
 - Request Arguments: tree name text, type, location, and image url
-- Curl sample : 
+- Curl sample :
     curl http://127.0.0.1:5000/trees/add
     -X POST
     -H "Content-Type: application/json"
@@ -582,7 +582,7 @@ POST '/trees/add'
 PATCH '/trees/:id/edit'
 - Modify a teacher
 - Request Arguments: teacher name text, age number, temperament, and moves
-- Curl sample : 
+- Curl sample :
     curl http://127.0.0.1:5000/trees/2/edit
     -X PATCH
     -H "Content-Type: application/json"
@@ -604,7 +604,7 @@ PATCH '/trees/:id/edit'
 
 DELETE '/trees/:id'
 - Deletes a tree based on id
-- Request arguments : id: id of tree to be deleted 
+- Request arguments : id: id of tree to be deleted
 - Curl sample : curl -X DELETE "http://127.0.0.1:5000/trees/4
 - Returns : deleted: id of the question that was deleted
 ```
