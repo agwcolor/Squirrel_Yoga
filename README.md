@@ -588,15 +588,15 @@ POST '/trees/add'
 ```
 
 PATCH '/trees/:id/edit'
-- Modify a teacher
-- Request Arguments: teacher name text, age number, temperament, and moves
+- Modify a tree
+- Request Arguments: tree name, type, location
 - Curl sample :
     ```curl http://127.0.0.1:5000/trees/2/edit
     -X PATCH
     -H "Content-Type: application/json"
     -d '{"name":"Figgy","type": "Fig", "location": "Scary Dog's Garden"}'
     ```
-- Returns : teacher.id, teacher.name, teacher.moves
+- Returns : 
 
 
 ```
@@ -625,7 +625,6 @@ DELETE '/trees/:id'
 
 ### EVENTS
 GET '/events' <br>
-GET '/events'
 - Fetches a list of events and their details
 - Request arguments: None
 - Curl sample: ```curl "http://127.0.0.1:5000/events"```
@@ -694,7 +693,7 @@ POST '/events/add'
 
 PATCH '/events/:id/edit'
 - Modify an event
-- Request Arguments: teacher name text, age number, temperament, and moves
+- Request Arguments: teacher, course, tree, course date - (teacher_id, course_id, tree_id are autopopulated in the form so the user doesn't need to know the id number.)
 - Curl sample : 
 ```
     curl http://127.0.0.1:5000/events/2/edit
@@ -716,7 +715,7 @@ PATCH '/events/:id/edit'
 
 DELETE '/events/:id'
 - Deletes an event based on id
-- Request arguments : id: id of event to be deleted 
+- Request arguments : id of event to be deleted 
 - Curl sample : ```curl -X DELETE "http://127.0.0.1:5000/events/24```
 - Returns : deleted: id of the event that was deleted
 ```
