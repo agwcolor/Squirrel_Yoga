@@ -6,7 +6,7 @@ Squirrel Yoga ---- <Work in Progress - not completed>
 Squirrel Yoga is a full-stack website where users can create/modify/delete and manage teachers, courses, events, and tree locations.  
 
 ## Overview
-This project is an implentation of an app using a Model-View-Controller architecture to store and retrieve data via an API written in Python using Flask. Authentication is implemented using Auth0, a 3rd party authentication service. Tests written using unittest. The final project is deployed on Heroku.  Although a Front-End was not required, I included a light-weight one using Jinja Templates so that I could learn how to do this and also have a convenient visual interface and to complete a full-stack app that anyone can use.
+This project is an implentation of an app using a Model-View-Controller architecture to store and retrieve data via an API written in Python using Flask. Authentication is implemented using Auth0, a 3rd party authentication service. Tests are written using unittest. The final project is deployed on Heroku.  Although a Front-End was not required, I included a light-weight one using Jinja Templates so that I could learn how to do this and also to have a convenient visual interface for a full-stack application that anyone can use.
 
 ## Tech Stack (Dependencies)
 
