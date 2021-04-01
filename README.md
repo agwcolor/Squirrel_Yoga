@@ -83,7 +83,7 @@ Folder & File Descriptions :
 * `setup.sh` -- I used environment variables to store  applicaton and configuration variables that should remain hidden. You will need to define these yourself if you want to build this app locally and make sure they are available to your app, using your favorite environment variable storage method. (For deployment, these variables are manually configured on Heroku). 
 
 Note: Replace the placeholder values!
-
+```
 DATABASE_URL='yourpostgresdatabaseurl'
 SECRET_KEY='yourflasksecretkey'
 AUTH0_CALLBACK_URL='yourauth0callbackurl'
@@ -91,19 +91,19 @@ AUTH0_CLIENT_ID='yourauth0clientid'
 AUTH0_CLIENT_SECRET='yourauth0clientsecret'
 AUTH0_DOMAIN='yourauth0domain'
 AUTH0_AUDIENCE='yourauth0audience'
-
+```
 
 *  `models.py` -- defines the data models that set up the database tables. (the Models in this project are : Teachers, Events, Courses, Trees.) Loosely based on the structure of the Fyyr app project models.
 * `app.py` --  main app file. Defines the routes that match the user’s URL and the controllers which handle data and render views to the user.
 * `form.py` -- contains forms definitions using WFT_form, a built-in module in flask for designing forms, and WTForms library for form validation and rendering.
-* `templates/` -- where the web frontend jinja templates are located. Templates are built based on the controllers (Flask enpoints) in `app.py`
-* `templates/forms` -- where the web frontend jinja form templates are located. Form validation and definitions are defined in `forms.py`
+* `templates/` -- where the web frontend Jinja templates are located. Templates are built based on the controllers (Flask enpoints) in `app.py`
+* `templates/forms` -- where the web frontend Jinja form templates are located. Form validation and definitions are defined in `forms.py`
 
 * `requirements.txt` -- Lists all of the libraries required for this app to run. To install them : Create a virtual enviromnent, then install by running 'pip3 install -r `requirements.txt` '
 * `migrations/` -- Alembic database migrations folder
 * `flask db migrate` -- can be used to populate a local postgres database with properly configured tables and relationships for application  objects, including columns, column data types, constraints, and defaults.
 * `auth/auth.py` -- handles checking authentication requirements for endpoints defined in `app.py` and verifying with Auth0 3rd party service that JWTs are valid. Most of this is boilerplate code used from the Coffeeshop project. However, significant modifications had to be made to work with Jinja templates to reflect the current user and login session.
-* `tests.py` --  Note : The unit tests were to be written using the built in Python unittest library as required. It turns out that this was challenging to do because the front and backend is tightly coupled and I was unable to return json responses but had to test via returned & rendered templates instead.
+* `tests.py` --  Note : The project rubric instructed us to use Python unittest library. It turns out that this was challenging to do because the front and backend is tightly coupled and I was unable to return json responses but had to test via returned & rendered templates instead. However, rendered json can be returned in if that section of the code is uncommented and the 'render template' portion commented out.
 * `Procfile` -- for Heroku deployment. Used to run the app using gunicorn (WSGI http server) on Heroku
 
 
@@ -140,8 +140,9 @@ python3 app.py    - or -   flask run
 Navigate to project homepage [http://127.0.0.1:5000/](http://127.0.0.1:5000/) or [http://localhost:5000](http://localhost:5000) 
 
 ## Authentication - RBAC behavior
-This application uses the Auth0 authentication and authorization (identity management) platform.
-See `/auth/auth.py` which uses a combination of coffeeshop project auth boilerplate, AUTH0 boilerplate for requires_auth(), and customization for Jinja.
+This application uses the [Auth0](https://auth0.com/)
+ authentication and authorization (identity management) platform.
+See `/auth/auth.py` which uses a combination of the Coffeeshop project auth boilerplate, AUTH0 boilerplate for requires_auth() in `app.py`, as well as some auth to work with Jinja templates.
 
 There are 4 anticipated users (roles) configured using Auth0 3rd party service:
 * Anyone -- can view (GET)
@@ -165,18 +166,21 @@ It has 16 endpoints in 4 main categories: Teachers, Courses, & Trees, Events sum
 
 TEACHERS:
 - GET '/teachers'
+- GET '/teachers/:id'
 - POST '/teachers/add'
 - PATCH '/teachers/:id/edit'
 - DELETE '/teachers/:id'
 
 COURSES:
 - GET '/courses'
+- GET '/courses/:id'
 - POST '/courses/add'
 - PATCH '/courses/:id/edit'
 - DELETE '/courses/:id'
 
 TREES:
 - GET '/trees'
+- GET '/trees/:id'
 - POST '/trees/add'
 - PATCH '/trees/:id/edit'
 - DELETE '/trees/:id'
@@ -190,10 +194,9 @@ EVENTS:
 
 ### TEACHERS
 GET '/teachers' <br>
-GET '/teachers'
 - Fetches a list of teachers
 - Request arguments: None
-- Curl sample: curl "http://127.0.0.1:5000/teachers"
+- Curl sample: ```curl "http://127.0.0.1:5000/teachers"```
 - Returns:
 ```
 {
@@ -226,7 +229,7 @@ GET '/teachers'
 GET '/teachers/:id'
 - Fetches an individual teacher
 - Request arguments: teacher id
-- Curl sample: curl "http://127.0.0.1:5000/teachers/1"
+- Curl sample: ```curl "http://127.0.0.1:5000/teachers/1"```
 - Returns:
 ```
 {
@@ -286,10 +289,12 @@ POST '/teachers/add'
 - Adds a teacher
 - Request Arguments: teacher name text, age number, temperament, and moves
 - Curl sample :
+```
     curl http://127.0.0.1:5000/teachers/add
     -X POST
     -H "Content-Type: application/json"
     -d '{"name":"rocky","age":2, "temperament":"sly", "moves":["outhere","highbounce","horizontal fling"], "img_url":"https://res.cloudinary.com/potatobug/image/upload/c_scale,e_brightness:7,w_180/e_sharpen:100/v1611551627/squirrel_rounded_ey5qgk.jpg"}'
+```
 - Returns : teacher.id
 
 
@@ -304,10 +309,12 @@ PATCH '/teachers/:id/edit'
 - Modify a teacher
 - Request Arguments: teacher name text, age number, temperament, and moves
 - Curl sample : 
+```
     curl http://127.0.0.1:5000/teachers/2/edit
     -X PATCH
     -H "Content-Type: application/json"
     -d '{"name":"rocky","age":2, "temperament":"sly", "moves":["outhere","highbounce","horizontal fling"], "img_url":"https://res.cloudinary.com/potatobug/image/upload/c_scale,e_brightness:7,w_180/e_sharpen:100/v1611551627/squirrel_rounded_ey5qgk.jpg"}'
+```
 - Returns : teacher.id, teacher.name, teacher.moves
 
 
@@ -324,7 +331,7 @@ PATCH '/teachers/:id/edit'
 DELETE '/teachers/:id'
 - Deletes a teacher based on id
 - Request arguments : id: id of teacher to be deleted 
-- Curl sample : curl -X DELETE "http://127.0.0.1:5000/teachers/24
+- Curl sample : curl -X DELETE ```"http://127.0.0.1:5000/teachers/24"```
 - Returns : deleted: id of the teacher that was deleted
 ```
 {
@@ -338,7 +345,7 @@ GET '/courses' <br>
 GET '/courses'
 - Fetches a list of courses
 - Request arguments: None
-- Curl sample: curl "http://127.0.0.1:5000/courses"
+- Curl sample: ```curl "http://127.0.0.1:5000/courses"```
 - Returns:
 ```
 {
@@ -377,7 +384,7 @@ GET '/courses'
 GET '/courses/:id'
 - Fetches an individual course
 - Request arguments: course id
-- Curl sample: curl "http://127.0.0.1:5000/courses/1"
+- Curl sample: ```curl "http://127.0.0.1:5000/courses/1"```
 - Returns:
 ```
 {
@@ -424,7 +431,7 @@ POST '/courses/add'
 - Adds a course
 - Request Arguments: course name text, course level
 - Curl sample :
-    curl http://127.0.0.1:5000/courses/add
+    ```curl http://127.0.0.1:5000/courses/add```
     -X POST
     -H "Content-Type: application/json"
     -d '{"name":"Dangle","course_level":5"}'
@@ -442,10 +449,10 @@ PATCH '/courses/:id/edit'
 - Modify a course
 - Request Arguments: course name text, course level
 - Curl sample :
-    curl http://127.0.0.1:5000/courses/2/edit
+    ```curl http://127.0.0.1:5000/courses/2/edit
     -X PATCH
     -H "Content-Type: application/json"
-    -d '{"name":"Dangle","course_level":5"}'
+    -d '{"name":"Dangle","course_level":5"}'```
 - Returns : course.id, course.name, course.level
 
 
@@ -476,7 +483,7 @@ GET '/trees' <br>
 GET '/trees'
 - Fetches a list of tree locations.
 - Request arguments: None
-- Curl sample: curl "http://127.0.0.1:5000/trees"
+- Curl sample: ```curl "http://127.0.0.1:5000/trees"```
 - Returns:
 ```
 {
@@ -515,7 +522,7 @@ GET '/trees'
 GET '/trees/:id'
 - Fetches an individual tree
 - Request arguments: tree id
-- Curl sample: curl "http://127.0.0.1:5000/trees/1"
+- Curl sample: ```curl "http://127.0.0.1:5000/trees/1"```
 - Returns:
 ```
 {
@@ -565,7 +572,7 @@ POST '/trees/add'
 - Adds a tree
 - Request Arguments: tree name text, type, location, and image url
 - Curl sample :
-    curl http://127.0.0.1:5000/trees/add
+    ```curl http://127.0.0.1:5000/trees/add```
     -X POST
     -H "Content-Type: application/json"
     -d '{"name":"Figgy","type": "Fig", "location": "Scary Dog's Garden"}'
@@ -583,7 +590,7 @@ PATCH '/trees/:id/edit'
 - Modify a teacher
 - Request Arguments: teacher name text, age number, temperament, and moves
 - Curl sample :
-    curl http://127.0.0.1:5000/trees/2/edit
+    ```curl http://127.0.0.1:5000/trees/2/edit```
     -X PATCH
     -H "Content-Type: application/json"
     -d '{"name":"Figgy","type": "Fig", "location": "Scary Dog's Garden"}'
@@ -619,7 +626,7 @@ GET '/events' <br>
 GET '/events'
 - Fetches a list of events and their details
 - Request arguments: None
-- Curl sample: curl "http://127.0.0.1:5000/events"
+- Curl sample: ```curl "http://127.0.0.1:5000/events"```
 - Returns:
 ```
 {
