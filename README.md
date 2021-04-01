@@ -8,18 +8,6 @@ Squirrel Yoga is a full-stack website where users can create/modify/delete and m
 ## Overview
 This project is an implentation of an app using a Model View Controller architecture to store and retrieve data via an API written in Python usinpwdg Flask. Authentication using Auth0, a 3rd party authentication service and tests written using unittest are also required. The final project is deployed on Heroku.  Although a Front-End was not required, I included a light-weight one using Jinja Templates so that I could learn how to do this and also have a convenient visual interface and to complete a full-stack app that anyone can use.
 
-## Authentication
-There are 4 anticipated users (roles) configured using Auth0 3rd party service:
-* Anyone -- can view (GET) the website
-* assistant -- can patch:teachers, patch:courses, patch:trees
-* director -- can patch:teachers, patch:courses, patch:trees
-post:teachers, post:courses, delete:teachers, delete:course
-* owner -- can patch:teachers, patch:courses, patch:trees
-post:teachers, post:courses, delete:teachers, delete:course
-post:tree, post:event, delete:tree, delete:event
-
-The web page should show an alert when an action is not allowed by the currently logged in user.  The home page should indicate who is currently logged in or if nobody is logged in.
-
 ## Tech Stack (Dependencies)
 
 ### 1. Backend Dependencies
@@ -101,8 +89,8 @@ SECRET_KEY='yourflasksecretkey'
 AUTH0_CALLBACK_URL='yourauth0callbackurl'
 AUTH0_CLIENT_ID='yourauth0clientid'
 AUTH0_CLIENT_SECRET='yourauth0clientsecret'
-export AUTH0_DOMAIN='yourauth0domain'
-export AUTH0_AUDIENCE='yourauth0audience'
+AUTH0_DOMAIN='yourauth0domain'
+AUTH0_AUDIENCE='yourauth0audience'
 
 
 *  `models.py` -- defines the data models that set up the database tables. (the Models in this project are : Teachers, Events, Courses, Trees.) Loosely based on the structure of the Fyyr app project models.
@@ -145,9 +133,591 @@ pip install -r requirements.txt
 ```
 export FLASK_APP=app.py
 export FLASK_ENV=development
-python3 app.py    - or -  flask run
+python3 app.py    - or -   flask run
 ```
 
 6. **Verify on the Browser**<br>
 Navigate to project homepage [http://127.0.0.1:5000/](http://127.0.0.1:5000/) or [http://localhost:5000](http://localhost:5000) 
 
+## Authentication - RBAC behavior
+This application uses the Auth0 authentication and authorization (identity management) platform.
+See `/auth/auth.py` which uses a combination of coffeeshop project auth boilerplate, AUTH0 boilerplate for requires_auth(), and customization for Jinja.
+
+There are 4 anticipated users (roles) configured using Auth0 3rd party service:
+* Anyone -- can view (GET)
+* assistant -- can EDIT -- patch:teachers, patch:courses, patch:trees, patch:events
+* director -- can EDIT / ADD -- patch:teachers, patch:courses, patch:trees, patch:events
+post:teachers, post:courses, post:trees, post: events
+* owner -- can EDIT / ADD / DELETE -- patch:teachers, patch:courses, patch:trees
+post:teachers, post:courses, post:trees, post:events
+delete:teachers, delete:courses, delete:trees, delete:events
+
+The web page should show an alert when an action is not allowed by the currently logged in user.
+The home page should indicate who is currently logged in or if nobody is logged in.
+
+## API - Endpoints
+
+The Squirrel Yoga API is a RESTful web service. It uses JSON-encoded responses and HTTP response codes. 
+Since I created a Jinja front-end for this particular implementation of the project, no json is "returned" and templates are returned and rendered instead. 
+However, the json does exsist and is commented out in the code and can be used as a return instead if you wanted to decouple the code from the front end.
+
+It has 16 endpoints in 4 main categories: Teachers, Courses, & Trees, Events summarized here:
+
+TEACHERS:
+- GET '/teachers'
+- POST '/teachers/add'
+- PATCH '/teachers/:id/edit'
+- DELETE '/teachers/:id'
+
+COURSES:
+- GET '/courses'
+- POST '/courses/add'
+- PATCH '/courses/:id/edit'
+- DELETE '/courses/:id'
+
+TREES:
+- GET '/trees'
+- POST '/trees/add'
+- PATCH '/trees/:id/edit'
+- DELETE '/trees/:id'
+
+EVENTS:
+- GET '/events'
+- POST '/events/add'
+- PATCH '/events/:id/edit'
+- DELETE '/events/:id'
+
+
+### TEACHERS
+GET '/teachers' <br>
+GET '/teachers'
+- Fetches a list of teachers
+- Request arguments: None
+- Curl sample: curl "http://127.0.0.1:5000/teachers"
+- Returns:
+```
+{
+  "count": 22,
+  "data": [
+    {
+      "age": 7,
+      "id": 1,
+      "img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,e_sharpen:100,w_360/v1611551630/sleepy_squirrel_ooxr6n.jpg",
+      "moves": ["slowly", "dangle"],
+      "name": "chibbibbity",
+      "temperament": "clear-eyed"
+    },
+    {
+      "age": 1,
+      "id": 2,
+      "img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,w_360/v1611551632/squirrel_stretch_kcwfmw.jpg",
+      "moves": ["fly", "skip", "scratch"],
+      "name": "sodoro",
+      "temperament": "edgy"
+    },
+    
+    ...
+
+  ],
+  "success": true
+}
+```
+
+GET '/teachers/:id'
+- Fetches an individual teacher
+- Request arguments: teacher id
+- Curl sample: curl "http://127.0.0.1:5000/teachers/1"
+- Returns:
+```
+{
+  "data": [
+    {
+      "age": 7,
+      "id": 1,
+      "img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,e_sharpen:100,w_360/v1611551630/sleepy_squirrel_ooxr6n.jpg",
+      "moves": ["slowly", "dangle"],
+      "name": "chibbibbity",
+      "past_events": [
+        {
+          "course_date": "Mon, 15 Feb 2021 00:00:00 GMT",
+          "course_id": 2,
+          "course_name": "slink around",
+          "tree_img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,w_360/v1611477610/tree_sm_haa5xk.jpg",
+          "tree_location": "backyard",
+          "tree_name": "Nutter Heaven",
+          "tree_type": "Walnut"
+        },
+
+        ...
+
+        {
+          "course_date": "Wed, 10 Feb 2021 22:33:04 GMT",
+          "course_id": 1,
+          "course_name": "bounce around",
+          "tree_img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,w_360/v1611477610/tree_sm_haa5xk.jpg",
+          "tree_location": "over yonder",
+          "tree_name": "Pricly Haven",
+          "tree_type": "Holly"
+        }
+      ],
+      "past_events_count": 4,
+      "temperament": "clear-eyed",
+      "upcoming_events": [
+        {
+          "course_date": "Tue, 15 Mar 2022 00:00:00 GMT",
+          "course_id": 3,
+          "course_name": "scratch & sniff",
+          "tree_img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,w_360/v1611477610/tree_sm_haa5xk.jpg",
+          "tree_location": "pasture",
+          "tree_name": "Nutter Tiny",
+          "tree_type": "Walnut"
+        }
+      ],
+      "upcoming_events_count": 1
+    }
+  ],
+  "success": true
+}
+
+```
+
+
+POST '/teachers/add'
+- Adds a teacher
+- Request Arguments: teacher name text, age number, temperament, and moves
+- Curl sample :
+    curl http://127.0.0.1:5000/teachers/add
+    -X POST
+    -H "Content-Type: application/json"
+    -d '{"name":"rocky","age":2, "temperament":"sly", "moves":["outhere","highbounce","horizontal fling"], "img_url":"https://res.cloudinary.com/potatobug/image/upload/c_scale,e_brightness:7,w_180/e_sharpen:100/v1611551627/squirrel_rounded_ey5qgk.jpg"}'
+- Returns : teacher.id
+
+
+```
+{
+  "created": 25,
+  "success": true
+}
+```
+
+PATCH '/teachers/:id/edit'
+- Modify a teacher
+- Request Arguments: teacher name text, age number, temperament, and moves
+- Curl sample : 
+    curl http://127.0.0.1:5000/teachers/2/edit
+    -X PATCH
+    -H "Content-Type: application/json"
+    -d '{"name":"rocky","age":2, "temperament":"sly", "moves":["outhere","highbounce","horizontal fling"], "img_url":"https://res.cloudinary.com/potatobug/image/upload/c_scale,e_brightness:7,w_180/e_sharpen:100/v1611551627/squirrel_rounded_ey5qgk.jpg"}'
+- Returns : teacher.id, teacher.name, teacher.moves
+
+
+```
+{
+    "success": True,
+    "modidifed": 3,
+    "name": "rocky",
+    "moves": ["outhere","highbounce","horizontal fling"]
+}
+```
+
+
+DELETE '/teachers/:id'
+- Deletes a teacher based on id
+- Request arguments : id: id of teacher to be deleted 
+- Curl sample : curl -X DELETE "http://127.0.0.1:5000/teachers/24
+- Returns : deleted: id of the teacher that was deleted
+```
+{
+  "deleted": 24,
+  "success": true
+}
+```
+
+### COURSES
+GET '/courses' <br>
+GET '/courses'
+- Fetches a list of courses
+- Request arguments: None
+- Curl sample: curl "http://127.0.0.1:5000/courses"
+- Returns:
+```
+{
+  "count": 10,
+  "data": [
+    {
+      "course_id": 2,
+      "course_level": 10,
+      "course_teachers": [
+        { "teacher_id": 1, "teacher_name": "chibbibbity" },
+        { "teacher_id": 3, "teacher_name": "pongo" },
+        { "teacher_id": 11, "teacher_name": "Footie" }
+      ],
+      "course_name": "slink around"
+    },
+    {
+      "course_id": 3,
+      "course_level": 4,
+      "course_teachers": [
+        { "teacher_id": 1, "teacher_name": "chibbibbity" },
+        { "teacher_id": 1, "teacher_name": "chibbibbity" },
+        { "teacher_id": 5, "teacher_name": "waz" },
+        { "teacher_id": 5, "teacher_name": "waz" },
+        { "teacher_id": 4, "teacher_name": "rocky" }
+      ],
+      "course_name": "scratch & sniff"
+    },
+
+    ...
+
+  ],
+  "success": true
+}
+```
+
+GET '/courses/:id'
+- Fetches an individual course
+- Request arguments: course id
+- Curl sample: curl "http://127.0.0.1:5000/courses/1"
+- Returns:
+```
+{
+  "data": [
+    {
+      "course_level": 2,
+      "id": 1,
+      "name": "bounce around",
+      "past_events": [
+        {
+          "course_date": "Wed, 10 Feb 2021 22:21:01 GMT",
+          "teacher_id": 3,
+          "teacher_name": "pongo",
+          "tree_img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,w_360/v1611477610/tree_sm_haa5xk.jpg",
+          "tree_location": "over yonder",
+          "tree_name": "Pricly Haven",
+          "tree_type": "Holly"
+        },
+
+        ...
+
+        {
+          "course_date": "Thu, 25 Feb 2021 20:36:30 GMT",
+          "teacher_id": 2,
+          "teacher_name": "sodoro",
+          "tree_img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,w_360/v1611477610/tree_sm_haa5xk.jpg",
+          "tree_location": "center divider",
+          "tree_name": "Acorn Fun",
+          "tree_type": "Oak"
+        }
+      ],
+      "past_events_count": 13,
+      "upcoming_events": [],
+      "upcoming_events_count": 0
+    }
+  ],
+  "success": true
+}
+
+
+```
+
+POST '/courses/add'
+- Adds a course
+- Request Arguments: course name text, course level
+- Curl sample :
+    curl http://127.0.0.1:5000/courses/add
+    -X POST
+    -H "Content-Type: application/json"
+    -d '{"name":"Dangle","course_level":5"}'
+- Returns : course.id
+
+
+```
+{
+  "created": 25,
+  "success": true
+}
+```
+
+PATCH '/courses/:id/edit'
+- Modify a course
+- Request Arguments: course name text, course level
+- Curl sample :
+    curl http://127.0.0.1:5000/courses/2/edit
+    -X PATCH
+    -H "Content-Type: application/json"
+    -d '{"name":"Dangle","course_level":5"}'
+- Returns : course.id, course.name, course.level
+
+
+```
+{
+    "success": True,
+    "modidifed": 2,
+    "name": "Dangle",
+    "course_level": 5
+}
+```
+
+
+DELETE '/courses/:id'
+- Deletes a course based on id
+- Request arguments : id: id of course to be deleted
+- Curl sample : curl -X DELETE "http://127.0.0.1:5000/courses/2
+- Returns : deleted: id of the course that was deleted
+```
+{
+  "deleted": 2,
+  "success": true
+}
+```
+
+### TREES
+GET '/trees' <br>
+GET '/trees'
+- Fetches a list of tree locations.
+- Request arguments: None
+- Curl sample: curl "http://127.0.0.1:5000/trees"
+- Returns:
+```
+{
+  "count": 5,
+  "data": [
+    {
+      "id": 1,
+      "img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,w_360/v1611477610/tree_sm_haa5xk.jpg",
+      "name": "Pricly Haven",
+      "tree_location": "over yonder",
+      "tree_type": "Holly"
+    },
+    {
+      "id": 2,
+      "img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,w_360/v1611477610/tree_sm_haa5xk.jpg",
+      "name": "Nutter Heaven",
+      "tree_location": "backyard",
+      "tree_type": "Walnut"
+    },
+
+    ...
+
+    {
+      "id": 5,
+      "img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,w_360/v1611477610/tree_sm_haa5xk.jpg",
+      "name": "Pokey",
+      "tree_location": "yonder park",
+      "tree_type": "Cedar"
+    }
+  ],
+  "success": true
+}
+
+```
+
+GET '/trees/:id'
+- Fetches an individual tree
+- Request arguments: tree id
+- Curl sample: curl "http://127.0.0.1:5000/trees/1"
+- Returns:
+```
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Pricly Haven",
+      "past_events": [
+        {
+          "course_date": "Wed, 10 Feb 2021 22:21:01 GMT",
+          "course_id": 1,
+          "course_level": 2,
+          "course_name": "bounce around",
+          "teacher_id": 3,
+          "teacher_img_url": "https://res.cloudinary.com/potatobug/image/upload/c_thumb,e_sharpen:100,q_100,r_4,w_360/v1611551628/squirrel_flat_zvhttz.jpg",
+          "teacher_name": "pongo"
+        },
+
+        ...
+
+        {
+          "course_date": "Wed, 10 Feb 2021 22:33:04 GMT",
+          "course_id": 1,
+          "course_level": 2,
+          "course_name": "bounce around",
+          "teacher_id": 6,
+          "teacher_img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,w_360/v1611551630/squirrel_tree_h5jfx8.jpg",
+          "teacher_name": "barumbo"
+        }
+      ],
+      "past_events_count": 9,
+      "tree_img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,w_360/v1611477610/tree_sm_haa5xk.jpg",
+      "tree_location": "over yonder",
+      "tree_type": "Holly",
+      "upcoming_events": [],
+      "upcoming_events_count": 0
+    }
+  ],
+  "success": true
+}
+
+
+
+```
+
+POST '/trees/add'
+- Adds a tree
+- Request Arguments: tree name text, type, location, and image url
+- Curl sample : 
+    curl http://127.0.0.1:5000/trees/add
+    -X POST
+    -H "Content-Type: application/json"
+    -d '{"name":"Figgy","type": "Fig", "location": "Scary Dog's Garden"}'
+- Returns : tree.id
+
+
+```
+{
+  "created": 2,
+  "success": true
+}
+```
+
+PATCH '/trees/:id/edit'
+- Modify a teacher
+- Request Arguments: teacher name text, age number, temperament, and moves
+- Curl sample : 
+    curl http://127.0.0.1:5000/trees/2/edit
+    -X PATCH
+    -H "Content-Type: application/json"
+    -d '{"name":"Figgy","type": "Fig", "location": "Scary Dog's Garden"}'
+- Returns : teacher.id, teacher.name, teacher.moves
+
+
+```
+{
+    "success": True,
+    "modidifed": 4,
+    "name": "Figgy",
+    "type": "Fig",
+    "location": "Scary Dog's Garden",
+    "img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,w_360/v1611477610/tree_sm_haa5xk.jpg"
+}
+```
+
+
+DELETE '/trees/:id'
+- Deletes a tree based on id
+- Request arguments : id: id of tree to be deleted 
+- Curl sample : curl -X DELETE "http://127.0.0.1:5000/trees/4
+- Returns : deleted: id of the question that was deleted
+```
+{
+  "deleted": 4,
+  "success": true
+}
+```
+
+### EVENTS
+GET '/events' <br>
+GET '/events'
+- Fetches a list of events and their details
+- Request arguments: None
+- Curl sample: curl "http://127.0.0.1:5000/events"
+- Returns:
+```
+{
+  "count": 36,
+  "data": [
+    {
+      "course_date": "Wed, 15 Jan 2020 00:00:00 GMT",
+      "course_id": 1,
+      "course_name": "bounce around",
+      "event_id": 24,
+      "teacher_id": 11,
+      "teacher_name": "Footie",
+      "tree_id": 5,
+      "tree_name": "Pokey"
+    },
+    {
+      "course_date": "Mon, 10 Feb 2020 22:50:04 GMT",
+      "course_id": 1,
+      "course_name": "bounce around",
+      "event_id": 29,
+      "teacher_id": 1,
+      "teacher_name": "chibbibbity",
+      "tree_id": 2,
+      "tree_name": "Nutter Heaven"
+    },
+
+    ...
+
+    {
+      "course_date": "Sun, 11 Feb 2024 20:05:02 GMT",
+      "course_id": 3,
+      "course_name": "scratch & sniff",
+      "event_id": 31,
+      "teacher_id": 4,
+      "teacher_name": "rocky",
+      "tree_id": 3,
+      "tree_name": "Nutter Tiny"
+    }
+  ],
+  "success": true
+}
+
+```
+
+POST '/events/add'
+- Adds an event
+- Request Arguments: teacher id, course id, tree id (autopopulated dropdown in form), date
+- Curl sample : 
+    curl http://127.0.0.1:5000/events/add
+    -X POST
+    -H "Content-Type: application/json"
+    -d '{"teacher_id":2,"course_id":2,"tree_id":2, "date":"2021-03-31 22:36:28"}'
+- Returns : teacher.id
+
+
+```
+{
+  "created": 25,
+  "success": true
+}
+```
+
+PATCH '/events/:id/edit'
+- Modify an event
+- Request Arguments: teacher name text, age number, temperament, and moves
+- Curl sample : 
+    curl http://127.0.0.1:5000/events/2/edit
+    -X PATCH
+    -H "Content-Type: application/json"
+    -d '{"teacher_id":2,"course_id":2,"tree_id":2, "course_date":"2021-03-31 22:36:28"}'
+- Returns : 
+
+
+```
+{
+    "success": True,
+    "modidifed": 2,
+    "event_date": "2021-03-31 22:36:28"
+}
+```
+
+
+DELETE '/events/:id'
+- Deletes an event based on id
+- Request arguments : id: id of event to be deleted 
+- Curl sample : curl -X DELETE "http://127.0.0.1:5000/events/24
+- Returns : deleted: id of the event that was deleted
+```
+{
+  "deleted": 24,
+  "success": true
+}
+```
+
+
+
+## Testing
+To run the tests, run
+```
+python tests.py
+```
