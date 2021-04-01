@@ -137,7 +137,7 @@ python3 app.py    - or -   flask run
 ```
 
 6. **Verify on the Browser**<br>
-Navigate to project homepage [http://127.0.0.1:5000/](http://127.0.0.1:5000/) or [http://localhost:5000](http://localhost:5000) 
+Navigate to project homepage ```http://127.0.0.1:5000/``` or ```http://localhost:5000``` 
 
 ## Authentication - RBAC behavior
 This application uses the [Auth0](https://auth0.com/)
@@ -162,7 +162,7 @@ The Squirrel Yoga API is a RESTful web service. It uses JSON-encoded responses a
 Since I created a Jinja front-end for this particular implementation of the project, no json is "returned" and templates are returned and rendered instead. 
 However, the json does exsist and is commented out in the code and can be used as a return instead if you wanted to decouple the code from the front end.
 
-It has 16 endpoints in 4 main categories: Teachers, Courses, & Trees, Events summarized here:
+It has 19 endpoints in 4 main categories: Teachers, Courses, & Trees, Events summarized here:
 
 TEACHERS:
 - GET '/teachers'
@@ -675,12 +675,13 @@ GET '/events' <br>
 POST '/events/add'
 - Adds an event
 - Request Arguments: teacher id, course id, tree id (autopopulated dropdown in form), date
-- Curl sample : ```
+- Curl sample : 
+```
     curl http://127.0.0.1:5000/events/add
     -X POST
     -H "Content-Type: application/json"
     -d '{"teacher_id":2,"course_id":2,"tree_id":2, "date":"2021-03-31 22:36:28"}'
-    ```
+```
 - Returns : teacher.id
 
 
