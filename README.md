@@ -331,7 +331,7 @@ PATCH '/teachers/:id/edit'
 DELETE '/teachers/:id'
 - Deletes a teacher based on id
 - Request arguments : id: id of teacher to be deleted 
-- Curl sample : curl -X DELETE ```"http://127.0.0.1:5000/teachers/24"```
+- Curl sample : ```curl -X DELETE "http://127.0.0.1:5000/teachers/24"```
 - Returns : deleted: id of the teacher that was deleted
 ```
 {
@@ -469,7 +469,7 @@ PATCH '/courses/:id/edit'
 DELETE '/courses/:id'
 - Deletes a course based on id
 - Request arguments : id: id of course to be deleted
-- Curl sample : curl -X DELETE "http://127.0.0.1:5000/courses/2
+- Curl sample : ```curl -X DELETE "http://127.0.0.1:5000/courses/2```
 - Returns : deleted: id of the course that was deleted
 ```
 {
@@ -572,10 +572,11 @@ POST '/trees/add'
 - Adds a tree
 - Request Arguments: tree name text, type, location, and image url
 - Curl sample :
-    ```curl http://127.0.0.1:5000/trees/add```
+    ```curl http://127.0.0.1:5000/trees/add
     -X POST
     -H "Content-Type: application/json"
     -d '{"name":"Figgy","type": "Fig", "location": "Scary Dog's Garden"}'
+    ```
 - Returns : tree.id
 
 
@@ -590,10 +591,11 @@ PATCH '/trees/:id/edit'
 - Modify a teacher
 - Request Arguments: teacher name text, age number, temperament, and moves
 - Curl sample :
-    ```curl http://127.0.0.1:5000/trees/2/edit```
+    ```curl http://127.0.0.1:5000/trees/2/edit
     -X PATCH
     -H "Content-Type: application/json"
     -d '{"name":"Figgy","type": "Fig", "location": "Scary Dog's Garden"}'
+    ```
 - Returns : teacher.id, teacher.name, teacher.moves
 
 
@@ -612,7 +614,7 @@ PATCH '/trees/:id/edit'
 DELETE '/trees/:id'
 - Deletes a tree based on id
 - Request arguments : id: id of tree to be deleted
-- Curl sample : curl -X DELETE "http://127.0.0.1:5000/trees/4
+- Curl sample : ```curl -X DELETE "http://127.0.0.1:5000/trees/4```
 - Returns : deleted: id of the question that was deleted
 ```
 {
@@ -674,11 +676,12 @@ GET '/events'
 POST '/events/add'
 - Adds an event
 - Request Arguments: teacher id, course id, tree id (autopopulated dropdown in form), date
-- Curl sample : 
+- Curl sample : ```
     curl http://127.0.0.1:5000/events/add
     -X POST
     -H "Content-Type: application/json"
     -d '{"teacher_id":2,"course_id":2,"tree_id":2, "date":"2021-03-31 22:36:28"}'
+    ```
 - Returns : teacher.id
 
 
@@ -693,10 +696,12 @@ PATCH '/events/:id/edit'
 - Modify an event
 - Request Arguments: teacher name text, age number, temperament, and moves
 - Curl sample : 
+```
     curl http://127.0.0.1:5000/events/2/edit
     -X PATCH
     -H "Content-Type: application/json"
     -d '{"teacher_id":2,"course_id":2,"tree_id":2, "course_date":"2021-03-31 22:36:28"}'
+    ```
 - Returns : 
 
 
@@ -712,7 +717,7 @@ PATCH '/events/:id/edit'
 DELETE '/events/:id'
 - Deletes an event based on id
 - Request arguments : id: id of event to be deleted 
-- Curl sample : curl -X DELETE "http://127.0.0.1:5000/events/24
+- Curl sample : ```curl -X DELETE "http://127.0.0.1:5000/events/24```
 - Returns : deleted: id of the event that was deleted
 ```
 {
