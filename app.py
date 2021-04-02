@@ -337,6 +337,7 @@ def create_app(test_config=None):
     ''' Render add a teacher form '''
 
     @app.route('/teachers/add', methods=['GET'])
+    @cross_origin(headers=["Content-Type", "Authorization"])
     @requires_auth('post:teachers')
     def retrieve_new_teacher_form(payload):
         form = TeacherForm()
@@ -358,8 +359,9 @@ def create_app(test_config=None):
     '''
 
     @app.route('/teachers/add', methods=['POST'])  # plural collection endpoint
+    @cross_origin(headers=["Content-Type", "Authorization"])
     @requires_auth('post:teachers')
-    def create_teacher():
+    def create_teacher(payload):
         form = TeacherForm(request.form)
         print("My form info", type(form), form.name.data)
         if (form.name.data or form.age.data or
@@ -394,17 +396,20 @@ def create_app(test_config=None):
             return render_template('teachers.html')
         else:
             flash('Teacher ' + request.form['name'] + ' was added!')
-            # return redirect(url_for('show_teacher', id=teacher_id))
+            return redirect(url_for('show_teacher', id=teacher_id))
+            '''
             return jsonify({
                 "success": True,
                 "created": teacher_id
             })
+            '''
 
     ''' Render edit a teacher form '''
 
     @app.route('/teachers/<int:id>/edit', methods=['GET'])
-    # @requires_auth('patch:teachers')
-    def retrieve_teacher_info(id):
+    @cross_origin(headers=["Content-Type", "Authorization"])
+    @requires_auth('patch:teachers')
+    def retrieve_teacher_info(payload, id):
         teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
         form = TeacherForm(obj=teacher)  # Populate form with teacher
         return render_template(
@@ -426,7 +431,9 @@ def create_app(test_config=None):
 
     @app.route('/teachers/<int:id>/edit',
                methods=['PATCH', 'POST'])  # plural collection endpoint
-    def edit_teacher(id):
+    @cross_origin(headers=["Content-Type", "Authorization"])
+    @requires_auth('patch:teachers')
+    def edit_teacher(payload, id):
         teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
         form = TeacherForm(request.form)
         if teacher:
@@ -466,7 +473,7 @@ def create_app(test_config=None):
     '''
 
     @app.route('/teachers/<int:id>', methods=['POST', 'DELETE'])
-    # @requires_auth('delete:teachers')
+    @requires_auth('delete:teachers')
     def delete_teacher(id):
         teacher = Teacher.query.filter(Teacher.id == id).one_or_none()
         if teacher:
@@ -641,7 +648,7 @@ def create_app(test_config=None):
     ''' Render add a course form '''
 
     @app.route('/courses/add', methods=['GET'])
-    # @requires_auth('post:courses')
+    @requires_auth('post:courses')
     def retrieve_new_course_form():
         form = CourseForm()
         print("I am here")
@@ -697,7 +704,7 @@ def create_app(test_config=None):
 
     @app.route('/courses/<int:id>/edit',
                methods=['GET'])  # plural collection endpoint
-    # @requires_auth('patch:courses')
+    @requires_auth('patch:courses')
     def retrieve_course_info(id):
         course = Course.query.filter(Course.id == id).one_or_none()
         form = CourseForm(obj=course)  # Populate form with course
@@ -758,7 +765,7 @@ def create_app(test_config=None):
     '''
 
     @app.route('/courses/<int:id>', methods=['DELETE', 'POST'])
-    # @requires_auth('delete:courses')
+    @requires_auth('delete:courses')
     def delete_course(id):
         course = Course.query.filter(Course.id == id).one_or_none()
         course_name = course.name
@@ -936,7 +943,7 @@ def create_app(test_config=None):
     ''' Render add tree form '''
 
     @app.route('/trees/add', methods=['GET'])
-    # @requires_auth('post:trees')
+    @requires_auth('post:trees')
     def retrieve_new_tree_form():
         form = TreeForm()
         print("I am here")
@@ -996,7 +1003,7 @@ def create_app(test_config=None):
 
     @app.route('/trees/<int:id>/edit',
                methods=['GET'])  # plural collection endpoint
-    # @requires_auth('patch:trees')
+    @requires_auth('patch:trees')
     def retrieve_tree_info(id):
         tree = Tree.query.filter(Tree.id == id).one_or_none()
         form = TreeForm(obj=tree)  # Populate form with tree
@@ -1059,7 +1066,7 @@ def create_app(test_config=None):
 
     '''
     @app.route('/trees/<int:id>', methods=['DELETE', 'POST'])
-    # @requires_auth('delete:trees')
+    @requires_auth('delete:trees')
     def delete_tree(id):
         tree = Tree.query.filter(Tree.id == id).one_or_none()
         print(tree, " is the tree")
@@ -1138,7 +1145,7 @@ def create_app(test_config=None):
     ''' Render add an event form '''
 
     @app.route('/events/create', methods=['GET'])
-    # @requires_auth('post:events')
+    @requires_auth('post:events')
     def retrieve_new_event_form():
         form = EventForm()
         print("I am here")
@@ -1213,7 +1220,7 @@ def create_app(test_config=None):
 
     @app.route('/events/<int:id>/edit',
                methods=['GET'])  # plural collection endpoint
-    # @requires_auth('patch:events')
+    @requires_auth('patch:events')
     def retrieve_event_info(id):
         event = Event.query.filter(Event.id == id).one_or_none()
         form = EventForm(obj=event)  # Populate form with course
@@ -1331,7 +1338,7 @@ def create_app(test_config=None):
     '''
 
     @app.route('/events/<int:id>', methods=['DELETE', 'POST'])
-    # @requires_auth('delete:events')
+    @requires_auth('delete:events')
     def delete_event(id):
         event = Event.query.filter(Event.id == id).one_or_none()
 

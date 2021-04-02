@@ -43,7 +43,7 @@ def get_token_auth_header():
             bearer_token_array = auth_header.split(' ')
             if bearer_token_array[0] and bearer_token_array[0].lower() == "bearer" and bearer_token_array[1]:
                 return bearer_token_array[1]
-
+    print('JWT not found')
     raise AuthError({
         'success': False,
         'message': 'JWT not found',
@@ -131,6 +131,8 @@ def verify_decode_jwt(token):
             return payload
 
         except jwt.ExpiredSignatureError:
+            print("token expired")
+
             raise AuthError({
                 'success': False,
                 'message': 'Token expired',
@@ -138,6 +140,7 @@ def verify_decode_jwt(token):
             }, 401)
 
         except jwt.JWTClaimsError:
+            print("Incorrect claims. Please, check the audience and issuer")
             raise AuthError({
                 'success': False,
                 'message': 'Incorrect claims. Please, check the audience and issuer',
