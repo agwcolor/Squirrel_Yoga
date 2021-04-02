@@ -2,7 +2,7 @@ from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, IntegerField, SelectField, SelectMultipleField, DateTimeField, SubmitField
 from wtforms.validators import DataRequired, AnyOf, URL
-from wtforms_sqlalchemy.fields import QuerySelectField #whereshouldthisgo
+from wtforms_sqlalchemy.fields import QuerySelectField # whereshouldthisgo
 from models import Teacher, Course, Tree
 
 
@@ -137,11 +137,11 @@ class TreeForm(FlaskForm):
     name = StringField(
         'name', validators=[DataRequired()]
     )
-    tree_type = IntegerField(
-        'type', validators=[DataRequired()]
+    type = StringField(
+        'type', validators=[DataRequired()],
     )
-    tree_location = IntegerField(
-        'location', validators=[DataRequired()]
+    location = StringField(
+        'location', validators=[DataRequired()],
     )
     img_url = StringField(
         'img_url', validators=[URL()]
