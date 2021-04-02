@@ -140,7 +140,7 @@ class TreeForm(FlaskForm):
     tree_type = IntegerField(
         'type', validators=[DataRequired()]
     )
-    location = IntegerField(
+    tree_location = IntegerField(
         'location', validators=[DataRequired()]
     )
     img_url = StringField(
