@@ -1,80 +1,119 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
     <!-- Other CSS -->
-    <link rel="stylesheet" type="text/css" href="/static/base.css?432" media="screen">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/static/base.css?432"
+      media="screen"
+    />
     <!-- Favicon -->
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-<link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <!-- href="/static/base.css?432" -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <!-- Bootstrap CSS -->
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-  
+
     <title>Squirrel Yoga</title>
   </head>
-  <body >
+  <body>
     <div class="container">
-        <div class="row">
-          <div class="col">
-    <div class="container-fluid content">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{{ url_for('get_home_page') }}">Home</a>
-        
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navToggler" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>      
-      
-        <div class="collapse navbar-collapse"id="navToggler">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item"><a href="{{ url_for('get_events') }}" class="nav-link" >Events</a></li>
-            <li class="nav-item"><a href="{{ url_for('get_courses') }}" class="nav-link">Courses</a></li>
-            <li class="nav-item"><a href="{{ url_for('get_teachers') }}" class="nav-link">Teachers</a></li>
-            <li class="nav-item"><a href="{{ url_for('get_trees') }}" class="nav-link">Trees</a></li>
-            <li class="nav-item"><a href="{{ url_for('login') }}" class="nav-link">Login</a></li>
-            <li class="nav-item"><a href="{{ url_for('logout') }}" class="nav-link">Logout</a></li>
-          </ul>
-          <!--
+      <div class="row">
+        <div class="col">
+          <div class="container-fluid content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+              <a class="navbar-brand" href="{{ url_for('get_home_page') }}"
+                >Home</a
+              >
+
+              <button
+                class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navToggler"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+              >
+                <span class="navbar-toggler-icon"></span>
+              </button>
+
+              <div
+                title="Nav Bar"
+                class="collapse navbar-collapse"
+                id="navToggler"
+              >
+                <ul class="navbar-nav mr-auto">
+                  <li class="nav-item">
+                    <a href="{{ url_for('get_events') }}" class="nav-link"
+                      >Events</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ url_for('get_courses') }}" class="nav-link"
+                      >Courses</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ url_for('get_teachers') }}" class="nav-link"
+                      >Teachers</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ url_for('get_trees') }}" class="nav-link"
+                      >Trees</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ url_for('logout') }}" class="nav-link"
+                      >Logout</a
+                    >
+                  </li>
+                </ul>
+                <!--
           <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
           </form>
         -->
-        </div>
-      </nav>
-    
-      
+              </div>
+            </nav>
 
-  
-      <br>
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          {% for message in messages %}
-          <div class="alert alert-primary">
-            {{ message }}
+            <br />
+            {% with messages = get_flashed_messages() %} {% if messages %} {%
+            for message in messages %}
+            <div class="alert alert-primary">{{ message }}</div>
+            {% endfor %} {% endif %} {% endwith %}
+            <br />
+            <div id="container" class="container">
+              <div class="row">
+                <div class="col text-center">
+                  {% block main %}{% endblock %}
+                </div>
+              </div>
+            </div>
           </div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
-      <br>
-      <div id="container" class="container">
-        <div class="row">
-          <div class="col text-center">
-      {% block main %}{% endblock %}
+        </div>
       </div>
-      </div>
-      </div>
-    </div>
-    </div>
-    </div>
     </div>
   </body>
 </html>

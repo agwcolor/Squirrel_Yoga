@@ -1,97 +1,103 @@
-{% extends "base.html" %}
-{% block title %}Squirrel Yoga | ['GET'] Tree Profile{% endblock %}
+{% extends "base.html" %} {% block title %}Squirrel Yoga | ['GET'] Tree
+Profile{% endblock %} {% block main %}
 
-{% block main %}
-<h2>Tree Profile</h2>
+<h1>Tree Location Profile</h1>
 <div class="outer-container container-fluid">
+  <div class="row h-100 d-flex justify-content-center align-items-center">
+    <div class="card bg-custom-1" style="width: 24rem">
+      <div class="card-body bg-custom-1">
+        <h2 class="card-title">{{ tree.name }}</h2>
 
-    <div class="row">
-        <div class="col-lg-3 col-md-4 col-sm-6">
-            <div class = row>
-                <div class="container-fluid tile">
-
-        <h3>{{ tree.name }}</h3>
         <img src="{{ tree.tree_img_url }}" alt="Tree Image" />
-        <p> Name - {{ tree.name}}</p>
-        <p> Type - {{ tree.tree_type }}</p>
-        <p> Location - {{ tree.tree_location }} </p>
+        <p class="card-text">
+          <strong>Name</strong> - {{ tree.name}}<br />
+          <strong>Type</strong> - {{ tree.tree_type }}<br />
+          <strong>Location</strong> - {{ tree.tree_location }}
+        </p>
 
-           <div class="button group">
-			<div class="row">
-        
-			<div class="button_side_by_side">
-			<form action="{{url_for('retrieve_tree_info', id=tree.id) }}" method="GET">
-					<input type="submit" value="Edit" class="btn btn-primary"></form>
-			</div>
-				<div>  </div>
-			<div class="button_side_by_side">
-					<form class="form" action="{{url_for('delete_tree', id=tree.id) }}" method="POST">
-						<input type="submit" value="Delete" class="btn btn-danger"></form>
-			</div>
-		
-		</div>
-	</div>
-
-
-
-
-
-
-           </div>
-           </div>
+        <div
+          class="button group h-100 d-flex justify-content-center align-items-center"
+        >
+          <div class="button_side_by_side">
+            <form
+              action="{{url_for('retrieve_tree_info', id=tree.id) }}"
+              method="GET"
+            >
+              <input type="submit" value="Edit" class="btn btn-primary" />
+            </form>
+          </div>
+          <div class="button_side_by_side">
+            <form
+              class="form"
+              action="{{url_for('delete_tree', id=tree.id) }}"
+              method="POST"
+            >
+              <input type="submit" value="Delete" class="btn btn-danger" />
+            </form>
+          </div>
         </div>
+      </div>
     </div>
-<br>
+  </div>
+  <br />
+
+  <!-- Upcoming & Past Events -->
 
   <section>
-    <h2 class="monospace">{{ tree.upcoming_events_count }} Upcoming {% if tree.upcoming_events_count == 1 %}Event{% else %}Events{% endif %} 
-    </h2>
+    <div class="inner-container container-fluid">
+      <h2 class="monospace bg-custom-2">
+        {{ tree.upcoming_events_count }} Upcoming {% if
+        tree.upcoming_events_count == 1 %}Event{% else %}Events{% endif %}
+      </h2>
 
-<hr>
-	<div class="row">
-        
-		{%for event in tree.upcoming_events %}
-		<div class="col-lg-3 col-md-4 col-sm-6">
-			<!-- <div class="tile tile-event"> -->
-            <div class="container-fluid tile">
+      <hr />
+      <div class="row">
+        {%for event in tree.upcoming_events %}
 
-                <img src="{{ event.teacher_img_url }}" alt="Event Teacher Image" />
-                <h5>Teacher: {{ event.teacher_name }} </h5>
-
-				<h6>Course: <a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h6>
-
-                <h6>{{ event.course_date.strftime('%a %b %d, %Y') }}</h6>
-            
-			</div>
-        </div>
-        
-		{% endfor %}
-	</div>
-</section>
-
-<section>
-    <h2 class="monospace">{{ tree.past_events_count }} Past {% if tree.past_events_count == 1 %}Event{% else %}Events{% endif %}</h2>
-<hr>
-	<div class="row">
-		{%for event in tree.past_events %}
-		<div class="col-lg-3 col-md-4 col-sm-6">
-			<div class="container-fluid tile">
-
-                <img src="{{ event.teacher_img_url }}" alt="Event Teacher Image" />
-                <h5>Teacher: {{ event.teacher_name }} </h5>
-
-				<h6>Course: <a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h6>
-
-                <h6>{{ event.course_date.strftime('%a %b %d, %Y') }}</h6>
-            
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <div class="card bg-custom-1" style="width: 12rem">
+            <div class="card-body">
+            <img src="{{ event.teacher_img_url }}" alt="Event Teacher Image" />
+            <div class="card-text">
+            <strong>{{ event.course_date.strftime('%a %b %d, %y') }}</strong><br/>
+				<strong>Course:</strong><br/><a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a><br/>
+            <strong>Teacher:</strong> <a href="/teachers/{{event.teacher_id}}">{{ event.teacher_name }}</a><br/>
+				</div>
 			</div>
 		</div>
-		{% endfor %}
-	</div>
-</section>
+		<hr/>
+		</div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
 
+  <section>
+    <div class="inner-container container-fluid">
+      <h2 class="monospace bg-custom-2">
+        {{ tree.past_events_count }} Past {% if tree.past_events_count == 1
+        %}Event{% else %}Events{% endif %}
+      </h2>
+      <hr />
+      <div class="row">
+        {%for event in tree.past_events %}
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <div class="card bg-custom-1" style="width: 12rem">
+            <div class="card-body">
+            <img src="{{ event.teacher_img_url }}" alt="Event Teacher Image" />
+            <div class="card-text">
+            <strong>{{ event.course_date.strftime('%a %b %d, %y') }}</strong><br/>
+				<strong>Course:</strong><br/><a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a><br/>
+            <strong>Teacher:</strong> <a href="/teachers/{{event.teacher_id}}">{{ event.teacher_name }}</a><br/>
+				</div>
+			</div>
+		</div>
+		<hr/>
+		</div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
 </div>
-
-
 
 {% endblock %}

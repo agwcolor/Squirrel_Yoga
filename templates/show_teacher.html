@@ -1,75 +1,102 @@
 {% extends "base.html" %}
 {% block title %}Squirrel Yoga | ['GET'] Teacher Profile{% endblock %}
-
 {% block main %}
-<h2>Teacher Profile</h2>
-    <div class="card">
-      <div class="card-body">
-        <h3>{{ teacher.name }}</h3>
+
+<h1>Teacher Profile</h1>
+<div class="outer-container container-fluid">
+
+    <div class="row h-100 d-flex justify-content-center align-items-center">
+
+        <div class="card bg-custom-1" style="width: 24rem;">
+          <div class="card-body bg-custom-1">
+        <h2 class="card-title">{{ teacher.name }}</h2>
         <img src="{{ teacher.img_url }}" alt="Teacher Image" />
-        <p> Temperament - {{teacher.temperament}}</p>
-        <p> Age - {{ teacher.age }}</p>
-        <p> Moves - 
+
+        <p class="card-text"> <strong>Temperament</strong> - {{teacher.temperament}}<br/>
+        <strong>Age</strong> - {{ teacher.age }}<br/>
+        <strong>Moves</strong> - 
         {% for move in teacher.moves %}
             {{ move }}, 
         {% endfor %}
-        </p>
-		   <div class="button group">
-			<div class="row">
-		
-		   <div class="button_side_by_side"> <form action="{{url_for('retrieve_teacher_info', id=teacher.id) }}" method="GET">
+		  </p>
+
+		   <div class="button group h-100 d-flex justify-content-center align-items-center">
+              
+		   <div class="button_side_by_side"> 
+			   <form action="{{url_for('retrieve_teacher_info', id=teacher.id) }}" method="GET">
 			<input type="submit" value="Edit" class="btn btn-primary"></form>
 		</div>
-		<div>  </div>
+		
 		<div class="button_side_by_side">
 			<form class="form" action="{{url_for('delete_teacher', id=teacher.id) }}" method="POST">
 				<input type="submit" value="Delete" class="btn btn-danger"></form>
 			</div>
 		
-		
+		</div>
 		</div>
         </div>
     </div>
-<hr></hr>
+<br />
+  <!-- Upcoming Events -->
 
   <section>
-	<h2 class="monospace">{{ teacher.upcoming_events_count }} Upcoming {% if teacher.upcoming_events_count == 1 %}Event{% else %}Events{% endif %}</h2>
+	<div class="inner-container container-fluid">
+
+	<h2 class="monospace bg-custom-2">{{ teacher.upcoming_events_count }} Upcoming {% if
+		 teacher.upcoming_events_count == 1 %}Event{% else %}Events{% endif %}</h2>
+	<hr />
+	
 	<div class="row">
 		{%for event in teacher.upcoming_events %}
-		<div class="col-sm-4">
-			<div class="tile tile-event">
+		<div class="col-lg-3 col-md-4 col-sm-6">
+			<div class="card bg-custom-1" style="width: 12rem">
+				<div class="card-body">
 				<img src="{{ event.tree_img_url }}" alt="Event Location Image" />
-				
-				<h5>{{ event.course_date.strftime('%a %b %d, %Y') }}</h5>
-				<h6>Course: <a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h6>
-
-                <h6>Tree: {{ event.tree_type }} | Location: {{ event.tree_location }} </h6>
-
+				<div class="card-text">
+				<strong>{{ event.course_date.strftime('%a %b %d, %y') }}</strong><br/>
+				<strong>Course:</strong><br/><a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a><br/>
+                <strong>Tree:</strong> <a href="/trees/{{event.tree_id}}">{{ event.tree_name }}</a><br/>
+				<strong>Location:</strong> {{ event.tree_location }}<br/>
+				</div>
 			</div>
+		</div>
+		<hr/>
 		</div>
 		{% endfor %}
 
 	</div>
+</div>
 </section>
+
+  <!-- Past Events -->
+
 <section>
-	<h2 class="monospace">{{ teacher.past_events_count }} Past {% if teacher.past_events_count == 1 %}Event{% else %}Events{% endif %}</h2>
+	<div class="inner-container container-fluid">
+
+	<h2 class="monospace bg-custom-2">{{ teacher.past_events_count }} Past {% if 
+		teacher.past_events_count == 1 %}Event{% else %}Events{% endif %}</h2>
+	<hr/>
 	<div class="row">
 		{%for event in teacher.past_events %}
-		<div class="col-sm-4">
-			<div class="tile tile-event">
+		<div class="col-lg-3 col-md-4 col-sm-6">
+				<div class="card bg-custom-1" style="width: 12rem">
+				<div class="card-body">
 				<img src="{{ event.tree_img_url }}" alt="Event Location Image" />
-				
-				<h5>{{ event.course_date.strftime('%a %b %d, %Y') }}</h5>
-				<h6>Course: <a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h6>
-
-                <h6>Tree: {{ event.tree_type }} | Location: {{ event.tree_location }} </h6>
-
+				<div class="card-text">
+				<strong>{{ event.course_date.strftime('%a %b %d, %y') }}</strong><br/>
+				<strong>Course:</strong><br/><a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a><br/>
+                <strong>Tree:</strong> <a href="/trees/{{event.tree_id}}">{{ event.tree_name }}</a><br/>
+				<strong>Location:</strong> {{ event.tree_location }}<br/>
+				</div>
 			</div>
+		</div>
+		<hr/>
 		</div>
 		{% endfor %}
 	</div>
+	</div>
 </section>
-
+</div>
 
 
 

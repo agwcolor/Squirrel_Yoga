@@ -4,26 +4,35 @@
 {% block main %}
 <h2>Squirrel Yoga Courses </h2>
 <p>
-    <form action="{{url_for('retrieve_new_course_form') }}" method="GET">
-        <input type="submit" value="Add a new course" class="btn btn-primary"></form>
-   </p>
-  {% for course in courses %}
-    <div class="card">
-      <div class="card-body">
-        <a href="/courses/{{ course.course_id }}">
+<form action="{{url_for('retrieve_new_course_form') }}" method="GET">
+  <input type="submit" value="Add a new course" class="btn btn-primary">
+</form>
+</p>
+{% for course in courses %}
+<div class="card">
+  <div class="card-body">
+    <a href="/courses/{{ course.course_id }}">
 
-        <h3>{{ course.course_name }} </h3>
-        </a>
-        <h5>Teachers</h5>
-        {% for teacher in course.course_teachers %}
-        <a href="/teachers/{{ teacher.teacher_id }}">
-            <h6>{{ teacher.teacher_name }}</h6>
-          </a>
-        {% endfor %}
-        <p>Experience Level - {{ course.course_level}}</p>
+      <h3>{{ course.course_name }} </h3>
+    </a>
+    <p>Experience Level - {{ course.course_level}}</p>
+    <h5>Teachers</h5>
+    
+    
 
-        
-        </div>
-    </div>
-  {% endfor %}
+      {% for teacher in course.course_teachers %}
+      <a href="/teachers/{{ teacher.teacher_id }}">
+        <h6>{{ teacher.teacher_name }}</h6>
+      </a>
+    {% endfor %}
+    {% if course.course_teachers|length == 0 %}
+    <p>Sadly, no teacher is currently offering this amazing class.</p>
+    {% endif %}
+
+    
+
+
+  </div>
+</div>
+{% endfor %}
 {% endblock %}
