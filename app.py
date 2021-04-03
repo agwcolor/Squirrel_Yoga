@@ -261,6 +261,7 @@ def create_app(test_config=None):
                             "course_id": course[0].id,
                             "course_name": course[0].name,
                             "course_date": event.course_date,
+                            "tree_id": tree[0].id,
                             "tree_name": tree[0].name,
                             "tree_type": tree[0].type,
                             "tree_location": tree[0].location,
@@ -281,6 +282,7 @@ def create_app(test_config=None):
                             "course_id": course[0].id,
                             "course_name": course[0].name,
                             "course_date": event.course_date,
+                            "tree_id": tree[0].id,
                             "tree_name": tree[0].name,
                             "tree_type": tree[0].type,
                             "tree_location": tree[0].location,
@@ -984,7 +986,7 @@ def create_app(test_config=None):
             tree = (
                 Tree(
                     name=form.name.data,
-                    type=form.tree_type.data,
+                    type=form.type.data,
                     location=form.location.data,
                     img_url=form.img_url.data
                 )

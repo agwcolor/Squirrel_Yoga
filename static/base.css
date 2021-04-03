@@ -1,5 +1,5 @@
 .events .tile-event {
-    height: 400px;
+    /* height: 400px; */
     margin-bottom: 10px;
     padding-bottom: 2em;
     border: solid 1px #ebebeb;
@@ -9,7 +9,7 @@
 .tile {
     text-align: center;
     padding: 15px 25px 25px;
-    height: 350px;
+    /* height: 350px; */
     margin-bottom: 3px;
     padding-bottom: 2em;
 
@@ -40,4 +40,13 @@ img {
     color: blueviolet;
     background-color: aliceblue;
 }
+
+.bg-custom-1 {
+    background: linear-gradient(to bottom, #d5f4e6 0%, #ffffff 100%);
+}
+
+.bg-custom-2 {
+    background: linear-gradient(to bottom, #fefbd8 0%, #ffffff 100%);
+}
+
 
