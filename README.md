@@ -368,11 +368,11 @@ GET '/courses'
       "course_id": 3,
       "course_level": 4,
       "course_teachers": [
-        { "teacher_id": 1, "teacher_name": "chibbibbity" },
-        { "teacher_id": 1, "teacher_name": "chibbibbity" },
-        { "teacher_id": 5, "teacher_name": "waz" },
-        { "teacher_id": 5, "teacher_name": "waz" },
-        { "teacher_id": 4, "teacher_name": "rocky" }
+        { "teacher_id": 1, "teacher_name": "chibbibbity", "course_date":"2021-02-10 22:21:01" },
+        { "teacher_id": 1, "teacher_name": "chibbibbity", "course_date":"2021-03-10 22:21:01" },
+        { "teacher_id": 5, "teacher_name": "waz", "course_date":"2021-04-10 22:21:01" },
+        { "teacher_id": 5, "teacher_name": "waz", "course_date":"2021-05-10 22:21:01" },
+        { "teacher_id": 4, "teacher_name": "rocky", "course_date":"2021-06-10 22:21:01" }
       ],
       "course_name": "scratch & sniff"
     },
@@ -403,6 +403,7 @@ GET '/courses/:id'
           "teacher_name": "pongo",
           "tree_img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,w_360/v1611477610/tree_sm_haa5xk.jpg",
           "tree_location": "over yonder",
+          "tree_id": 1,
           "tree_name": "Pricly Haven",
           "tree_type": "Holly"
         },
@@ -415,6 +416,7 @@ GET '/courses/:id'
           "teacher_name": "sodoro",
           "tree_img_url": "https://res.cloudinary.com/potatobug/image/upload/c_scale,w_360/v1611477610/tree_sm_haa5xk.jpg",
           "tree_location": "center divider",
+          "tree_id": 1,
           "tree_name": "Acorn Fun",
           "tree_type": "Oak"
         }

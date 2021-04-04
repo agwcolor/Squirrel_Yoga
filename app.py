@@ -506,10 +506,11 @@ def create_app(test_config=None):
 #  ----------------------------------------------------------------
     '''
     ENDPOINT: Handles GET requests for courses,
-    Returns: a list of courses, number of total courses,
+    Returns: a list of courses, number of total courses, 
+    teachers who teach the course, date of the course
     success true or not.
 
-    TEST: Click the `Courses` Button to see the list of teachers.
+    TEST: Click the `Courses` Button to see the list of courses.
 
     curl "http://127.0.0.1:5000/courses
     '''
@@ -520,8 +521,11 @@ def create_app(test_config=None):
             courses = Course.query.order_by(Course.id).all()
             data = []
             for course in courses:
-                event_courses = db.session.query(Event).filter(
-                    Event.course_id == course.id).all()
+                
+                # event_courses = db.session.query(Event).filter(
+                #     Event.course_id == course.id).all()
+                event_courses = (Event.query.order_by(Event.course_date).
+                                 filter(Event.course_id == course.id).all())
                 course_teachers = []
                 for e in event_courses:
                     print(e.teacher_id, "is the teacher id")
@@ -529,9 +533,11 @@ def create_app(test_config=None):
                     teacher = db.session.query(Teacher).filter(
                         Teacher.id == e.teacher_id).all()[0]
                     print(teacher.name, "whaddaya")
+                    print(e.course_date)
                     course_teachers.append({
                         "teacher_name": teacher.name,
-                        "teacher_id": teacher.id
+                        "teacher_id": teacher.id,
+                        "course_date": e.course_date
                     })
 
                 data.append({
@@ -592,6 +598,7 @@ def create_app(test_config=None):
                             "teacher_name": teacher[0].name,
                             "course_date": event.course_date,
                             "tree_name": tree[0].name,
+                            "tree_id": tree[0].id,
                             "tree_type": tree[0].type,
                             "tree_location": tree[0].location,
                             "tree_img_url": tree[0].img_url
@@ -609,6 +616,7 @@ def create_app(test_config=None):
                             "teacher_id": teacher[0].id,
                             "teacher_name": teacher[0].name,
                             "course_date": event.course_date,
+                            "tree_id": tree[0].id,
                             "tree_name": tree[0].name,
                             "tree_type": tree[0].type,
                             "tree_location": tree[0].location,
@@ -1219,7 +1227,6 @@ def create_app(test_config=None):
             db.session.add(event)  # teacher.insert()
             db.session.commit()
             event_id = event.id
-            flash('Event was just added!')
             '''return jsonify({
                 "success": True,
                 "created": event_id
@@ -1237,7 +1244,7 @@ def create_app(test_config=None):
             return render_template('events.html')
         else:
             flash('Event ' + str(event_id) +
-                  '-->  ' + course_name +
+                  ':  ' + course_name +
                   '  with teacher ' + teacher_name +
                   ' at ' + tree_name + ' tree was listed!')
             return redirect(url_for('get_events'))
@@ -1401,11 +1408,14 @@ def create_app(test_config=None):
 
     @app.errorhandler(422)
     def unprocessable(error):
+        '''
         return jsonify({
             "success": False,
             "error": 422,
             "message": "unprocessable"
         }), 422
+        '''
+        return render_template('error.html'), 404
 
     '''
     404 : resource not found
@@ -1413,11 +1423,14 @@ def create_app(test_config=None):
 
     @app.errorhandler(404)
     def unprocessable(error):
+        '''
         return jsonify({
             "success": False,
             "error": 404,
             "message": "resource not found"
         }), 404
+        '''
+        return render_template('error.html'), 404
 
     '''
     400 :
