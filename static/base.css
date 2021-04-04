@@ -10,7 +10,7 @@
     text-align: center;
     padding: 15px 25px 25px;
     /* height: 350px; */
-    margin-bottom: 3px;
+    margin-bottom: 3em;
     padding-bottom: 2em;
 
     }
@@ -42,11 +42,31 @@ img {
 }
 
 .bg-custom-1 {
-    background: linear-gradient(to bottom, #d5f4e6 0%, #ffffff 100%);
+    background: linear-gradient(to bottom, #daf8ea 0%, #ffffff 100%);
 }
 
 .bg-custom-2 {
     background: linear-gradient(to bottom, #fefbd8 0%, #ffffff 100%);
 }
 
+.bg-custom-3 {
+    background: linear-gradient(to bottom, #daf8ea 0%, #ffffff 100%);
+}
 
+.bg-custom-4 {
+    background: linear-gradient(to bottom, #f1c224 0%, #ffffff 100%);
+}
+
+.container-padding {
+    margin: .25rem .25rem .1rem .25rem;
+  }
+
+.container-padding2 {
+    margin: .5rem .3rem .1rem .3rem;
+  }
+
+.footer-text {
+  display: flex;
+  justify-content: center; /* align horizontal */
+  align-items: center; /* align vertical */
+}

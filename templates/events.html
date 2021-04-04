@@ -4,35 +4,39 @@
 {% block main %}
 <h2>Squirrel Yoga Events</h2>
 <p>
-    <form action="{{url_for('retrieve_new_event_form') }}" method="GET">
-        <input type="submit" value="Add a new event" class="btn btn-primary"></form>
-   </p>
-  {% for event in events %}
-    <div class="card">
-      <div class="card-body">
-        <h3>{{ event.course_date.strftime('%A %B %d, %Y') }}</h3>
+<form action="{{url_for('retrieve_new_event_form') }}" method="GET">
+    <input type="submit" value="Add a new event" class="btn btn-primary">
+</form>
+</p>
+<div class="card bg-custom-1 container-padding">
+{% for event in events %}
+<div class="card container-padding">
+    <div class="card-body tile container-padding">
+        <h3 class="monospace bg-custom-2">{{ event.course_date.strftime('%a, %b %e, %Y - %I:%M %p') }}</h3>
         <!-- <img src="{{ event.teacher_image_link }}" alt="Teacher Image" /> -->
-            <h5>Teacher: <a href="/teachers/{{ event.teacher_id }}">{{ event.teacher_name }}</a></h5>
-            <h5>Course: <a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h5>
-            
-            <h5>Course Location (Tree): <a href="/trees/{{ event.tree_id }}">{{ event.tree_name }}</a></h5>
-            <div class="button group">
-                <div class="row">
-            
-               <div class="button_side_by_side"> <form action="{{url_for('retrieve_event_info', id=event.event_id) }}" method="GET">
-                <input type="submit" value="Edit Event" class="btn btn-outline-primary"></form>
-            </div>
-            <div>  </div>
-            <div class="button_side_by_side">
-                <form class="form" action="{{url_for('delete_event', id=event.event_id) }}" method="POST">
-                    <input type="submit" value="Delete" class="btn btn-outline-danger"></form>
-                </div>
-            
-            
-            </div>
+        <h5>Teacher: <a href="/teachers/{{ event.teacher_id }}">{{ event.teacher_name }}</a></h5>
+        <h5>Course: <a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a></h5>
 
+        <h5>Course Location (Tree): <a href="/trees/{{ event.tree_id }}">{{ event.tree_name }}</a></h5>
+
+        <div class="container ">
+            <div class="row">
+                <div class="col text-center">
+                            <div class="btn-group">
+                                <form class="form button_side_by_side" action="{{url_for('retrieve_event_info', id=event.event_id) }}" method="GET">
+                                    <input type="submit" value="Edit Event" class="btn btn-outline-primary">
+                                </form>
+                                <form class="form button_side_by_side" action="{{url_for('delete_event', id=event.event_id) }}"
+                                    method="POST">
+                                    <input type="submit" value="Delete" class="btn btn-outline-danger">
+                                </form>
+                            </div>
+                </div>
+            </div>
         </div>
+
     </div>
-    </div>
-  {% endfor %}
+</div>
+{% endfor %}
+</div>
 {% endblock %}

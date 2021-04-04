@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-<div class="card">
+<div class="card bg-custom-2">
 {% block main %}
-<div class="card">
+<div class="card bg-custom-3">
   <div class="card">
     <div class="auth-state">
       {% if userinfo['name'] %} You are logged in as {{ userinfo['name'] }}
@@ -52,10 +52,7 @@
             ><button class="btn btn-info">Add tree location</button></a
           >
         </h3>
-        <small
-          >Note: In order to create an event -- the course, teacher, & tree
-          location must already exist in our database.</small
-        >
+        
       </div>
     </div>
   </div>
@@ -68,7 +65,20 @@
         alt="2 Squirrels"
       />
     </div>
-  </div>
+    <div class="container-padding2 footer-text">
+    [<a href="https://github.com/agwcolor/Squirrel_Yoga"
+    > Squirrel Yoga on GitHub 
+    </a>]
+    
+    <a href="https://github.com/agwcolor/Squirrel_Yoga"
+    ><img
+      src="{{ url_for('static',filename='Octocat.png') }}"
+      height="40"
+      width="40"
+    /></a>
+    </div>
+    </div>
   {% endblock %}
+
 </div>
 </div>

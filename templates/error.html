@@ -1,0 +1,27 @@
+
+{% extends "base.html" %} {% block title %}Error Page {% endblock %} {% block main %}
+<div class="row h-100 d-flex justify-content-center align-items-center">
+
+  <div class="card bg-custom-4" style="width: 24rem;">
+    <div class="card-body bg-custom-4">
+
+  <h1>Error</h1>
+  <img
+      src="{{ url_for('static',filename='walnut_haci-elmas-unsplash.jpg') }}"
+      height="200"
+      width="300"
+    />
+    <br />
+    <small>
+    Photo by <a href="https://unsplash.com/@hcelmas?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Hacı Elmas</a> on <a href="https://unsplash.com/s/photos/cracked-walnut?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+    </small>
+    <p></p>
+    <br />
+  <p>We have a bad nut here! Perhaps the page does not exist, or the developer needs to do some work.
+    
+  </p>
+  <p>Please climb back to a different page and try again.</p>
+  </div>
+</div>
+</div>
+{% endblock %}

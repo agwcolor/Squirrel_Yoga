@@ -7,21 +7,24 @@
     <form action="{{url_for('retrieve_new_teacher_form') }}" method="GET">
         <input type="submit" value="Add a new teacher" class="btn btn-primary"></form>
    </p>
+   <div class="card bg-custom-1 container-padding">
   {% for teacher in teachers %}
-    <div class="card">
-      <div class="card-body">
+    <div class="card container-padding">
+      <div class="card-body tile container-padding">
         <a href="/teachers/{{ teacher.id }}">
-        <h3>{{ teacher.name }}</h3>
+        <h3 class="monospace">{{ teacher.name }}</h3>
       </a>
         <img src="{{ teacher.img_url }}" alt="Teacher Image" />
-        <p> Temperament - {{teacher.temperament}}</p>
-        <p> Age - {{ teacher.age }}</p>
-        <p> Moves - 
+        <p> <strong>Temperament</strong> - {{teacher.temperament}}</p>
+        <p> <strong>Age</strong> - {{ teacher.age }}</p>
+        <p> <strong>Moves</strong> - 
         {% for move in teacher.moves %}
             {{ move }}, 
         {% endfor %}
         </p>
         </div>
     </div>
+   
   {% endfor %}
+  </div>
 {% endblock %}

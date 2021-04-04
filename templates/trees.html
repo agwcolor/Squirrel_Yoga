@@ -7,10 +7,12 @@
     <form action="{{url_for('retrieve_new_tree_form') }}" method="GET">
         <input type="submit" value="Add a new tree" class="btn btn-primary"></form>
    </p>
+   <div class="card bg-custom-1 container-padding">
+
   {% for tree in trees %}
-    <div class="card">
-      <div class="card-body">
-        <a href="/trees/{{ tree.id }}">
+  <div class="card container-padding">
+    <div class="card-body tile container-padding">
+      <a href="/trees/{{ tree.id }}">
         <h3>{{ tree.name }}</h3>
       </a>
         <img src="{{ tree.img_url }}" alt="Tree Image" />
@@ -20,4 +22,5 @@
         </div>
     </div>
   {% endfor %}
+  </div>
 {% endblock %}

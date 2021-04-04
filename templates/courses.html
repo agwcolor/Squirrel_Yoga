@@ -8,22 +8,23 @@
   <input type="submit" value="Add a new course" class="btn btn-primary">
 </form>
 </p>
+<div class="card bg-custom-1 container-padding">
 {% for course in courses %}
-<div class="card">
-  <div class="card-body">
+<div class="card container-padding">
+  <div class="card-body tile container-padding">
     <a href="/courses/{{ course.course_id }}">
 
       <h3>{{ course.course_name }} </h3>
     </a>
-    <p>Experience Level - {{ course.course_level}}</p>
+    <p><strong>Experience Level</strong> - {{ course.course_level}}</p>
     <h5>Teachers</h5>
     
     
 
       {% for teacher in course.course_teachers %}
       <a href="/teachers/{{ teacher.teacher_id }}">
-        <h6>{{ teacher.teacher_name }}</h6>
-      </a>
+        <span>{{ teacher.teacher_name }} </span>
+      </a> : {{ teacher.course_date.strftime('%a, %b %e, %Y, %I:%M %p') }}<br/>
     {% endfor %}
     {% if course.course_teachers|length == 0 %}
     <p>Sadly, no teacher is currently offering this amazing class.</p>
@@ -35,4 +36,5 @@
   </div>
 </div>
 {% endfor %}
+</div>
 {% endblock %}

@@ -89,7 +89,7 @@
                     >
                   </li>
                 </ul>
-                <!--
+                <!-- search not yet implemented
           <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
@@ -111,6 +111,30 @@
                 </div>
               </div>
             </div>
+            
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col text-center">
+            <footer class="auth-state">
+              <hr />
+              <div class="footer-text">
+              <p>
+                [<a href="{{url_for('get_home_page') }}"
+                  > HOME </a>]
+                  [<a href="{{url_for('get_teachers') }}"
+                  > TEACHERS </a>]
+                  [<a href="{{url_for('get_courses') }}"
+                  > COURSES </a>]
+                  [<a href="{{url_for('get_trees') }}"
+                  > TREES </a>]
+                  [<a href="{{url_for('get_events') }}"
+                  > EVENTS </a>]
+              </p>
+            </div>
+            </footer>
           </div>
         </div>
       </div>
