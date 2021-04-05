@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask_wtf import FlaskForm
+from wtforms.fields.html5 import DateField, TimeField
 from wtforms import StringField, BooleanField, IntegerField, SelectField, SelectMultipleField, DateTimeField, SubmitField
 from wtforms.validators import DataRequired, AnyOf, URL
 from wtforms_sqlalchemy.fields import QuerySelectField # whereshouldthisgo
@@ -53,7 +54,7 @@ class EventForm(FlaskForm):
         'teacher_id',
         query_factory=teacher_query,
         validators=[DataRequired()],
-        allow_blank=True,
+        allow_blank=False,
         #blank_text=(u'Choose a teacher ...'),
         get_label='name')
 
@@ -61,7 +62,7 @@ class EventForm(FlaskForm):
         'course_id',
         query_factory=course_query,
         validators=[DataRequired()],
-        allow_blank=True,
+        allow_blank=False,
         #blank_text=(u'Choose a course ...'),
         get_label='name')
 
@@ -70,15 +71,27 @@ class EventForm(FlaskForm):
         default="My tree",
         query_factory=tree_query,
         validators=[DataRequired()],
-        allow_blank=True,
-        #blank_text=(u'Choose a tree location ...'),
+        allow_blank=False,
+        # blank_text=(u'Choose a tree location ...'),
         get_label='name')
 
+    course_date = DateField(
+        'DatePicker',
+        format='%Y-%m-%d',
+        validators=[DataRequired()]
+    )
+
+    course_time = TimeField(
+        'TimePicker',
+        validators=[DataRequired()]
+    )
+    '''
     course_date = DateTimeField(
         'course_date',
         validators=[DataRequired()],
         default=datetime.today()
     )
+    '''
     '''
     class EventForm(FlaskForm):
     submit = SubmitField('Submit')
@@ -128,7 +141,9 @@ class TeacherForm(FlaskForm):
         choices=moves_choices
     )
     img_url = StringField(
-        'img_url', validators=[URL()]
+        'img_url',
+        validators=[DataRequired(message="Enter URL Please"),
+                    URL(message="Enter Valid URL Please.")]
     )
 
 class TreeForm(FlaskForm):
@@ -144,5 +159,7 @@ class TreeForm(FlaskForm):
         'location', validators=[DataRequired()],
     )
     img_url = StringField(
-        'img_url', validators=[URL()]
+        'img_url',
+        validators=[DataRequired(message="Enter URL Please"),
+                    URL(message="Enter Valid URL Please.")]
     )

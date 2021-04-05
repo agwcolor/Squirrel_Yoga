@@ -10,7 +10,8 @@
         <div class="card bg-custom-1" style="width: 24rem;">
           <div class="card-body bg-custom-1">
         <h2 class="card-title">{{ teacher.name }}</h2>
-        <img src="{{ teacher.img_url }}" alt="Teacher Image" />
+        <img src="{{ teacher.img_url }}" width="350" alt="Teacher Image" 
+		onerror="this.onerror=null;this.src='/static/error_squirrel.jpg';" />
 
         <p class="card-text"> <strong>Temperament</strong> - {{teacher.temperament}}<br/>
         <strong>Age</strong> - {{ teacher.age }}<br/>
@@ -81,7 +82,7 @@
 		<div class="col-lg-3 col-md-4 col-sm-6">
 				<div class="card bg-custom-1" style="width: 12rem">
 				<div class="card-body">
-				<img src="{{ event.tree_img_url }}" alt="Event Location Image" />
+				<img src="{{ event.tree_img_url }}" alt="Event Location Image"  />
 				<div class="card-text">
 				<strong>{{ event.course_date.strftime('%a %b %d, %y') }}</strong><br/>
 				<strong>Course:</strong><br/><a href="/courses/{{ event.course_id }}">{{ event.course_name }}</a><br/>

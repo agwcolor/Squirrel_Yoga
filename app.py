@@ -1218,12 +1218,15 @@ def create_app(test_config=None):
                 Course.name == form.course.data.name).one_or_none()
             tree = Tree.query.filter(
                 Tree.name == form.tree.data.name).one_or_none()
-            print(form.course_date.data, " is the course date")
+            course_date = (datetime.combine
+                           (form.course_date.data,
+                            form.course_time.data))
             event = Event(
                 teacher_id=teacher.id,
                 course_id=course.id,
                 tree_id=tree.id,
-                course_date=form.course_date.data)
+                course_date=course_date
+                )
             db.session.add(event)  # teacher.insert()
             db.session.commit()
             event_id = event.id

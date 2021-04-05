@@ -8,7 +8,7 @@ Profile{% endblock %} {% block main %}
       <div class="card-body bg-custom-1">
         <h2 class="card-title">{{ tree.name }}</h2>
 
-        <img src="{{ tree.tree_img_url }}" alt="Tree Image" />
+        <img src="{{ tree.tree_img_url }}" alt="Tree Image" onerror="this.onerror=null;this.src='/static/error_squirrel.jpg';" />
         <p class="card-text">
           <strong>Name</strong> - {{ tree.name}}<br />
           <strong>Type</strong> - {{ tree.tree_type }}<br />
