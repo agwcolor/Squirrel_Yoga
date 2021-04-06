@@ -9,7 +9,7 @@ Squirrel Yoga
 [Testing](#testing) |
 [Deployment to Heroku](#deployment-to-heroku)
 
-**Visit Squirrel Yoga on Heroku** : https://hello-potato.herokuapp.com/
+**Visit Squirrel Yoga on Heroku** : https://squirrel-yoga.herokuapp.com/
 
 ## Introduction
 
@@ -113,7 +113,7 @@ AUTH0_AUDIENCE='yourauth0audience'
 
 *  `models.py` -- defines the data models that set up the database tables. (the Models in this project are : Teachers, Events, Courses, Trees.) Loosely based on the structure of the Fyyr app project models.
 * `app.py` --  main app file. Defines the routes that match the user’s URL and the controllers which handle data and render views to the user.
-* `form.py` -- contains forms definitions using WFT_form, a built-in module in flask for designing forms, and WTForms library for form validation and rendering.
+* `forms.py` -- contains forms definitions using WFT_form, a built-in module in flask for designing forms, and WTForms library for form validation and rendering.
 * `templates/` -- where the web frontend Jinja templates are located. Templates are built based on the controllers (Flask endpoints) in `app.py`
 * `templates/forms` -- where the web frontend Jinja form templates are located. Form validation and definitions are defined in `forms.py`
 
@@ -121,7 +121,7 @@ AUTH0_AUDIENCE='yourauth0audience'
 * `migrations/` -- Alembic database migrations folder
 * `flask db migrate` -- can be used to populate a local PostgreSQL database with properly configured tables and relationships for application  objects, including columns, column data types, constraints, and defaults.
 * `auth/auth.py` -- handles checking authentication requirements for endpoints defined in `app.py` and verifying with Auth0 3rd party service that JWTs are valid. Most of this is boilerplate code used from the Coffeeshop project. However, significant modifications had to be made to work with Jinja templates to reflect the current user and login session.
-* `tests.py` --  Note : The project rubric instructed us to use Python unittest library. It turns out that this was challenging to do because the front and backend is tightly coupled and I was unable to return json responses but had to test via returned & rendered templates instead. However, rendered json can be returned in if that section of the code is uncommented and the 'render template' portion commented out.
+* `tests.py` --  Note : The project rubric instructed us to use Python unittest library. It turns out that this was challenging to do because the front and backend is tightly coupled and I was unable to return json responses but had to test via returned & rendered templates instead. However, rendered json can be returned if that section of the code is uncommented and the 'render template' portion commented out.
 * `Procfile` -- for Heroku deployment. Used to run the app using gunicorn (WSGI http server) on Heroku
 
 
@@ -129,7 +129,7 @@ AUTH0_AUDIENCE='yourauth0audience'
 1. **Download the project starter code locally**
 ```
 git clone https://github.com/agwcolor/Squirrel_Yoga.git
-cd /starter_code 
+cd /Squirrel_Yoga 
 ```
 
 2. **Initialize and activate a virtualenv using:**
