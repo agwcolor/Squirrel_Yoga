@@ -38,7 +38,7 @@ class AuthError(Exception):
 
 
 def get_token_auth_header():
-    #     """Obtains the Access Token from the Authorization Header
+    #     """Obtains the Access Token from Authorization Header
     #     """
     if "Authorization" in request.headers:
         auth_header = request.headers["Authorization"]
@@ -57,7 +57,7 @@ def get_token_auth_header():
 
 '''
     @INPUTS
-        permission: string permission (i.e. 'post:drink')
+        permission: string permission  (i.e. 'post:drink')
         payload: decoded jwt payload
     it should raise an AuthError if permissions are not included in the payload
         !!NOTE check RBAC settings in Auth0
@@ -148,7 +148,7 @@ def verify_decode_jwt(token):
             print("Incorrect claims. Please, check the audience and issuer")
             raise AuthError({
                 'success': False,
-                'message': 'Incorrect claims. Please, check the audience and issuer',
+                'message': 'Incorrect claims. Please, check audience & issuer',
                 'error': 401,
             }, 401)
 
@@ -173,7 +173,7 @@ def verify_decode_jwt(token):
     it should use the verify_decode_jwt method to decode the jwt
     it should use the check_permissions method
       validate claims and check the requested permission
-    return the decorator which passes the decoded payload to the decorated method
+    return the decorator which passes decoded payload to the decorated method
 '''
 
 
@@ -199,7 +199,8 @@ def requires_auth(permission=''):
                         print('Permission is in permissions!')
                     return f(payload, *args, **kwargs)
                 except Exception as e:
-                    flash('You do not have the correct permissions to do this.')
+                    flash('You do not have the correct \
+                        permissions to do this.')
                     # return render_template('index.html',
                     # userinfo=session['profile'])
                     abort(401)

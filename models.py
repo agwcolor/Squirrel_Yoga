@@ -1,9 +1,6 @@
 from sqlalchemy import Column, String, Integer, DateTime, create_engine
 from sqlalchemy.dialects.postgresql import ARRAY
 from flask_sqlalchemy import SQLAlchemy
-#from flask_wtf import FlaskForm
-from wtforms_sqlalchemy.fields import QuerySelectField  # whereshouldthisgo
-import json
 import os
 
 

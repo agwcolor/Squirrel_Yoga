@@ -1,11 +1,10 @@
 import sys
 import os
-from flask import Flask, request, abort, flash, json, jsonify, render_template,\
-    redirect, url_for
+from flask import Flask, request, abort, flash, json,\
+    jsonify, render_template, redirect, url_for
 from models import setup_db, db, Teacher, Course, Tree, Event
 from flask_cors import CORS, cross_origin
-from flask_wtf import FlaskForm
-from forms import *
+from forms import TreeForm, EventForm, TeacherForm, CourseForm
 from datetime import datetime
 from auth.auth import AuthError, requires_auth, requires_auth_auth0
 from authlib.integrations.flask_client import OAuth
@@ -56,8 +55,7 @@ def create_app(test_config=None):
 # Auth Enpoints.
 # ----------------------------------------------------------------------------#
 
-    # Here we're using the /callback route.
-
+    # Auth0 login flow.
 
     @app.route('/callback')
     @cross_origin()
@@ -269,7 +267,8 @@ def create_app(test_config=None):
                 return render_template('show_teacher.html', teacher=data[0])
 
             except Exception as e:
-                exception_type, exception_object, exception_traceback = sys.exc_info()
+                exception_type, exception_object, exception_traceback = \
+                    sys.exc_info()
                 filename = exception_traceback.tb_frame.f_code.co_filename
                 line_number = exception_traceback.tb_lineno
 
@@ -299,7 +298,8 @@ def create_app(test_config=None):
     -X POST
     -H "Content-Type: application/json"
     -d '{"name":"rocky","age":2, "temperament":"sly", "moves":["outhere",
-        "highbounce","horizontal fling"], "img_url":"https://res.cloudinary.com/
+        "highbounce","horizontal fling"], "img_url":
+            "https://res.cloudinary.com/
           potatobug/image/upload/c_scale,e_brightness:7,w_180/e_sharpen:100/
         v1611551627/squirrel_rounded_ey5qgk.jpg"}'
 
@@ -328,9 +328,8 @@ def create_app(test_config=None):
             error = True
             db.session.rollback()
             flash(
-                'An error occurred. Teacher' +
-                new_teacher +
-                ' could not be listed.')
+                'An error occurred. Teacher could not be listed.\
+                    Please try again')
             print(e)
             abort(422)
         finally:
@@ -370,7 +369,8 @@ def create_app(test_config=None):
     -X POST
     -H "Content-Type: application/json"
     -d '{"name":"rocky","age":2, "temperament":"sly", "moves":["outhere",
-         "highbounce","horizontal fling"], "img_url":"https://res.cloudinary.com/
+         "highbounce","horizontal fling"], "img_url":
+            "https://res.cloudinary.com/
                potatobug/image/upload/c_scale,e_brightness:7,w_180/e_sharpen:100
                /v1611551627/squirrel_rounded_ey5qgk.jpg"}'
     '''
@@ -574,7 +574,8 @@ def create_app(test_config=None):
                 return render_template('show_course.html', course=data[0])
 
             except Exception as e:
-                exception_type, exception_object, exception_traceback = sys.exc_info()
+                exception_type, exception_object, exception_traceback = \
+                    sys.exc_info()
                 filename = exception_traceback.tb_frame.f_code.co_filename
                 line_number = exception_traceback.tb_lineno
 
@@ -840,7 +841,6 @@ def create_app(test_config=None):
                             "course_level": course[0].course_level,
 
                         })
-                # print("upcoming events, past events", upcoming_events, past_events)
                 data.append({
                     "id": tree.id,
                     "name": tree.name,
@@ -863,7 +863,8 @@ def create_app(test_config=None):
                 # print(data[0].temperament, " is the temperament")
 
             except Exception as e:
-                exception_type, exception_object, exception_traceback = sys.exc_info()
+                exception_type, exception_object, exception_traceback = \
+                    sys.exc_info()
                 filename = exception_traceback.tb_frame.f_code.co_filename
                 line_number = exception_traceback.tb_lineno
 
@@ -1095,14 +1096,15 @@ def create_app(test_config=None):
 
     '''
     Endpoint : POST an event,
-    Requires: teacher id, course id, tree id (autopopulated dropdown in form), date
+    Requires: teacher id, course id, tree id (autopopulated dropdown), date
     TEST: Click Add an event button to open the form to add an event.
         Available values are selected via dropdown. Date selected by end-user.
 
     curl http://127.0.0.1:5000/events/add
     -X POST
     -H "Content-Type: application/json"
-    -d '{"teacher_id":2,"course_id":2,"tree_id":2, "date":"2021-03-31 22:36:28"}'
+    -d '{"teacher_id":2,"course_id":2,"tree_id":2,
+        "date":"2021-03-31 22:36:28"}'
 
     '''
 
@@ -1183,14 +1185,15 @@ def create_app(test_config=None):
 
     '''
     Endpoint : PATCH (edit) a event,
-    Requires: teacher id, course id, tree id (autopopulated dropdown in form), date
+    Requires: teacher id, course id, tree id (autopopulated dropdown), date
     TEST: Click Edit an event button to open the form to edit an event.
-        Current event values are shown. Available values are selected via dropdown.
+        Current event values are shown. Values are selected via dropdown.
 
     curl http://127.0.0.1:5000/events/2/edit
     -X PATCH
     -H "Content-Type: application/json"
-    -d '{"teacher_id":2,"course_id":2,"tree_id":2, "course_date":"2021-03-31 22:36:28"}'
+    -d '{"teacher_id":2,"course_id":2,"tree_id":2,
+        "course_date":"2021-03-31 22:36:28"}'
 
     '''
 
@@ -1250,7 +1253,7 @@ def create_app(test_config=None):
 
     '''
     ENDPOINT : DELETE event using a event ID.
-    TEST: Click the Delete button on the event listing or individual event page.
+    TEST: Click the Delete button on the event listing or event page.
     This should persist in the database & on page refresh.
     curl -X DELETE "http://127.0.0.1:5000/events/2"
 
