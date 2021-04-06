@@ -3,7 +3,11 @@ Squirrel Yoga ---- <Work in Progress - not completed>
 
 ## Introduction
 
-Squirrel Yoga is a full-stack website where users can create/modify/delete and manage teachers, courses, events, and tree locations.  
+Squirrel Yoga is a full-stack website capstone project built using Flask, postgres, SQLAlchemy ORM, and Auth0 for authentication. Users can create/modify/delete and manage teachers, courses, events, and tree locations depending on the authorization settings.  The website theme was inspired by all of the sqirrels I saw outside stretching and cavorting during lockdown.
+
+#### Image attributions on deployed app
+
+Squirrel images were taken by me. Other images are provided thanks to the photographers on Unsplash : @niko_photos, Debby Hudson (hudsoncrafted.myportfolio.com), Cristina Anne Costello, Rene Cadenas
 
 ## Overview
 This project is an implentation of an app using a Model-View-Controller architecture to store and retrieve data via an API written in Python using Flask. Authentication is implemented using Auth0, a 3rd party authentication service. Tests are written using unittest. The final project is deployed on Heroku.  Although a Front-End was not required, I included a light-weight one using Jinja Templates so that I could learn how to do this and also to have a convenient visual interface for a full-stack application that anyone can use.
@@ -742,3 +746,36 @@ To run the tests, run
 ```
 python tests.py
 ```
+
+## Deployment to Heroku
+General workflow :
+- Create Heroku account and install cli.
+- Create app
+```
+heroku create hello-potato
+```
+- Upload code to app :
+```
+git push heroku main
+```
+- Add postgresql database addon
+```
+heroku addons:create heroku-postgresql:hobby-dev --app name_of_your_application
+```
+- Using your Heroku dashboard, add any application configuration variables. You will see that the database is already configured.
+- Run migrations :
+```
+heroku run python manage.py db upgrade --app name_of_your_application
+```
+- Upload local postgres data if you like, by first exporting the data to an outfile, then importing it using heroku cli.
+```
+pg_dump dbname > outfile
+heroku pg:psql DATABASE_URL --app name_of_your_app < outfile
+```
+Useful commands :
+``` heroku run bash ``` to see if files are there. ```heroku pg:psql``` to see your tables in postgres.
+
+
+
+
+
