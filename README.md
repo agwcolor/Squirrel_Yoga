@@ -763,7 +763,7 @@ General workflow :
 - Create, migrate, then add data to database
 - Don't forget to modify your app settings on Auth0 to include Heroku urls in the *Allowed Callback URLS* and *Allowed Web Origins* sections.
 
-1. Create App
+1. Create App :
 ```
 heroku create name_of_your_app
 ```
@@ -771,7 +771,7 @@ heroku create name_of_your_app
 ```
 git push heroku main
 ```
-3. Add PostgreSQL database addon
+3. Add PostgreSQL database addon :
 ```
 heroku addons:create heroku-postgresql:hobby-dev --app name_of_your_application
 ```
