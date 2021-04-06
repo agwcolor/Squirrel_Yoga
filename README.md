@@ -9,7 +9,8 @@ Squirrel Yoga
 [Testing](#testing) |
 [Deployment to Heroku](#deployment-to-heroku)
 
-[RBAC Authentication]
+**Visit Squirrel Yoga Live example on Heroku** : https://hello-potato.herokuapp.com/
+
 ## Introduction
 
 Squirrel Yoga is a full-stack website capstone project built using Flask, postgres, SQLAlchemy ORM, and Auth0 for authentication. Users can create/modify/delete and manage teachers, courses, events, and tree locations depending on the authorization settings.  The website theme was inspired by all of the sqirrels I saw outside stretching and cavorting during lockdown.
