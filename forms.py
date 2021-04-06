@@ -1,21 +1,20 @@
-from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms.fields.html5 import DateField, TimeField
-from wtforms import StringField, BooleanField, IntegerField, SelectField, SelectMultipleField, DateTimeField, SubmitField
-from wtforms.validators import DataRequired, AnyOf, URL
-from wtforms_sqlalchemy.fields import QuerySelectField # whereshouldthisgo
+from wtforms import StringField, IntegerField, SelectMultipleField, SubmitField
+from wtforms.validators import DataRequired, URL
+from wtforms_sqlalchemy.fields import QuerySelectField
 from models import Teacher, Course, Tree
 
 
 tree_type = [
-            ('Holly', 'Holly'),
-            ('Walnut', 'Walnut'),
-            ('Oak', 'Oak'),
-            ('Cedar', 'Cedar'),
-            ('Bush', 'Bush'),
-            ('Poplar', 'Poplar'),
-            ('Aspen', 'Aspen'),
-        ]
+    ('Holly', 'Holly'),
+    ('Walnut', 'Walnut'),
+    ('Oak', 'Oak'),
+    ('Cedar', 'Cedar'),
+    ('Bush', 'Bush'),
+    ('Poplar', 'Poplar'),
+    ('Aspen', 'Aspen'),
+]
 
 tree_location = [
     ('over yonder', 'over yonder'),
@@ -27,26 +26,27 @@ tree_location = [
 ]
 
 moves_choices = [
-            ('slowly', 'slowly'),
-            ('dangle', 'dangle'),
-            ('hang', 'hang'),
-            ('fly', 'fly'),
-            ('skip', 'skip'),
-            ('scratch', 'scratch'),
-            ('sleepy', 'sleepy'),
-        ]
+    ('slowly', 'slowly'),
+    ('dangle', 'dangle'),
+    ('hang', 'hang'),
+    ('fly', 'fly'),
+    ('skip', 'skip'),
+    ('scratch', 'scratch'),
+    ('sleepy', 'sleepy'),
+]
 
-'''class ChoiceForm(FlaskForm):
-    opts = QuerySelectField(query_factory=choice_query, allow_blank=True)'''
 
 def teacher_query():
     return Teacher.query
 
+
 def course_query():
     return Course.query
 
+
 def tree_query():
     return Tree.query
+
 
 class EventForm(FlaskForm):
     submit = SubmitField('Submit')
@@ -55,7 +55,7 @@ class EventForm(FlaskForm):
         query_factory=teacher_query,
         validators=[DataRequired()],
         allow_blank=False,
-        #blank_text=(u'Choose a teacher ...'),
+        # blank_text=(u'Choose a teacher ...'),
         get_label='name')
 
     course = QuerySelectField(
@@ -63,7 +63,6 @@ class EventForm(FlaskForm):
         query_factory=course_query,
         validators=[DataRequired()],
         allow_blank=False,
-        #blank_text=(u'Choose a course ...'),
         get_label='name')
 
     tree = QuerySelectField(
@@ -72,7 +71,6 @@ class EventForm(FlaskForm):
         query_factory=tree_query,
         validators=[DataRequired()],
         allow_blank=False,
-        # blank_text=(u'Choose a tree location ...'),
         get_label='name')
 
     course_date = DateField(
@@ -85,31 +83,7 @@ class EventForm(FlaskForm):
         'TimePicker',
         validators=[DataRequired()]
     )
-    '''
-    course_date = DateTimeField(
-        'course_date',
-        validators=[DataRequired()],
-        default=datetime.today()
-    )
-    '''
-    '''
-    class EventForm(FlaskForm):
-    submit = SubmitField('Submit')
 
-    teacher_id = StringField(
-        'teacher_id'
-    )
-    course_id = StringField(
-        'course_id'
-    )
-    tree_id = StringField(
-        'tree_id'
-    )
-    course_date = DateTimeField(
-        'course_date',
-        validators=[DataRequired()],
-        default=datetime.today()
-    )'''
 
 class CourseForm(FlaskForm):
     submit = SubmitField('Submit')
@@ -123,6 +97,7 @@ class CourseForm(FlaskForm):
     img_url = StringField(
         'img_url', validators=[URL()]
     )
+
 
 class TeacherForm(FlaskForm):
     submit = SubmitField('Submit')
@@ -145,6 +120,7 @@ class TeacherForm(FlaskForm):
         validators=[DataRequired(message="Enter URL Please"),
                     URL(message="Enter Valid URL Please.")]
     )
+
 
 class TreeForm(FlaskForm):
     submit = SubmitField('Submit')

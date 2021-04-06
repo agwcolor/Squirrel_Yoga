@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Integer, DateTime, create_engine
 from sqlalchemy.dialects.postgresql import ARRAY
 from flask_sqlalchemy import SQLAlchemy
 #from flask_wtf import FlaskForm
-from wtforms_sqlalchemy.fields import QuerySelectField #whereshouldthisgo
+from wtforms_sqlalchemy.fields import QuerySelectField  # whereshouldthisgo
 import json
 import os
 
@@ -14,22 +14,19 @@ import os
 database_path = os.environ['DATABASE_URL']
 
 db = SQLAlchemy()
-# migrate = Migrate(app, db, compare_type=True)  -- what does this do
+# migrate = Migrate(app, db, compare_type=True)
 '''
 setup_db(app)
     binds a flask application and a SQLAlchemy service
 '''
-print("what's going on?")
+
 
 def setup_db(app, database_path=database_path):
-  
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
     db.create_all()
-    print(database_path, " is the database path")
-
 
 # ----------------------------------------------------------------------------#
 # Models
@@ -45,8 +42,11 @@ class Teacher(db.Model):
     temperament = Column(String)
     moves = Column(ARRAY(String))
     img_url = Column(String)
-    events = db.relationship("Event", cascade="all, delete", backref="Teacher", lazy=True)
-
+    events = db.relationship(
+        "Event",
+        cascade="all, delete",
+        backref="Teacher",
+        lazy=True)
 
     def insert(self):
         db.session.add(self)
@@ -84,10 +84,11 @@ class Course(db.Model):
         return {
             'id': self.id,
             'title': self.name,
-            }
+        }
 
     def __repr__(self):
-        return f'<Course ID: {self.id}, title: {self.name}, course_level: {self.course_level}>'
+        return f'<Course ID: {self.id}, title: {self.name}, \
+            course_level: {self.course_level}>'
 
 
 class Event(db.Model):
@@ -98,7 +99,6 @@ class Event(db.Model):
     teacher_id = Column(Integer, db.ForeignKey('Teacher.id'), nullable=False)
     course_id = Column(Integer, db.ForeignKey('Course.id'), nullable=False)
     tree_id = Column(Integer, db.ForeignKey('Tree.id'), nullable=True)
-    # tree = Column(String)
 
     def format(self):
         return {
@@ -118,14 +118,15 @@ class Tree(db.Model):
     location = Column(String)
     img_url = Column(String)
     events = db.relationship("Event", backref="Tree", lazy=True)
-    
+
     def format(self):
         return {
             'id': self.id,
             'name': self.name,
             'type': self.type,
             'location': self.location
-            }
+        }
 
     def __repr__(self):
-        return f'<Tree ID: {self.id}, name: {self.name}, type: {self.type}, location: {self.location}>'
+        return f'<Tree ID: {self.id}, name: {self.name}, type: {self.type}, \
+            location: {self.location}>'
