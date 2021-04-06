@@ -86,7 +86,7 @@ pip3 install Flask-Migrate
   ```
 
 
-Folder & File Descriptions :
+**Folder & File Descriptions :** 
 
 * `setup.sh` -- I used environment variables to store  applicaton and configuration variables that should remain hidden. You will need to define these yourself if you want to build this app locally and make sure they are available to your app, using your favorite environment variable storage method. (For deployment, these variables are manually configured on Heroku). 
 
@@ -714,7 +714,7 @@ PATCH '/events/:id/edit'
     -X PATCH
     -H "Content-Type: application/json"
     -d '{"teacher_id":2,"course_id":2,"tree_id":2, "course_date":"2021-03-31 22:36:28"}'
-    ```
+```
 - Returns : 
 
 
@@ -730,7 +730,7 @@ PATCH '/events/:id/edit'
 DELETE '/events/:id'
 - Deletes an event based on id
 - Request arguments : id of event to be deleted 
-- Curl sample : ```curl -X DELETE "http://127.0.0.1:5000/events/24```
+- Curl sample : curl -X DELETE "http://127.0.0.1:5000/events/24
 - Returns : deleted: id of the event that was deleted
 ```
 {
@@ -751,29 +751,33 @@ python tests.py
 General workflow :
 - Create Heroku account and install cli.
 - Create app
+- Create, migrate, then add data to database
+- Don't forget to modify your app settings on Auth0 to include Heroku urls in the *Allowed Callback URLS* and *Allowed Web Origins* sections.
+
+1. Create App
 ```
 heroku create hello-potato
 ```
-- Upload code to app :
+2. Upload code to app :
 ```
 git push heroku main
 ```
-- Add postgresql database addon
+3. Add postgresql database addon
 ```
 heroku addons:create heroku-postgresql:hobby-dev --app name_of_your_application
 ```
-- Using your Heroku dashboard, add any application configuration variables. You will see that the database is already configured.
-- Run migrations :
+4. Using your Heroku dashboard, add any application configuration variables. You will see that the database is already configured.
+5. Run migrations :
 ```
 heroku run python manage.py db upgrade --app name_of_your_application
 ```
-- Upload local postgres data if you like, by first exporting the data to an outfile, then importing it using heroku cli.
+6. Upload local postgres data if you like, by first exporting the data to an outfile, then importing it using heroku cli.
 ```
 pg_dump dbname > outfile
 heroku pg:psql DATABASE_URL --app name_of_your_app < outfile
 ```
-Useful commands :
-``` heroku run bash ``` to see if files are there. ```heroku pg:psql``` to see your tables in postgres.
+**Useful commands** :
+``` heroku run bash ``` to see if files are there. ```heroku pg:psql``` to get access to your postgres db.
 
 
 
