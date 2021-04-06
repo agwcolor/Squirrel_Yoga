@@ -18,9 +18,6 @@
     </a>
     <p><strong>Experience Level</strong> - {{ course.course_level}}</p>
     <h5>Teachers</h5>
-    
-    
-
       {% for teacher in course.course_teachers %}
       <a href="/teachers/{{ teacher.teacher_id }}">
         <span>{{ teacher.teacher_name }} </span>
@@ -29,10 +26,6 @@
     {% if course.course_teachers|length == 0 %}
     <p>Sadly, no teacher is currently offering this amazing class.</p>
     {% endif %}
-
-    
-
-
   </div>
 </div>
 {% endfor %}

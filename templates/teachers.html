@@ -17,14 +17,14 @@
         <img src="{{ teacher.img_url }}" alt="Teacher Image" />
         <p> <strong>Temperament</strong> - {{teacher.temperament}}</p>
         <p> <strong>Age</strong> - {{ teacher.age }}</p>
-        <p> <strong>Moves</strong> - 
+        <p> <strong>Moves</strong> -
         {% for move in teacher.moves %}
-            {{ move }}, 
+            {{ move }},
         {% endfor %}
         </p>
         </div>
     </div>
-   
+
   {% endfor %}
   </div>
 {% endblock %}

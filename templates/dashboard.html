@@ -1,35 +1,39 @@
-{% extends "base.html" %}
-
-{% block main %}
+{% extends "base.html" %} {% block main %}
 <div class="card">
-    <div class="card-body">
+  <div class="card-body">
+    <div class="logged-in-box auth0-box logged-in">
+      <h1 id="logo"></h1>
 
+      <img src="//cdn.auth0.com/samples/auth0_logo_final_blue_RGB.png" />
+      <!-- <img class="avatar" src="{{userinfo['picture']}}"/> -->
+      <!-- <img src='https://s.gravatar.com/avatar/1aa2f5ec995fa01dc3bbd62697f87733?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fdi.png' /> -->
 
-<div class="logged-in-box auth0-box logged-in">
-    <h1 id="logo"></h1>
-    
+      {% if userinfo['nickname'] == "owner" %}
+      <img
+        class="avatar"
+        src="https://res.cloudinary.com/potatobug/image/upload/c_scale,w_200/v1615609985/sqrl_owner_eqyngb.jpg"
+      />
+      {% elif userinfo['nickname'] == "director" %}
+      <img
+        class="avatar"
+        src="https://res.cloudinary.com/potatobug/image/upload/c_scale,w_200/v1615609894/sqrl_director_zc4gk1.jpg"
+      />
+      {% elif userinfo['nickname'] == "assistant" %}
+      <img
+        class="avatar"
+        src="https://res.cloudinary.com/potatobug/image/upload/c_scale,w_200/v1615609893/sqrl_assistant_wpzfds.jpg"
+      />
+      {% else %} Unable to get nickname
+      <!-- <img class="avatar" src='https://res.cloudinary.com/potatobug/image/upload/c_scale,w_200/v1615609985/sqrl_owner_eqyngb.jpg' /> -->
+      {% endif %}
 
-    <img src="//cdn.auth0.com/samples/auth0_logo_final_blue_RGB.png" />
-   <!-- <img class="avatar" src="{{userinfo['picture']}}"/> -->
-   <!-- <img src='https://s.gravatar.com/avatar/1aa2f5ec995fa01dc3bbd62697f87733?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fdi.png' /> -->
-    
-   {% if userinfo['nickname'] == "owner" %}
-   <img class="avatar" src="https://res.cloudinary.com/potatobug/image/upload/c_scale,w_200/v1615609985/sqrl_owner_eqyngb.jpg" />
-   {% elif userinfo['nickname'] == "director" %}
-   <img class="avatar" src="https://res.cloudinary.com/potatobug/image/upload/c_scale,w_200/v1615609894/sqrl_director_zc4gk1.jpg" />
-   {% elif userinfo['nickname'] == "assistant" %}
-   <img class="avatar" src="https://res.cloudinary.com/potatobug/image/upload/c_scale,w_200/v1615609893/sqrl_assistant_wpzfds.jpg" />
-   {% else %}
-   Unable to get nickname
-   <!-- <img class="avatar" src='https://res.cloudinary.com/potatobug/image/upload/c_scale,w_200/v1615609985/sqrl_owner_eqyngb.jpg' /> -->
-   {% endif %}
-   
-   <h2>Welcome {{userinfo['nickname']}} ! </h2>
-    <h3>{{userinfo['name']}}</h3>
-    <!-- <pre>{{userinfo_pretty}}</pre> -->
-    <a class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
-</div>
-
-</div>
+      <h2>Welcome {{userinfo['nickname']}} !</h2>
+      <h3>{{userinfo['name']}}</h3>
+      <!-- <pre>{{userinfo_pretty}}</pre> -->
+      <a class="btn btn-primary btn-lg btn-logout btn-block" href="/logout"
+        >Logout</a
+      >
+    </div>
+  </div>
 </div>
 {% endblock %}

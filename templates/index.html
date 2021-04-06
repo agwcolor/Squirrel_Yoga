@@ -1,84 +1,81 @@
 {% extends "base.html" %}
 <div class="card bg-custom-2">
-{% block main %}
-<div class="card bg-custom-3">
-  <div class="card">
-    <div class="auth-state">
-      {% if userinfo['name'] %} You are logged in as {{ userinfo['name'] }}
-      <a href="{{ url_for('logout') }}"
-        ><button class="btn btn-sm btn-outline-primary">Logout</button></a
-      >
-      {% else %} You are not logged in.
-      <a href="{{ url_for('login') }}"
-        ><button class="btn btn-sm btn-outline-primary">Login</button></a
-      >
-      {% endif %}
-    </div>
-  </div>
-  <div class="card-body">
-    <div class="row">
-      <div class="col">
-        <h1>Squirrel Yoga !</h1>
-        <p class="lead">Find a tree and move that's right for you.</p>
-        <h3>
-          <a href="{{ url_for('get_teachers') }}"
-            ><button class="btn btn-primary">Teachers</button></a
-          >
-          <a href="{{ url_for('get_courses') }}"
-            ><button class="btn btn-primary">Courses</button></a
-          >
-          <a href="{{ url_for('get_events') }}"
-            ><button class="btn btn-primary">Events</button></a
-          >
-          <a href="{{ url_for('get_trees') }}"
-            ><button class="btn btn-primary">Tree Locations</button></a
-          >
-        </h3>
-        <p class="lead">Manage courses, trees, teachers, events</p>
-
-        <h3 title="Add teacher, course, or event">
-          <a href="{{ url_for('retrieve_new_course_form') }}"
-            ><button class="btn btn-info">Add a course</button></a
-          >
-          <a href="{{ url_for('retrieve_new_teacher_form') }}"
-            ><button class="btn btn-info">Add a teacher</button></a
-          >
-          <a href="{{ url_for('retrieve_new_event_form') }}"
-            ><button class="btn btn-info">Add an event</button></a
-          >
-        </h3>
-        <h3 title="Add tree location">
-          <a href="{{ url_for('retrieve_new_tree_form') }}"
-            ><button class="btn btn-info">Add tree location</button></a
-          >
-        </h3>
-        
+  {% block main %}
+  <div class="card bg-custom-3">
+    <div class="card">
+      <div class="auth-state">
+        {% if userinfo['name'] %} You are logged in as {{ userinfo['name'] }}
+        <a href="{{ url_for('logout') }}"
+          ><button class="btn btn-sm btn-outline-primary">Logout</button></a
+        >
+        {% else %} You are not logged in.
+        <a href="{{ url_for('login') }}"
+          ><button class="btn btn-sm btn-outline-primary">Login</button></a
+        >
+        {% endif %}
       </div>
     </div>
-  </div>
-  <div class="card-body">
-    <div class="col-xs-6 col-sm-10 col-sm-12">
-      <img
-        class="mx-auto d-block"
-        id="front-splash"
-        src="{{ url_for('static',filename='2squirrel_sm.jpg') }}"
-        alt="2 Squirrels"
-      />
-    </div>
-    <div class="container-padding2 footer-text">
-    [<a href="https://github.com/agwcolor/Squirrel_Yoga"
-    > Squirrel Yoga on GitHub 
-    </a>]
-    
-    <a href="https://github.com/agwcolor/Squirrel_Yoga"
-    ><img
-      src="{{ url_for('static',filename='Octocat.png') }}"
-      height="40"
-      width="40"
-    /></a>
-    </div>
-    </div>
-  {% endblock %}
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <h1>Squirrel Yoga !</h1>
+          <p class="lead">Find a tree and move that's right for you.</p>
+          <h3>
+            <a href="{{ url_for('get_teachers') }}"
+              ><button class="btn btn-primary">Teachers</button></a
+            >
+            <a href="{{ url_for('get_courses') }}"
+              ><button class="btn btn-primary">Courses</button></a
+            >
+            <a href="{{ url_for('get_events') }}"
+              ><button class="btn btn-primary">Events</button></a
+            >
+            <a href="{{ url_for('get_trees') }}"
+              ><button class="btn btn-primary">Tree Locations</button></a
+            >
+          </h3>
+          <p class="lead">Manage courses, trees, teachers, events</p>
 
-</div>
+          <h3 title="Add teacher, course, or event">
+            <a href="{{ url_for('retrieve_new_course_form') }}"
+              ><button class="btn btn-info">Add a course</button></a
+            >
+            <a href="{{ url_for('retrieve_new_teacher_form') }}"
+              ><button class="btn btn-info">Add a teacher</button></a
+            >
+            <a href="{{ url_for('retrieve_new_event_form') }}"
+              ><button class="btn btn-info">Add an event</button></a
+            >
+          </h3>
+          <h3 title="Add tree location">
+            <a href="{{ url_for('retrieve_new_tree_form') }}"
+              ><button class="btn btn-info">Add tree location</button></a
+            >
+          </h3>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="col-xs-6 col-sm-10 col-sm-12">
+        <img
+          class="mx-auto d-block"
+          id="front-splash"
+          src="{{ url_for('static',filename='2squirrel_sm.jpg') }}"
+          alt="2 Squirrels"
+        />
+      </div>
+      <div class="container-padding2 footer-text">
+        [<a href="https://github.com/agwcolor/Squirrel_Yoga">
+          Squirrel Yoga on GitHub </a
+        >]
+        <a href="https://github.com/agwcolor/Squirrel_Yoga"
+          ><img
+            src="{{ url_for('static',filename='Octocat.png') }}"
+            height="40"
+            width="40"
+        /></a>
+      </div>
+    </div>
+    {% endblock %}
+  </div>
 </div>

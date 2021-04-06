@@ -1,16 +1,14 @@
-{% extends "base.html" %}
-{% block title %}Edit Event{% endblock %}
-{% block main %}
+{% extends "base.html" %} {% block title %}Edit Event{% endblock %} {% block
+main %}
 <div class="container-fluid">
   <form action="/events/{{event.id}}/edit" method="POST">
-    <!-- url_for('edit_course', id=course.id)-->
     {{ form.csrf_token }}
     <h3>Edit Event</h3>
 
     <div class="form-group">
       <label for="teacher">Current Teacher : {{ teacher.name }}</label>
-      <!-- <textarea class="form-control" name="about">{{ teacher.name }}</textarea> -->
-      {{ form.teacher(class_ = 'form-control', placeholder=form.teacher.label.text, autofocus = true) }}
+      {{ form.teacher(class_ = 'form-control',
+      placeholder=form.teacher.label.text, autofocus = true) }}
     </div>
 
     <div class="form-group">
@@ -24,9 +22,10 @@
     </div>
 
     <div class="form-group">
-        <label for="course_date">Course Date</label>
-        {{ form.course_date(class_ = 'form-control', placeholder='YYYY-MM-DD HH:MM', autofocus = true) }}
-      </div>
+      <label for="course_date">Course Date</label>
+      {{ form.course_date(class_ = 'form-control', placeholder='YYYY-MM-DD
+      HH:MM', autofocus = true) }}
+    </div>
 
     <div class="col">
       {{ form.submit(class="btn btn-primary", value="Update Event") }}
