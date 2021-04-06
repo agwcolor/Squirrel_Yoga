@@ -9,7 +9,7 @@ Squirrel Yoga
 [Testing](#testing) |
 [Deployment to Heroku](#deployment-to-heroku)
 
-**Visit Squirrel Yoga Live example on Heroku** : https://hello-potato.herokuapp.com/
+**Visit Squirrel Yoga on Heroku** : https://hello-potato.herokuapp.com/
 
 ## Introduction
 
