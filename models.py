@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String, Integer, DateTime, create_engine
 from sqlalchemy.dialects.postgresql import ARRAY
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 import os
 
 
@@ -11,7 +12,7 @@ import os
 database_path = os.environ['DATABASE_URL']
 
 db = SQLAlchemy()
-# migrate = Migrate(app, db, compare_type=True)
+#migrate = Migrate(app, db, compare_type=True)
 '''
 setup_db(app)
     binds a flask application and a SQLAlchemy service

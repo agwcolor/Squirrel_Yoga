@@ -50,9 +50,13 @@ pip3 install Flask-Migrate
 │   ├── base.css
 │   ├── piano.png
 │   ├── squirrel_basic.jpg
+│   ├── Octocat.png
+│   ├── favicon.ico
+│   ├── walnut_haci-elmas-unsplash.jpg
 │   └── squirrelsquare.jpg
 ├── templates
 │   ├── base.html
+│   ├── error.html
 │   ├── courses.html
 │   ├── dashboard.html
 │   ├── events.html

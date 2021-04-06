@@ -10,6 +10,7 @@ from auth.auth import AuthError, requires_auth, requires_auth_auth0
 from authlib.integrations.flask_client import OAuth
 from flask import session, g
 from six.moves.urllib.parse import urlencode
+from flask_migrate import Migrate
 
 AUTH0_CALLBACK_URL = os.environ['AUTH0_CALLBACK_URL']
 AUTH0_CLIENT_ID = os.environ['AUTH0_CLIENT_ID']
@@ -22,8 +23,10 @@ AUTH0_AUDIENCE = os.environ['AUTH0_AUDIENCE']
 def create_app(test_config=None):
 
     app = Flask(__name__)
+    
     app.secret_key = os.environ['SECRET_KEY']
     setup_db(app)
+    migrate = Migrate(app, db, compare_type=True)
     print("creating app ...")
     CORS(app)
 
