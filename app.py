@@ -1290,7 +1290,7 @@ def create_app(test_config=None):
             abort(404)
 
     # --------------------------------------------------------------------- #
-    # @app.errorhandler decoratior to format error responses as JSON objects
+    # @app.errorhandler decorator to format error responses as JSON objects
     # for status codes: 401, 403 (Autherrors), 404 (not found),
     # 422 (unprocessable entity)
     # --------------------------------------------------------------------- #
