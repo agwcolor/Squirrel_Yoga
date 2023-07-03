@@ -23,7 +23,7 @@ AUTH0_AUDIENCE = os.environ['AUTH0_AUDIENCE']
 def create_app(test_config=None):
 
     app = Flask(__name__)
-    
+
     app.secret_key = os.environ['SECRET_KEY']
     setup_db(app)
     migrate = Migrate(app, db, compare_type=True)
@@ -59,6 +59,7 @@ def create_app(test_config=None):
 # ----------------------------------------------------------------------------#
 
     # Auth0 login flow.
+
 
     @app.route('/callback')
     @cross_origin()
@@ -1367,8 +1368,8 @@ def create_app(test_config=None):
 
 
 app = create_app()
-#----------------------------------------------------------------------------#
+# ----------------------------------------------------------------------------#
 # Launch.
-#----------------------------------------------------------------------------#
+# ----------------------------------------------------------------------------#
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=env.get('PORT', 5000))
