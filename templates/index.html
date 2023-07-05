@@ -18,12 +18,25 @@
     <div class="card-body">
       <div class="row">
         <div class="col">
+          <a href="https://github.com/agwcolor/Squirrel_Yoga"
+            ><img src="{{ url_for('static',filename='squirrel_134.png') }}"
+          height="40"
+          width="40"></a> [<a href="https://github.com/agwcolor/Squirrel_Yoga">
+            Squirrel Yoga on GitHub </a
+          >]
+          <a href="https://github.com/agwcolor/Squirrel_Yoga"
+            ><img
+              src="{{ url_for('static',filename='Octocat.png') }}"
+              height="40"
+              width="40"
+          /></a>
           <p><div class="card-body bg-light intro"><strong>What is this really?</strong> Squirrel Yoga is a full-stack website Udacity capstone project built using Flask, PostgreSQL, SQLAlchemy ORM, and Auth0 (to add authentication and authorization services), and Heroku (to host the website & PostgreSQL instance). Users can create/modify/delete and manage teachers, courses, events, and tree locations depending on the authorization settings.  The website content was inspired by all of the squirrels I saw outside stretching and cavorting during lockdown. Please visit the <a href="https://github.com/agwcolor/Squirrel_Yoga">Github repository</a> to see the code.</div></p>
+          <hr/>
           <h1>Squirrel Yoga !</h1>
           <p class="lead">Find a tree and move that's right for you.</p>
           <h3>
             <a href="{{ url_for('get_teachers') }}"
-              ><button class="btn btn-primary">Teachers</button></a
+              ><button class="btn btn-primary">Teachers</button></add
             >
             <a href="{{ url_for('get_courses') }}"
               ><button class="btn btn-primary">Courses</button></a
@@ -65,7 +78,7 @@
           alt="2 Squirrels"
         />
       </div>
-      <div class="container-padding2 footer-text">
+      <!-- <div class="container-padding2 footer-text">
         [<a href="https://github.com/agwcolor/Squirrel_Yoga">
           Squirrel Yoga on GitHub </a
         >]
@@ -75,7 +88,7 @@
             height="40"
             width="40"
         /></a>
-      </div>
+      </div> -->
     </div>
     {% endblock %}
   </div>
