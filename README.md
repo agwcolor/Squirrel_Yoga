@@ -1,8 +1,8 @@
-Squirrel Yoga
--------------
+## Squirrel Yoga
+
 [Intro](#Introduction) |
 [Overview](#Overview) |
-[Tech Stack](#tech-stack-dependencies) | 
+[Tech Stack](#tech-stack-dependencies) |
 [Development Setup](#development-setup) |
 [Authentication](#authentication---rbac-behavior) |
 [API - Endpoints](#api---endpoints) |
@@ -13,26 +13,30 @@ Squirrel Yoga
 
 ## Introduction
 
-Squirrel Yoga is a full-stack website capstone project built using Flask, PostgreSQL, SQLAlchemy ORM, and Auth0 for authentication. Users can create/modify/delete and manage teachers, courses, events, and tree locations depending on the authorization settings.  The website theme was inspired by all of the squirrels I saw outside stretching and cavorting during lockdown.
+Squirrel Yoga is a full-stack website Udacity capstone project built using Flask, PostgreSQL, SQLAlchemy ORM, and Auth0 (to add authentication and authorization services), and Heroku (to host the website & PostgreSQL instance). Users can create/modify/delete and manage teachers, courses, events, and tree locations depending on the authorization settings. The website content was inspired by all of the squirrels I saw outside stretching and cavorting during lockdown.
 
 #### Image attributions on deployed app
 
 Squirrel images were taken by me. Other images are provided thanks to the photographers on Unsplash : @niko_photos, Debby Hudson (hudsoncrafted.myportfolio.com), Cristina Anne Costello, Rene Cadenas
 
 ## Overview
-This project is an implementation of an app using a Model-View-Controller architecture to store and retrieve data via an API written in Python using Flask. Authentication is implemented using Auth0, a 3rd party authentication service. Tests are written using unittest. The final project is deployed on Heroku.  Although a Front-End was not required, I included a light-weight one using Jinja Templates so that I could learn how to do this and also to have a convenient visual interface for a full-stack application that anyone can use.
+
+This project is an implementation of an app using a Model-View-Controller architecture to store and retrieve data via an API written in Python using Flask. Authentication is implemented using Auth0, a 3rd party authentication service. Tests are written using unittest. The final project is deployed on Heroku. Although a Front-End was not required, I included a light-weight one using Jinja Templates so that I could learn how to do this and also to have a convenient visual interface for a full-stack application that anyone can use.
 
 ## Tech Stack (Dependencies)
 
 ### 1. Backend Dependencies
+
 The tech stack includes:
- * **virtualenv** for creating isolated Python environments
- * **SQLAlchemy ORM** our ORM library of choice
- * **PostgreSQL**  our database of choice
- * **Python3** and **Flask** our server language and server framework
- * **Flask-Migrate** for creating and running schema migrations
+
+- **virtualenv** for creating isolated Python environments
+- **SQLAlchemy ORM** our ORM library of choice
+- **PostgreSQL** our database of choice
+- **Python3** and **Flask** our server language and server framework
+- **Flask-Migrate** for creating and running schema migrations
 
 You can download and install the dependencies mentioned above using `pip` as:
+
 ```
 pip3 install virtualenv
 pip3 install SQLAlchemy
@@ -42,8 +46,10 @@ pip3 install Flask-Migrate
 ```
 
 ### 2. Frontend Dependencies
-* Flask Template Libraries and WTForms (All are already listed in requirements.txt)
-* Bootstrap 4 styles are accessed accessed via URL and do not need to be installed
+
+- Flask Template Libraries and WTForms (All are already listed in requirements.txt)
+- Bootstrap 4 styles are accessed accessed via URL and do not need to be installed
+
 ```
 ## Project Structure
 ├── Procfile
@@ -57,6 +63,7 @@ pip3 install Flask-Migrate
 ├── migrations/
 ├── models.py
 ├── requirements.txt
+├── runtime.txt
 ├── setup.sh
 ├── static
 │   ├── 2squirrel_sm.jpg
@@ -93,14 +100,14 @@ pip3 install Flask-Migrate
 │   ├── teachers.html
 │   └── trees.html
 ├── tests.py
-  ```
+```
 
+**Folder & File Descriptions :**
 
-**Folder & File Descriptions :** 
-
-* `setup.sh` -- I used environment variables to store  application and configuration variables that should remain hidden. You will need to define these yourself if you want to build this app locally and make sure they are available to your app, using your favorite environment variable storage method. (For deployment, these variables are manually configured on Heroku). 
+- `setup.sh` -- I used environment variables to store application and configuration variables that should remain hidden. You will need to define these yourself if you want to build this app locally and make sure they are available to your app, using your favorite environment variable storage method. (For deployment, these variables are manually configured on Heroku).
 
 Note: Replace the placeholder values!
+
 ```
 DATABASE_URL='yourpostgresdatabaseurl'
 SECRET_KEY='yourflasksecretkey'
@@ -111,43 +118,50 @@ AUTH0_DOMAIN='yourauth0domain'
 AUTH0_AUDIENCE='yourauth0audience'
 ```
 
-*  `models.py` -- defines the data models that set up the database tables. (the Models in this project are : Teachers, Events, Courses, Trees.) Loosely based on the structure of the Fyyr app project models.
-* `app.py` --  main app file. Defines the routes that match the user’s URL and the controllers which handle data and render views to the user.
-* `forms.py` -- contains forms definitions using WFT_form, a built-in module in flask for designing forms, and WTForms library for form validation and rendering.
-* `templates/` -- where the web frontend Jinja templates are located. Templates are built based on the controllers (Flask endpoints) in `app.py`
-* `templates/forms` -- where the web frontend Jinja form templates are located. Form validation and definitions are defined in `forms.py`
+- `models.py` -- defines the data models that set up the database tables. (the Models in this project are : Teachers, Events, Courses, Trees.) Loosely based on the structure of the Fyyr app project models.
+- `app.py` -- main app file. Defines the routes that match the user’s URL and the controllers which handle data and render views to the user.
+- `forms.py` -- contains forms definitions using WFT_form, a built-in module in flask for designing forms, and WTForms library for form validation and rendering.
+- `templates/` -- where the web frontend Jinja templates are located. Templates are built based on the controllers (Flask endpoints) in `app.py`
+- `templates/forms` -- where the web frontend Jinja form templates are located. Form validation and definitions are defined in `forms.py`
 
-* `requirements.txt` -- Lists all of the libraries required for this app to run. To install them : Create a virtual environment, then install by running 'pip3 install -r `requirements.txt` '
-* `migrations/` -- Alembic database migrations folder
-* `flask db migrate` -- can be used to populate a local PostgreSQL database with properly configured tables and relationships for application  objects, including columns, column data types, constraints, and defaults.
-* `auth/auth.py` -- handles checking authentication requirements for endpoints defined in `app.py` and verifying with Auth0 3rd party service that JWTs are valid. Most of this is boilerplate code used from the Coffeeshop project. However, significant modifications had to be made to work with Jinja templates to reflect the current user and login session.
-* `tests.py` --  Note : The project rubric instructed us to use Python unittest library. It turns out that this was challenging to do because the front and backend is tightly coupled and I was unable to return json responses but had to test via returned & rendered templates instead. However, rendered json can be returned if that section of the code is uncommented and the 'render template' portion commented out.
-* `Procfile` -- for Heroku deployment. Used to run the app using gunicorn (WSGI http server) on Heroku
-
+- `requirements.txt` -- Lists all of the libraries required for this app to run. To install them : Create a virtual environment, then install by running 'pip3 install -r `requirements.txt` '
+- `migrations/` -- Alembic database migrations folder
+- `flask db migrate` -- can be used to populate a local PostgreSQL database with properly configured tables and relationships for application objects, including columns, column data types, constraints, and defaults.
+- `auth/auth.py` -- handles checking authentication requirements for endpoints defined in `app.py` and verifying with Auth0 3rd party service that JWTs are valid. Most of this is boilerplate code used from the Coffeeshop project. However, significant modifications had to be made to work with Jinja templates to reflect the current user and login session.
+- `tests.py` -- Note : The project rubric instructed us to use Python unittest library. It turns out that this was challenging to do because the front and backend is tightly coupled and I was unable to return json responses but had to test via returned & rendered templates instead. However, rendered json can be returned if that section of the code is uncommented and the 'render template' portion commented out.
+- `Procfile` -- for Heroku deployment. Used to run the app using gunicorn (WSGI http server) on Heroku
+- `runtime.txt` -- for Heroku deployment. Specifies which version of Python to use. Make sure that the current Heroku stack supports the version of Python you specify.
 
 ## Development Setup
+
 1. **Download the project starter code locally**
+
 ```
 git clone https://github.com/agwcolor/Squirrel_Yoga.git
-cd /Squirrel_Yoga 
+cd /Squirrel_Yoga
 ```
 
 2. **Initialize and activate a virtualenv using:**
+
 ```
 python -m virtualenv env
 source env/bin/activate
 ```
->**Note** - In Windows, the `env` does not have a `bin` directory. Therefore, you'd use the analogous command shown below:
+
+> **Note** - In Windows, the `env` does not have a `bin` directory. Therefore, you'd use the analogous command shown below:
+
 ```
 source env/Scripts/activate
 ```
 
 3. **Install the dependencies:**
+
 ```
 pip install -r requirements.txt
 ```
 
 4. **Run the development server:**
+
 ```
 export FLASK_APP=app.py
 export FLASK_ENV=development
@@ -155,21 +169,24 @@ python3 app.py    - or -   flask run
 ```
 
 6. **Verify on the Browser**<br>
-Navigate to project homepage ```http://127.0.0.1:5000/``` or ```http://localhost:5000``` 
+   Navigate to project homepage `http://127.0.0.1:5000/` or `http://localhost:5000`
+   Note : If you are running on a Mac M1, you may need to turn of Airplay as it may be blocking port 5000. To turn off: Preferences>Sharing>Airplay.
 
 ## Authentication - RBAC behavior
+
 This application uses the [Auth0](https://auth0.com/)
- authentication and authorization (identity management) platform.
+authentication and authorization (identity management) platform.
 See `/auth/auth.py` which uses a combination of the Coffeeshop project auth boilerplate, AUTH0 boilerplate for requires_auth() in `app.py`, as well as some auth to work with Jinja templates.
 
 There are 4 anticipated users (roles) configured using Auth0 3rd party service:
-* Anyone -- can view (GET)
-* assistant -- can EDIT -- patch:teachers, patch:courses, patch:trees, patch:events
-* director -- can EDIT / ADD -- patch:teachers, patch:courses, patch:trees, patch:events
-post:teachers, post:courses, post:trees, post: events
-* owner -- can EDIT / ADD / DELETE -- patch:teachers, patch:courses, patch:trees
-post:teachers, post:courses, post:trees, post:events
-delete:teachers, delete:courses, delete:trees, delete:events
+
+- Anyone -- can view (GET)
+- assistant -- can EDIT -- patch:teachers, patch:courses, patch:trees, patch:events
+- director -- can EDIT / ADD -- patch:teachers, patch:courses, patch:trees, patch:events
+  post:teachers, post:courses, post:trees, post: events
+- owner -- can EDIT / ADD / DELETE -- patch:teachers, patch:courses, patch:trees
+  post:teachers, post:courses, post:trees, post:events
+  delete:teachers, delete:courses, delete:trees, delete:events
 
 The web page should show an alert when an action is not allowed by the currently logged in user.
 The home page should indicate who is currently logged in or if nobody is logged in.
@@ -183,6 +200,7 @@ However, the json does exist and is commented out in the code and can be used as
 It has 19 endpoints in 4 main categories: Teachers, Courses, & Trees, Events summarized here:
 
 TEACHERS:
+
 - GET '/teachers'
 - GET '/teachers/:id'
 - POST '/teachers/add'
@@ -190,6 +208,7 @@ TEACHERS:
 - DELETE '/teachers/:id'
 
 COURSES:
+
 - GET '/courses'
 - GET '/courses/:id'
 - POST '/courses/add'
@@ -197,6 +216,7 @@ COURSES:
 - DELETE '/courses/:id'
 
 TREES:
+
 - GET '/trees'
 - GET '/trees/:id'
 - POST '/trees/add'
@@ -204,18 +224,21 @@ TREES:
 - DELETE '/trees/:id'
 
 EVENTS:
+
 - GET '/events'
 - POST '/events/add'
 - PATCH '/events/:id/edit'
 - DELETE '/events/:id'
 
-
 ### TEACHERS
+
 GET '/teachers' <br>
+
 - Fetches a list of teachers
 - Request arguments: None
-- Curl sample: ```curl "http://127.0.0.1:5000/teachers"```
+- Curl sample: `curl "http://127.0.0.1:5000/teachers"`
 - Returns:
+
 ```
 {
   "count": 22,
@@ -236,7 +259,7 @@ GET '/teachers' <br>
       "name": "sodoro",
       "temperament": "edgy"
     },
-    
+
     ...
 
   ],
@@ -245,10 +268,12 @@ GET '/teachers' <br>
 ```
 
 GET '/teachers/:id'
+
 - Fetches an individual teacher
 - Request arguments: teacher id
-- Curl sample: ```curl "http://127.0.0.1:5000/teachers/1"```
+- Curl sample: `curl "http://127.0.0.1:5000/teachers/1"`
 - Returns:
+
 ```
 {
   "data": [
@@ -305,19 +330,20 @@ GET '/teachers/:id'
 
 ```
 
-
 POST '/teachers/add'
+
 - Adds a teacher
 - Request Arguments: teacher name text, age number, temperament, and moves
 - Curl sample :
+
 ```
     curl http://127.0.0.1:5000/teachers/add
     -X POST
     -H "Content-Type: application/json"
     -d '{"name":"rocky","age":2, "temperament":"sly", "moves":["outhere","highbounce","horizontal fling"], "img_url":"https://res.cloudinary.com/potatobug/image/upload/c_scale,e_brightness:7,w_180/e_sharpen:100/v1611551627/squirrel_rounded_ey5qgk.jpg"}'
 ```
-- Returns : teacher.id
 
+- Returns : teacher.id
 
 ```
 {
@@ -327,17 +353,19 @@ POST '/teachers/add'
 ```
 
 PATCH '/teachers/:id/edit'
+
 - Modify a teacher
 - Request Arguments: teacher name text, age number, temperament, and moves
-- Curl sample : 
+- Curl sample :
+
 ```
     curl http://127.0.0.1:5000/teachers/2/edit
     -X PATCH
     -H "Content-Type: application/json"
     -d '{"name":"rocky","age":2, "temperament":"sly", "moves":["outhere","highbounce","horizontal fling"], "img_url":"https://res.cloudinary.com/potatobug/image/upload/c_scale,e_brightness:7,w_180/e_sharpen:100/v1611551627/squirrel_rounded_ey5qgk.jpg"}'
 ```
-- Returns : teacher.id, teacher.name, teacher.moves
 
+- Returns : teacher.id, teacher.name, teacher.moves
 
 ```
 {
@@ -348,12 +376,13 @@ PATCH '/teachers/:id/edit'
 }
 ```
 
-
 DELETE '/teachers/:id'
+
 - Deletes a teacher based on id
-- Request arguments : id: id of teacher to be deleted 
-- Curl sample : ```curl -X DELETE "http://127.0.0.1:5000/teachers/24"```
+- Request arguments : id: id of teacher to be deleted
+- Curl sample : `curl -X DELETE "http://127.0.0.1:5000/teachers/24"`
 - Returns : deleted: id of the teacher that was deleted
+
 ```
 {
   "deleted": 24,
@@ -362,12 +391,15 @@ DELETE '/teachers/:id'
 ```
 
 ### COURSES
+
 GET '/courses' <br>
 GET '/courses'
+
 - Fetches a list of courses
 - Request arguments: None
-- Curl sample: ```curl "http://127.0.0.1:5000/courses"```
+- Curl sample: `curl "http://127.0.0.1:5000/courses"`
 - Returns:
+
 ```
 {
   "count": 10,
@@ -403,10 +435,12 @@ GET '/courses'
 ```
 
 GET '/courses/:id'
+
 - Fetches an individual course
 - Request arguments: course id
-- Curl sample: ```curl "http://127.0.0.1:5000/courses/1"```
+- Curl sample: `curl "http://127.0.0.1:5000/courses/1"`
 - Returns:
+
 ```
 {
   "data": [
@@ -451,15 +485,15 @@ GET '/courses/:id'
 ```
 
 POST '/courses/add'
+
 - Adds a course
 - Request Arguments: course name text, course level
 - Curl sample :
-    ```curl http://127.0.0.1:5000/courses/add```
-    -X POST
-    -H "Content-Type: application/json"
-    -d '{"name":"Dangle","course_level":5"}'
+  `curl http://127.0.0.1:5000/courses/add`
+  -X POST
+  -H "Content-Type: application/json"
+  -d '{"name":"Dangle","course_level":5"}'
 - Returns : course.id
-
 
 ```
 {
@@ -469,15 +503,16 @@ POST '/courses/add'
 ```
 
 PATCH '/courses/:id/edit'
+
 - Modify a course
 - Request Arguments: course name text, course level
 - Curl sample :
-    ```curl http://127.0.0.1:5000/courses/2/edit
-    -X PATCH
-    -H "Content-Type: application/json"
-    -d '{"name":"Dangle","course_level":5"}'```
+  ````curl http://127.0.0.1:5000/courses/2/edit
+  -X PATCH
+  -H "Content-Type: application/json"
+  -d '{"name":"Dangle","course_level":5"}'```
+  ````
 - Returns : course.id, course.name, course.level
-
 
 ```
 {
@@ -488,12 +523,13 @@ PATCH '/courses/:id/edit'
 }
 ```
 
-
 DELETE '/courses/:id'
+
 - Deletes a course based on id
 - Request arguments : id: id of course to be deleted
-- Curl sample : ```curl -X DELETE "http://127.0.0.1:5000/courses/2```
+- Curl sample : `curl -X DELETE "http://127.0.0.1:5000/courses/2`
 - Returns : deleted: id of the course that was deleted
+
 ```
 {
   "deleted": 2,
@@ -502,12 +538,15 @@ DELETE '/courses/:id'
 ```
 
 ### TREES
+
 GET '/trees' <br>
 GET '/trees'
+
 - Fetches a list of tree locations.
 - Request arguments: None
-- Curl sample: ```curl "http://127.0.0.1:5000/trees"```
+- Curl sample: `curl "http://127.0.0.1:5000/trees"`
 - Returns:
+
 ```
 {
   "count": 5,
@@ -543,10 +582,12 @@ GET '/trees'
 ```
 
 GET '/trees/:id'
+
 - Fetches an individual tree
 - Request arguments: tree id
-- Curl sample: ```curl "http://127.0.0.1:5000/trees/1"```
+- Curl sample: `curl "http://127.0.0.1:5000/trees/1"`
 - Returns:
+
 ```
 {
   "data": [
@@ -592,16 +633,16 @@ GET '/trees/:id'
 ```
 
 POST '/trees/add'
+
 - Adds a tree
 - Request Arguments: tree name text, type, location, and image url
 - Curl sample :
-    ```curl http://127.0.0.1:5000/trees/add
-    -X POST
-    -H "Content-Type: application/json"
-    -d '{"name":"Figgy","type": "Fig", "location": "Scary Dog's Garden"}'
-    ```
+  ```curl http://127.0.0.1:5000/trees/add
+  -X POST
+  -H "Content-Type: application/json"
+  -d '{"name":"Figgy","type": "Fig", "location": "Scary Dog's Garden"}'
+  ```
 - Returns : tree.id
-
 
 ```
 {
@@ -611,16 +652,16 @@ POST '/trees/add'
 ```
 
 PATCH '/trees/:id/edit'
+
 - Modify a tree
 - Request Arguments: tree name, type, location
 - Curl sample :
-    ```curl http://127.0.0.1:5000/trees/2/edit
-    -X PATCH
-    -H "Content-Type: application/json"
-    -d '{"name":"Figgy","type": "Fig", "location": "Scary Dog's Garden"}'
-    ```
-- Returns : 
-
+  ```curl http://127.0.0.1:5000/trees/2/edit
+  -X PATCH
+  -H "Content-Type: application/json"
+  -d '{"name":"Figgy","type": "Fig", "location": "Scary Dog's Garden"}'
+  ```
+- Returns :
 
 ```
 {
@@ -633,12 +674,13 @@ PATCH '/trees/:id/edit'
 }
 ```
 
-
 DELETE '/trees/:id'
+
 - Deletes a tree based on id
 - Request arguments : id: id of tree to be deleted
-- Curl sample : ```curl -X DELETE "http://127.0.0.1:5000/trees/4```
+- Curl sample : `curl -X DELETE "http://127.0.0.1:5000/trees/4`
 - Returns : deleted: id of the question that was deleted
+
 ```
 {
   "deleted": 4,
@@ -647,11 +689,14 @@ DELETE '/trees/:id'
 ```
 
 ### EVENTS
+
 GET '/events' <br>
+
 - Fetches a list of events and their details
 - Request arguments: None
-- Curl sample: ```curl "http://127.0.0.1:5000/events"```
+- Curl sample: `curl "http://127.0.0.1:5000/events"`
 - Returns:
+
 ```
 {
   "count": 36,
@@ -696,17 +741,19 @@ GET '/events' <br>
 ```
 
 POST '/events/add'
+
 - Adds an event
 - Request Arguments: teacher id, course id, tree id (auto populated dropdown in form), date
-- Curl sample : 
+- Curl sample :
+
 ```
     curl http://127.0.0.1:5000/events/add
     -X POST
     -H "Content-Type: application/json"
     -d '{"teacher_id":2,"course_id":2,"tree_id":2, "date":"2021-03-31 22:36:28"}'
 ```
-- Returns : teacher.id
 
+- Returns : teacher.id
 
 ```
 {
@@ -716,17 +763,19 @@ POST '/events/add'
 ```
 
 PATCH '/events/:id/edit'
+
 - Modify an event
 - Request Arguments: teacher, course, tree, course date - (teacher_id, course_id, tree_id are auto populated in the form so the user doesn't need to know the id number.)
 - Curl sample :
+
 ```
     curl http://127.0.0.1:5000/events/2/edit
     -X PATCH
     -H "Content-Type: application/json"
     -d '{"teacher_id":2,"course_id":2,"tree_id":2, "course_date":"2021-03-31 22:36:28"}'
 ```
-- Returns :
 
+- Returns :
 
 ```
 {
@@ -736,12 +785,13 @@ PATCH '/events/:id/edit'
 }
 ```
 
-
 DELETE '/events/:id'
+
 - Deletes an event based on id
 - Request arguments : id of event to be deleted
 - Curl sample : curl -X DELETE "http://127.0.0.1:5000/events/24
 - Returns : deleted: id of the event that was deleted
+
 ```
 {
   "deleted": 24,
@@ -749,49 +799,60 @@ DELETE '/events/:id'
 }
 ```
 
-
 ## Testing
+
 To run the tests, run
+
 ```
 python tests.py
 ```
 
 ## Deployment to Heroku
+
+This project has been updated to the Heroku-22 stack. Previously it was on the free "Hobby" version. However, that does not exist and there is only a paid version now.
+
 General workflow :
+
 - Create Heroku account and install cli.
 - Create app
 - Create, migrate, then add data to database
-- Don't forget to modify your app settings on Auth0 to include Heroku urls in the *Allowed Callback URLS* and *Allowed Web Origins* sections.
+- Don't forget to modify your app settings on Auth0 to include Heroku urls in the _Allowed Callback URLS_ and _Allowed Web Origins_ sections.
 
 1. Create App :
+
 ```
 heroku create name_of_your_app
 ```
+
 2. Upload code to app :
+
 ```
 git push heroku main
 ```
+
 3. Add PostgreSQL database addon :
+
 ```
-heroku addons:create heroku-postgresql:hobby-dev --app name_of_your_application
+heroku addons:create heroku-postgresql:mini --app name_of_your_application
 ```
+
 4. Using your Heroku dashboard, add any application configuration variables. You will see that the database is already configured.
 5. Run migrations :
+
 ```
 heroku run python manage.py db upgrade --app name_of_your_application
 ```
+
 6. Upload local PostgreSQL data if you like, by first exporting the data to a file, then importing it using heroku cli.
+
 ```
 pg_dump dbname > outfile
 heroku pg:psql DATABASE_URL --app name_of_your_app < outfile
 ```
+
 **Useful Heroku commands** :
-- ``` heroku run bash ``` - To see if files are there. 
-- ```heroku pg:psql``` - To get access to your PostgreSQL db. 
-- ``` heroku pg:backups:capture --app your_app_name ``` - To make a backup of your data
-- ``` heroku pg:backups:download ``` - To download your backup
 
-
-
-
-
+- `heroku run bash` - To see if files are there.
+- `heroku pg:psql` - To get access to your PostgreSQL db.
+- `heroku pg:backups:capture --app your_app_name` - To make a backup of your data
+- `heroku pg:backups:download` - To download your backup

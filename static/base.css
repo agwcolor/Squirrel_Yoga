@@ -5,6 +5,11 @@
     border: solid 1px #ebebeb;
 
 }
+.intro {
+    text-align: center;
+    color: rgb(29, 114, 147);
+    font-style: italic;
+}
   
 .tile {
     text-align: center;
